@@ -1,10 +1,19 @@
-.about-me h2 {
+h2 {
     color: #146bb0;
+}
 
+h3 {
+    display: inline;
+    color: #146bb0;
+}
+
+a:link {
+    color: #146bb0; /* Цвет ссылок */
 }
 
 .title-icon {
-    font-size: 50px;
+    font-size: 42px;
     margin-right: 20px;
+    margin-bottom: 7px;
     vertical-align: sub;
 }
