@@ -7,13 +7,15 @@ h3 {
     color: #146bb0;
 }
 
-a:link {
+a {
     color: #146bb0; /* Цвет ссылок */
 }
 
+.progress-bar, .bg-primary {
+    background-color: #146bb0 !important;
+}
+
 .title-icon {
-    font-size: 42px;
-    margin-right: 20px;
-    margin-bottom: 7px;
+
     vertical-align: sub;
 }
