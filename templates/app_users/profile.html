@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Ваш профиль{% endblock %}
+
+{% block content %}
+  {% include 'breadcrumbs_base.html' %}
+  {% block main_content %}
+    <h1>Профиль</h1>
+    <p>Justo orci noluisse commune possim. Sociis pericula velit vim ex. Pulvinar ornare salutatus indoctum feugiat laudem amet ut commodo.</p>
+
+    username: {{ user.username }}
+
+  {% endblock %}
+
+{% endblock %}

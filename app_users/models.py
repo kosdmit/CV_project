@@ -9,6 +9,7 @@ class Profile(models.Model):
                                                                  ('female', 'female'),
                                                                  ])
     phone_number = models.CharField(max_length=15, blank=True)
+    avatar = models.ImageField(upload_to='files/avatars/', blank=True)
 
     social_links = models.OneToOneField('SocialLinks', on_delete=models.CASCADE)
     user = models.OneToOneField(django.contrib.auth.models.User, on_delete=models.CASCADE)
@@ -21,3 +22,7 @@ class SocialLinks(models.Model):
     vk = models.CharField(max_length=150, blank=True)
     instagram = models.CharField(max_length=150, blank=True)
     hh = models.CharField(max_length=150, blank=True)
+
+    class Meta:
+        verbose_name = "Social Links"
+        verbose_name_plural = "Social Links"
