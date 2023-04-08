@@ -41,3 +41,5 @@ class CreateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('birthday_date', 'gender', 'phone_number', 'avatar')
+
+

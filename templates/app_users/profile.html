@@ -5,10 +5,82 @@
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
-    <h1>Профиль</h1>
-    <p>Justo orci noluisse commune possim. Sociis pericula velit vim ex. Pulvinar ornare salutatus indoctum feugiat laudem amet ut commodo.</p>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1>Профиль</h1>
+          <p>
+            Привет,
+            {% if user.first_name %}
+              {{ user.first_name }}
+            {% else %}
+              {{ user.username }}
+            {% endif %}
+            !
+            На этой странице вы можете посмотреть данные своего профиля. Они используются при формировании резюме и для связи с работодателем.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5 bg-light rounded-5 pt-5 px-5 mb-5">
+          <div class="hero mb-5">
+            {% if user.avatar %}
+              <img src="{{ user.avatar.url }}" class="rounded-circle  mx-auto d-block mb-3" alt="user`s avatar" height="250">
+            {% else %}
+              <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
+                <p class="mx-auto text-light">Здесь будет ваше фото</p>
+              </div>
+            {% endif %}
+            {% if user.first_name and user.last_name %}
+              <h1 class="text-uppercase text-center">
+                {{ user.first_name }}
+                <br>
+                <strong>{{ user.last_name }}</strong>
+              </h1>
+            {% else %}
+              <p class="text-center">
+                Вы не указали ваше имя или фамилию
+                <br>
+                <a href="#">Редактировать</a>
+              </p>
+            {% endif %}
+          </div>
 
-    username: {{ user.username }}
+          <div class="user-info mb-5">
+            <ul class="list-unstyled">
+              <li class="list-group-item mb-3">
+                <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
+              </li>
+              <li class="list-group-item mb-3">
+                <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-7 ps-5">
+          <div class="profile-info mb-5">
+            <h3 class="text-uppercase fs-5 mb-5">Данные профиля</h3>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item mb-3">
+                <label for="id_birth_date" class="form-label">Дата рождения:</label>
+                {{ profile.birthday_date }}
+              </li>
+              <li class="list-group-item mb-3">
+                <label for="id_gender" class="form-label">Пол:</label>
+                {{ profile.gender }}
+              </li>
+              <li class="list-group-item mb-3">
+                <label for="id_phone_number" class="form-label">Телефон:</label>
+                {{ profile.phone_number }}
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary">Редактировать профиль</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
   {% endblock %}
 

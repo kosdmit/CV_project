@@ -68,10 +68,10 @@ class ProfileView(TemplateView):
             user = User.objects.get(username=username)
             context['user'] = user
 
-            profile = Profile.objects.get(user=self.request.user)
+            profile = Profile.objects.filter(user=self.request.user).first()
             context['profile'] = profile
 
-            social_links = SocialLinks.objects.get(profile=profile)
+            social_links = SocialLinks.objects.filter(profile=profile)
             context['social_links'] = social_links
 
         return context
