@@ -1,9 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
 from app_users.models import Profile, SocialLinks
-from .forms import SignUpUserForm, CreateProfileForm
+from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm
 from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect
@@ -51,9 +52,10 @@ class CreateProfileView(CreateView):
         return super().form_valid(form)
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     model = User
     template_name = 'app_users/profile.html'
+    login_url = '/users/login/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -81,6 +83,18 @@ class ProfileView(TemplateView):
 class Login(LoginView):
     template_name = 'app_users/login.html'
     next_page = 'profile'
+    form_class = CustomAuthenticationForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        breadcrumbs = [
+            ('Пользователь', 'users/'),
+            ('Вход', 'users/login/'),
+        ]
+        context['breadcrumbs'] = breadcrumbs
+
+        return context
 
 
 class Logout(LogoutView):

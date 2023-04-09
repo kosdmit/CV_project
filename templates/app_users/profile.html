@@ -75,8 +75,46 @@
                 {{ profile.phone_number }}
               </li>
             </ul>
-            <a href="#" class="btn btn-primary">Редактировать профиль</a>
+            <a href="#" class="btn btn-secondary">Редактировать профиль</a>
             </form>
+          </div>
+          <div class="resume-list mb-5">
+            <h3 class="text-uppercase fs-5 mb-5">Ваши резюме</h3>
+            {% if resumes %}
+              <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small>3 days ago</small>
+                  </div>
+                  <p class="mb-1">Some placeholder content in a paragraph.</p>
+                  <small>And some small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-body-secondary">3 days ago</small>
+                  </div>
+                  <p class="mb-1">Some placeholder content in a paragraph.</p>
+                  <small class="text-body-secondary">And some muted small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-body-secondary">3 days ago</small>
+                  </div>
+                  <p class="mb-1">Some placeholder content in a paragraph.</p>
+                  <small class="text-body-secondary">And some muted small print.</small>
+                </a>
+              </div>
+            {% else %}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item mb-3">
+                  Вы еще не добавляли резюме, создайте новое резюме сейчас!
+                </li>
+              </ul>
+              <a href="#" class="btn btn-primary">Создать новое резюме</a>
+            {% endif %}
           </div>
         </div>
       </div>

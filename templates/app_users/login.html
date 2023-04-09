@@ -3,7 +3,9 @@
 {% block title %}Войти{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% if breadcrumbs %}
+    {% include 'breadcrumbs_base.html' %}
+  {% endif %}
   {% block main_content %}
 
     <div class="container">
