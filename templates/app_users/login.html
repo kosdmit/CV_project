@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Войти{% endblock %}
+
+{% block content %}
+  {% include 'breadcrumbs_base.html' %}
+  {% block main_content %}
+
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-12">
+          <h1>Вход на сайт</h1>
+          <p>Используйте свой логин и пароль чтобы авторизоваться на сайте.</p>
+        </div>
+      </div>
+      <div class="row mb-5">
+        <div class="col-12">
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_username" class="form-label">Имя пользователя:</label>
+              {{ form.username }}
+            </div>
+            <div class="mb-3">
+              <label for="id_password" class="form-label">Пароль:</label>
+              {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary">Войти</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+  {% endblock %}
+
+{% endblock %}

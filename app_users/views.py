@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
 from app_users.models import Profile, SocialLinks
@@ -75,3 +76,12 @@ class ProfileView(TemplateView):
             context['social_links'] = social_links
 
         return context
+
+
+class Login(LoginView):
+    template_name = 'app_users/login.html'
+    next_page = 'profile'
+
+
+class Logout(LogoutView):
+    next_page = 'main'
