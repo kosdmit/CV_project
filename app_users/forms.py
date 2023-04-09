@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
 
+import app_resume.models
 from .models import Profile
 
 from django.utils.translation import gettext_lazy as _
@@ -56,3 +57,14 @@ class CustomAuthenticationForm(AuthenticationForm):
                                           'class': 'form-control w-50',
                                           }),
     )
+
+
+class CreateResumeForm(forms.ModelForm):
+    position = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+                                                             'placeholder': 'Желаемая должность',
+                                                             'aria-describedby': "button-addon2",
+                                                             }))
+
+    class Meta:
+        model = app_resume.models.Resume
+        fields = ('position',)

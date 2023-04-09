@@ -1,4 +1,5 @@
 import re
+import uuid
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -18,10 +19,18 @@ def interval_validator(value):
         )
 
 
+def percentage_validator(value):
+    if value > 100 or value < 0:
+        raise ValidationError(
+            message=f"{value} must be in 0 - 100 interval",
+            params={'value': value}
+        )
+
+
 class Resume(models.Model):
     profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     position = models.CharField(max_length=150)
     about_me = models.TextField(blank=True, null=True)
     soft_skills = models.TextField(blank=True, null=True)
@@ -68,14 +77,6 @@ class AdditionalEducation(models.Model):
 
 
 class ElectronicCertificate(models.Model):
-    @staticmethod
-    def percentage_validator(value):
-        if value > 100 or value < 0:
-            raise ValidationError(
-                message=f"{value} must be in 0 - 100 interval",
-                params={'value': value}
-            )
-
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False)

@@ -1,10 +1,15 @@
+import uuid
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
+
+import app_users
+from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
-from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm
+from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm
 from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect
@@ -77,7 +82,22 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             social_links = SocialLinks.objects.filter(profile=profile)
             context['social_links'] = social_links
 
+            create_resume_form = CreateResumeForm()
+            context['form'] = create_resume_form
+
         return context
+
+    def post(self, request, *args, **kwargs):
+        create_resume_form = CreateResumeForm(request.POST)
+        if create_resume_form.is_valid():
+            resume = create_resume_form.save(commit=False)
+            resume.profile_id = Profile.objects.get(user=self.request.user).id
+            resume.save()
+            return redirect('profile')
+        else:
+            context = self.get_context_data(**kwargs)
+            context['form'] = create_resume_form
+            return render(request, self.template_name, context)
 
 
 class Login(LoginView):
