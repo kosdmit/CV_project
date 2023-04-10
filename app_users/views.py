@@ -82,6 +82,9 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             social_links = SocialLinks.objects.filter(profile=profile)
             context['social_links'] = social_links
 
+            resume_list = Resume.objects.filter(profile=profile)
+            context['resume_list'] = resume_list
+
             create_resume_form = CreateResumeForm()
             context['form'] = create_resume_form
 

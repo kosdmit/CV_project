@@ -1,6 +1,7 @@
 import re
 import uuid
 
+from autoslug import AutoSlugField
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -31,6 +32,7 @@ class Resume(models.Model):
     profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    slug = AutoSlugField(populate_from='position')
     position = models.CharField(max_length=150)
     about_me = models.TextField(blank=True, null=True)
     soft_skills = models.TextField(blank=True, null=True)
@@ -59,7 +61,7 @@ class MainEducation(models.Model):
 class Institution(models.Model):
     main_education = models.ForeignKey('MainEducation', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4())
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
