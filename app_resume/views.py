@@ -6,6 +6,7 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm
+from app_resume.mixins import ResumeUpdateMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 from app_users.models import Profile, SocialLinks
 
@@ -66,70 +67,14 @@ class ResumeView(TemplateView):
         return context
 
 
-class ResumeAboutMeUpdateView(UpdateView):
+class ResumeAboutMeUpdateView(ResumeUpdateMixin, UpdateView):
     model = Resume
     fields = ['about_me']
 
-    def post(self, request, username, slug, *args, **kwargs):
-        profile = Profile.objects.get(user=self.request.user)
 
-        self.object = Resume.objects.get(profile=profile, slug=slug)
-
-        """
-        Handle POST requests: instantiate a form instance with the passed
-        POST variables and then check if it's valid.
-        """
-
-        form = self.get_form()
-        if form.is_valid():
-
-            if not request.user.username == username:
-                raise ValidationError(
-                    message='Username in URL is not correct',
-                    params={'your username': request.user.username,
-                            'received username': username,
-                            }
-                )
-
-            self.success_url = reverse_lazy('resume', kwargs={'username': username,
-                                                              'slug': slug,
-                                                              })
-
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-
-class ResumeSoftSkillsUpdateView(UpdateView):
+class ResumeSoftSkillsUpdateView(ResumeUpdateMixin, UpdateView):
     model = Resume
     fields = ['soft_skills']
 
-    def post(self, request, username, slug, *args, **kwargs):
-        profile = Profile.objects.get(user=self.request.user)
 
-        self.object = Resume.objects.get(profile=profile, slug=slug)
-
-        """
-        Handle POST requests: instantiate a form instance with the passed
-        POST variables and then check if it's valid.
-        """
-
-        form = self.get_form()
-        if form.is_valid():
-
-            if not request.user.username == username:
-                raise ValidationError(
-                    message='Username in URL is not correct',
-                    params={'your username': request.user.username,
-                            'received username': username,
-                            }
-                )
-
-            self.success_url = reverse_lazy('resume', kwargs={'username': username,
-                                                              'slug': slug,
-                                                              })
-
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
