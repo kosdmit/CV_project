@@ -50,7 +50,6 @@ class CreateProfileView(CreateView):
         return context
 
     def form_valid(self, form):
-        """If the form is valid, save the associated model."""
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()

@@ -4,14 +4,19 @@ from app_resume.models import Resume, MainEducation, Institution, AdditionalEduc
 
 
 class ResumeForm(forms.ModelForm):
-    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
-                                                            'rows': '3'}))
-    soft_skills = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
-                                                               'rows': '3'}))
-
     class Meta:
         model = Resume
-        fields = ['about_me', 'soft_skills']
+        fields = ['about_me', 'soft_skills', 'position']
+
+
+class ResumeAboutMeForm(forms.Form):
+    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
+                                                            'rows': '3'}))
+
+
+class ResumeSoftSkillsForm(forms.Form):
+    soft_skills = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
+                                                               'rows': '3'}))
 
 
 class MainEducationForm(forms.ModelForm):
