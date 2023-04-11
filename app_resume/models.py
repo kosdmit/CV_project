@@ -5,29 +5,10 @@ from autoslug import AutoSlugField
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from app_resume.validators import percentage_validator, years_interval_validator
+
 
 # Create your models here.
-
-
-def interval_validator(value):
-    pattern = '^\d{4} - \d{4}$'
-    if not re.match(pattern, value):
-        raise ValidationError(
-            message=f"{value} does not mathc the pattern for years interval",
-            params={'value': value,
-                    'pattern': pattern,
-                    }
-        )
-
-
-def percentage_validator(value):
-    if value > 100 or value < 0:
-        raise ValidationError(
-            message=f"{value} must be in 0 - 100 interval",
-            params={'value': value}
-        )
-
-
 class Resume(models.Model):
     profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE)
 
@@ -101,7 +82,7 @@ class WorkExpSection(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=150)
-    years_interval = models.CharField(max_length=11, validators=[interval_validator], blank=True, null=True)
+    years_interval = models.CharField(max_length=11, validators=[years_interval_validator], blank=True, null=True)
 
 
 class Job(models.Model):
@@ -118,4 +99,4 @@ class Job(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     position = models.CharField(max_length=150)
     company = models.CharField(max_length=150)
-    years_interval = models.CharField(max_length=11, validators=[interval_validator], blank=True, null=True)
+    years_interval = models.CharField(max_length=11, validators=[years_interval_validator], blank=True, null=True)
