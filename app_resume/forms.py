@@ -55,6 +55,11 @@ class InstitutionForm(forms.ModelForm):
         fields = ['title', 'description', 'website_url', 'diploma']
 
 
+class AdditionalEducationCreateForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+                                                          'placeholder': "Наименование пройденного курса"}))
+
+
 class AdditionalEducationForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
                                                           'placeholder': "Наименование пройденного курса"}))

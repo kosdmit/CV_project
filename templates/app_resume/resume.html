@@ -137,11 +137,14 @@
                     </li>
                   </ul>
                 {% else %}
-                  <div class="input-group my-3">
-                    <span class="input-group-text">Дополнительное образование</span>
-                    {{ additional_educations_form.title }}
-                    <button class="btn btn-outline-secondary fw-bold" type="button" id="button-addon2">+</button>
-                  </div>
+                  <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
+                    {% csrf_token %}
+                    <div class="input-group my-3">
+                      <span class="input-group-text">Дополнительное образование</span>
+                      {{ additional_education_create_form.title }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
                 {% endif %}
                 {% if electronic_certificates %}
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>

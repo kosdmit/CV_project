@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 
 
-class ResumeUpdateMixin:
+class ResumeValidatorMixin:
     def form_valid(self, form):
         if not self.request.user.username == self.kwargs['username']:
             raise ValidationError(

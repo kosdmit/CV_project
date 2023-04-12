@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
-    ElectronicCertificateForm, ResumeForm
-from app_resume.mixins import ResumeUpdateMixin
+    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm
+from app_resume.mixins import ResumeValidatorMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 from app_users.models import Profile, SocialLinks
 
@@ -48,8 +48,8 @@ class ResumeView(TemplateView):
         additional_educations = AdditionalEducation.objects.filter(resume=resume)
         context['additional_educations'] = additional_educations
 
-        additional_education_form = AdditionalEducationForm()
-        context['additional_educations_form'] = additional_education_form
+        additional_education_create_form = AdditionalEducationCreateForm()
+        context['additional_education_create_form'] = additional_education_create_form
 
         electronic_certificates = ElectronicCertificate.objects.filter(resume=resume)
         context['electronic_certificates'] = electronic_certificates
@@ -67,32 +67,20 @@ class ResumeView(TemplateView):
         return context
 
 
-class ResumeAboutMeUpdateView(ResumeUpdateMixin, UpdateView):
+class ResumeAboutMeUpdateView(ResumeValidatorMixin, UpdateView):
     model = Resume
     fields = ['about_me']
 
 
-class ResumeSoftSkillsUpdateView(ResumeUpdateMixin, UpdateView):
+class ResumeSoftSkillsUpdateView(ResumeValidatorMixin, UpdateView):
     model = Resume
     fields = ['soft_skills']
 
 
-class MainEducationCreateView(CreateView):
+class MainEducationCreateView(ResumeValidatorMixin, CreateView):
     form_class = MainEducationForm
 
     def form_valid(self, form):
-        if not self.request.user.username == self.kwargs['username']:
-            raise ValidationError(
-                message='Username in URL is not correct',
-                params={'your username': self.request.user.username,
-                        'received username': self.kwargs['username'],
-                        }
-            )
-
-        self.success_url = reverse_lazy('resume', kwargs={'username': self.kwargs['username'],
-                                                          'slug': self.kwargs['slug'],
-                                                          })
-
         self.object = form.save(commit=False)
         resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
         self.object.resume = resume
@@ -101,5 +89,14 @@ class MainEducationCreateView(CreateView):
         return super().form_valid(form)
 
 
+class AdditionalEducationCreateView(ResumeValidatorMixin, CreateView):
+    model = AdditionalEducation
+    fields = ['title']
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        self.object.resume = resume
+        self.object.save()
 
+        return super().form_valid(form)
