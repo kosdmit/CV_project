@@ -6,7 +6,7 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm
-from app_resume.mixins import ResumeValidatorMixin
+from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 from app_users.models import Profile, SocialLinks
 
@@ -77,26 +77,10 @@ class ResumeSoftSkillsUpdateView(ResumeValidatorMixin, UpdateView):
     fields = ['soft_skills']
 
 
-class MainEducationCreateView(ResumeValidatorMixin, CreateView):
+class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     form_class = MainEducationForm
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
-        self.object.resume = resume
-        self.object.save()
 
-        return super().form_valid(form)
-
-
-class AdditionalEducationCreateView(ResumeValidatorMixin, CreateView):
+class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = AdditionalEducation
     fields = ['title']
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
-        self.object.resume = resume
-        self.object.save()
-
-        return super().form_valid(form)

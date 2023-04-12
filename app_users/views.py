@@ -94,6 +94,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         if create_resume_form.is_valid():
             resume = create_resume_form.save(commit=False)
             resume.profile_id = Profile.objects.get(user=self.request.user).id
+            resume.user_id = self.request.user.id
             resume.save()
             return redirect('profile')
         else:
