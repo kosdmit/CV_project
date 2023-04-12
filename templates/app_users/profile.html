@@ -83,13 +83,11 @@
             {% if resume_list %}
               <div class="list-group my-3">
                 {% for resume in resume_list %}
-                  <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                  <a href="{% url 'resume' username=user.username slug=resume.slug %}" class="list-group-item list-group-item-action active my-1" aria-current="true">
                     <div class="d-flex w-100 justify-content-between">
-                      <h5 class="mb-1">List group item heading</h5>
-                      <small>3 days ago</small>
+                      <h5 class="mb-1">{{ resume.position }}</h5>
+                      <small>{{ resume.updated_date | timesince }}</small>
                     </div>
-                    <p class="mb-1">Some placeholder content in a paragraph.</p>
-                    <small>And some small print.</small>
                   </a>
                 {% endfor %}
               </div>
