@@ -2,6 +2,7 @@ import re
 import uuid
 
 from autoslug import AutoSlugField
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -11,6 +12,7 @@ from app_resume.validators import percentage_validator, years_interval_validator
 # Create your models here.
 class Resume(models.Model):
     profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     slug = AutoSlugField(populate_from='position')
@@ -40,9 +42,16 @@ class MainEducation(models.Model):
     level = models.CharField(max_length=25, choices=EDUCATION_LEVELS)
     degree = models.CharField(max_length=10, choices=DEGREES, blank=True, null=True)
 
+    def get_level(self):
+        return dict(self.EDUCATION_LEVELS).get(self.level)
+
+    def get_degree(self):
+        return dict(self.DEGREES).get(self.degree)
+
 
 class Institution(models.Model):
     main_education = models.ForeignKey('MainEducation', on_delete=models.CASCADE)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4())
     title = models.CharField(max_length=150)

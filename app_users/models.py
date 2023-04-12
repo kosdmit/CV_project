@@ -1,4 +1,5 @@
 import django
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -10,16 +11,20 @@ class Profile(models.Model):
         ('O', 'Other'),
     ]
 
-    user = models.OneToOneField(django.contrib.auth.models.User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     birthday_date = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=6, blank=True, null=True, choices=GENDERS)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     avatar = models.ImageField(upload_to='files/avatars/', blank=True, null=True)
 
+    def get_gender(self):
+        return dict(self.GENDERS).get(self.gender)
+
 
 class SocialLinks(models.Model):
     profile = models.OneToOneField('Profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     twitter = models.CharField(max_length=150, blank=True)
     facebook = models.CharField(max_length=150, blank=True)

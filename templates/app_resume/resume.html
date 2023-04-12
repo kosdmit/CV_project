@@ -100,9 +100,9 @@
           <div class="education mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-medal title-icon fs-1 me-3 mb-1"></i>Образование</h2>
             <ul class="list-unstyled">
-              <li class="list-group-item mb-3">
+              <li>
                 {% if main_education %}
-                  <h3 class="text-uppercase fs-5 me-3">{{ main_education.level }}</h3><p class="text-uppercase d-inline">// {{ main_education.degree.upper }}</p>
+                  <h3 class="text-uppercase fs-5 me-3">{{ main_education.get_level }}</h3><p class="text-uppercase d-inline">// {{ main_education.get_degree.upper }}</p>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                       <p class="text-uppercase mb-1">РГУ Нефти и Газа имени И.М. Губкина</p>
@@ -114,12 +114,15 @@
                     </li>
                   </ul>
                 {% else %}
-                  <div class="input-group my-3">
-                    <span class="input-group-text">Образование и квалификация</span>
-                    {{ main_education_form.level }}
-                    {{ main_education_form.degree }}
-                    <button class="btn btn-outline-secondary fw-bold" type="button" id="button-addon2">+</button>
-                  </div>
+                  <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group my-3">
+                      <span class="input-group-text">Образование и квалификация</span>
+                      {{ main_education_form.level }}
+                      {{ main_education_form.degree }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
                 {% endif %}
                 {% if additional_educations %}
                   <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>

@@ -77,4 +77,29 @@ class ResumeSoftSkillsUpdateView(ResumeUpdateMixin, UpdateView):
     fields = ['soft_skills']
 
 
+class MainEducationCreateView(CreateView):
+    form_class = MainEducationForm
+
+    def form_valid(self, form):
+        if not self.request.user.username == self.kwargs['username']:
+            raise ValidationError(
+                message='Username in URL is not correct',
+                params={'your username': self.request.user.username,
+                        'received username': self.kwargs['username'],
+                        }
+            )
+
+        self.success_url = reverse_lazy('resume', kwargs={'username': self.kwargs['username'],
+                                                          'slug': self.kwargs['slug'],
+                                                          })
+
+        self.object = form.save(commit=False)
+        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        self.object.resume = resume
+        self.object.save()
+
+        return super().form_valid(form)
+
+
+
 
