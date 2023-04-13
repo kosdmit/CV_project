@@ -61,8 +61,6 @@ class AdditionalEducationCreateForm(forms.Form):
 
 
 class AdditionalEducationForm(forms.ModelForm):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование пройденного курса"}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     website_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
     diploma = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
@@ -72,9 +70,13 @@ class AdditionalEducationForm(forms.ModelForm):
         fields = ['title', 'description', 'website_url', 'diploma']
 
 
-class ElectronicCertificateForm(forms.ModelForm):
+class ElectronicCertificateCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
                                                           'placeholder': "Наименование пройденного курса"}))
+
+
+class ElectronicCertificateForm(forms.ModelForm):
+
     certificate_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
     certificate = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
     completion_percentage = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'range',

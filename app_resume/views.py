@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
-    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm
+    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 from app_users.models import Profile, SocialLinks
@@ -54,8 +54,8 @@ class ResumeView(TemplateView):
         electronic_certificates = ElectronicCertificate.objects.filter(resume=resume)
         context['electronic_certificates'] = electronic_certificates
 
-        electronic_certificate_form = ElectronicCertificateForm()
-        context['electronic_certificate_form'] = electronic_certificate_form
+        electronic_certificate_create_form = ElectronicCertificateCreateForm()
+        context['electronic_certificate_create_form'] = electronic_certificate_create_form
 
         breadcrumbs = [
             ('Резюме', 'resume/'),
@@ -83,4 +83,9 @@ class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateVi
 
 class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = AdditionalEducation
+    fields = ['title']
+
+
+class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+    model = ElectronicCertificate
     fields = ['title']
