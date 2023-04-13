@@ -26,6 +26,6 @@ class ResumeBounderMixin:
         self.object = form.save(commit=False)
         resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
         self.object.resume = resume
-        self.object.save()
 
+        super()
         return super().form_valid(form)

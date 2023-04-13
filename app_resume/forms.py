@@ -43,16 +43,19 @@ class MainEducationForm(forms.ModelForm):
         fields = ['level', 'degree']
 
 
-class InstitutionForm(forms.ModelForm):
+class InstitutionCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование учебного учреждения"}))
+                                                          'placeholder': "Наименование"}))
+
+
+class InstitutionForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     website_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
     diploma = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Institution
-        fields = ['title', 'description', 'website_url', 'diploma']
+        fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
 
 
 class AdditionalEducationCreateForm(forms.Form):

@@ -5,7 +5,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
-    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm
+    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
+    InstitutionCreateForm, InstitutionForm
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 from app_users.models import Profile, SocialLinks
@@ -45,6 +46,9 @@ class ResumeView(TemplateView):
         institutions = Institution.objects.filter(main_education=main_education)
         context['institutions'] = institutions
 
+        institution_create_form = InstitutionCreateForm()
+        context['institution_create_form'] = institution_create_form
+
         additional_educations = AdditionalEducation.objects.filter(resume=resume)
         context['additional_educations'] = additional_educations
 
@@ -79,6 +83,20 @@ class ResumeSoftSkillsUpdateView(ResumeValidatorMixin, UpdateView):
 
 class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     form_class = MainEducationForm
+
+
+class InstitutionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+    model = Institution
+    fields = ['title']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        main_education = MainEducation.objects.get(resume=resume)
+        self.object.main_education = main_education
+
+        super()
+        return super().form_valid(form)
 
 
 class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

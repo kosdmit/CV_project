@@ -104,15 +104,21 @@
                 {% if main_education %}
                   <h3 class="text-uppercase fs-5 me-3">{{ main_education.get_level }}</h3><p class="text-uppercase d-inline">// {{ main_education.get_degree.upper }}</p>
                   <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                      <p class="text-uppercase mb-1">РГУ Нефти и Газа имени И.М. Губкина</p>
-                      <p>Metus quidam fabulas tractatos lobortis mi. Senserit neque ancillae sale tota noster vidisse montes. Torquent quaeque posidonium persius vituperata nisl id hinc indoctum amet.</p>
-                    </li>
-                    <li class="list-group-item">
-                      <p class="text-uppercase mb-1">Самарский Государственный Технический Университет</p>
-                      <p>Consul vivamus magnis fames patrioque. Tritani lectus tantas odio graece purus. Docendi tempor penatibus graece liber convenire ferri singulis sociis.</p>
-                    </li>
+                    {% for institution in institutions %}
+                      <li class="list-group-item">
+                        <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
+                        <p>{{ institution.description }}</p>
+                      </li>
+                    {% endfor %}
                   </ul>
+                  <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group my-3">
+                      <span class="input-group-text">Учебное учреждение</span>
+                      {{ institution_create_form.title }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
                 {% else %}
                   <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
@@ -136,16 +142,15 @@
                       <p>Ornatus velit verear conclusionemque morbi. Utroque recteque aperiri dicant sumo etiam. Disputationi neque litora nobis habitant dis semper minim erroribus.</p>
                     </li>
                   </ul>
-                {% else %}
-                  <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group my-3">
-                      <span class="input-group-text">Дополнительное образование</span>
-                      {{ additional_education_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
                 {% endif %}
+                <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
+                  {% csrf_token %}
+                  <div class="input-group mb-5">
+                    <span class="input-group-text">Дополнительное образование</span>
+                    {{ additional_education_create_form.title }}
+                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                  </div>
+                </form>
                 {% if electronic_certificates %}
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
                   <ul class="list-group list-group mt-3">
@@ -168,16 +173,15 @@
                       <span class="badge bg-primary rounded-pill">14</span>
                     </li>
                   </ul>
-                {% else %}
-                  <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group my-3">
-                      <span class="input-group-text">Электронный сертификат</span>
-                      {{ electronic_certificate_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
                 {% endif %}
+                <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
+                  {% csrf_token %}
+                  <div class="input-group my-3">
+                    <span class="input-group-text">Электронный сертификат</span>
+                    {{ electronic_certificate_create_form.title }}
+                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                  </div>
+                </form>
               </li>
             </ul>
           </div>
