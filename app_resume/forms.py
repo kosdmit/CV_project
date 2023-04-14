@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.safestring import mark_safe
 
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 
@@ -49,9 +50,34 @@ class InstitutionCreateForm(forms.Form):
 
 
 class InstitutionForm(forms.ModelForm):
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
-    website_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
-    diploma = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    title = forms.CharField(
+        label='Наименование учебного учреждения:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Наименование"}),
+    )
+
+    description = forms.CharField(
+        label='Описание',
+        widget=forms.Textarea(attrs={'class': 'form-control',
+                                     'aria-describedby': 'descriptionHelp',
+                                     'rows': '3'}),
+    )
+
+    website_url = forms.URLField(
+        label='Веб-сайт:',
+        widget=forms.URLInput(attrs={'class': 'form-control'}),
+    )
+
+    diploma = forms.FileField(
+        label='Диплом об окончании:',
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+    )
+
+    completion_date = forms.DateField(
+        label='Дата окончания:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
 
     class Meta:
         model = Institution

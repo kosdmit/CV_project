@@ -46,6 +46,11 @@ class ResumeView(TemplateView):
         institutions = Institution.objects.filter(main_education=main_education)
         context['institutions'] = institutions
 
+        context['institution_forms'] = {}
+        for institution in institutions:
+            institution_form = InstitutionForm(instance=institution)
+            context['institution_forms'][institution] = institution_form
+
         institution_create_form = InstitutionCreateForm()
         context['institution_create_form'] = institution_create_form
 
@@ -88,6 +93,20 @@ class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateVi
 class InstitutionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = Institution
     fields = ['title']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        main_education = MainEducation.objects.get(resume=resume)
+        self.object.main_education = main_education
+
+        super()
+        return super().form_valid(form)
+
+
+class InstitutionUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+    model = Institution
+    fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

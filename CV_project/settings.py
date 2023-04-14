@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'autoslug',
+    'djutils',
     'app_users',
     'app_resume',
 ]
