@@ -111,9 +111,12 @@
                       <li class="list-group-item">
                         <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
                         <p>{{ institution.description }}</p>
-                        <button type="button" class="btn float-end" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
-                          <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
+                        <div class="item-footer d-flex justify-content-between">
+                          <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
+                          <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </button>
+                        </div>
                         <!-- Modal -->
                         <div class="modal fade" id="{{ institution.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                           <div class="modal-dialog">
