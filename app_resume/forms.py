@@ -90,13 +90,38 @@ class AdditionalEducationCreateForm(forms.Form):
 
 
 class AdditionalEducationForm(forms.ModelForm):
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
-    website_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
-    diploma = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
+    title = forms.CharField(
+        label='Наименование учебной программы:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Наименование пройденного курса"}),
+    )
+
+    description = forms.CharField(
+        label='Описание:',
+        widget=forms.Textarea(attrs={'class': 'form-control',
+                                     'aria-describedby': 'descriptionHelp',
+                                     'rows': '3'}),
+    )
+
+    website_url = forms.URLField(
+        label='Веб-сайт:',
+        widget=forms.URLInput(attrs={'class': 'form-control'}),
+    )
+
+    diploma = forms.FileField(
+        label='Документ об окончании:',
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+    )
+
+    completion_date = forms.DateField(
+        label='Дата окончания:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
 
     class Meta:
         model = AdditionalEducation
-        fields = ['title', 'description', 'website_url', 'diploma']
+        fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
 
 
 class ElectronicCertificateCreateForm(forms.Form):

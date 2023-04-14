@@ -57,6 +57,11 @@ class ResumeView(TemplateView):
         additional_educations = AdditionalEducation.objects.filter(resume=resume)
         context['additional_educations'] = additional_educations
 
+        context['additional_education_forms'] = {}
+        for education in additional_educations:
+            additional_education_form = AdditionalEducationForm(instance=education)
+            context['additional_education_forms'][education] = additional_education_form
+
         additional_education_create_form = AdditionalEducationCreateForm()
         context['additional_education_create_form'] = additional_education_create_form
 
@@ -121,6 +126,20 @@ class InstitutionUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView
 class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = AdditionalEducation
     fields = ['title']
+
+
+class AdditionalEducationUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+    model = AdditionalEducation
+    fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        main_education = MainEducation.objects.get(resume=resume)
+        self.object.main_education = main_education
+
+        super()
+        return super().form_valid(form)
 
 
 class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

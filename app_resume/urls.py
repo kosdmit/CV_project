@@ -1,7 +1,8 @@
 from django.urls import path
 
 from app_resume.views import ResumeView, ResumeAboutMeUpdateView, ResumeSoftSkillsUpdateView, MainEducationCreateView, \
-    AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView
+    AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView, \
+    AdditionalEducationUpdateView
 
 urlpatterns = [
     path('<username>/<slug>/', ResumeView.as_view(), name='resume'),
@@ -11,6 +12,7 @@ urlpatterns = [
     path('<username>/<slug>/institution_create', InstitutionCreateView.as_view(), name='institution_create'),
     path('<username>/<slug>/<pk>/institution_update/', InstitutionUpdateView.as_view(), name='institution_update'),
     path('<username>/<slug>/additional_education_create', AdditionalEducationCreateView.as_view(), name='additional_education_create'),
+    path('<username>/<slug>/<pk>/additional_education_update/', AdditionalEducationUpdateView.as_view(), name='additional_education_update'),
     path('<username>/<slug>/electronic_certificate_create', ElectronicCertificateCreateView.as_view(), name='electronic_certificate_create'),
 
 
