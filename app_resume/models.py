@@ -32,6 +32,7 @@ class MainEducation(models.Model):
     ]
 
     DEGREES = [
+        ('Other', 'Другое'),
         ('Bachelor', 'Бакалавр'),
         ('Specialist', 'Специалист'),
         ('Master', 'Магистр'),

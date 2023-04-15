@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.safestring import mark_safe
 
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
 
@@ -29,6 +28,7 @@ class MainEducationForm(forms.ModelForm):
     ]
 
     DEGREES = [
+        ('Other', 'Другое'),
         ('Bachelor', 'Бакалавр'),
         ('Specialist', 'Специалист'),
         ('Master', 'Магистр'),
@@ -57,6 +57,7 @@ class InstitutionForm(forms.ModelForm):
     )
 
     description = forms.CharField(
+        required=False,
         label='Описание',
         widget=forms.Textarea(attrs={'class': 'form-control',
                                      'aria-describedby': 'descriptionHelp',
@@ -64,16 +65,19 @@ class InstitutionForm(forms.ModelForm):
     )
 
     website_url = forms.URLField(
+        required=False,
         label='Веб-сайт:',
         widget=forms.URLInput(attrs={'class': 'form-control'}),
     )
 
     diploma = forms.FileField(
+        required=False,
         label='Диплом об окончании:',
         widget=forms.FileInput(attrs={'class': 'form-control'}),
     )
 
     completion_date = forms.DateField(
+        required=False,
         label='Дата окончания:',
         widget=forms.DateInput(attrs={'class': 'form-control',
                                       'type': 'date'}),
@@ -97,6 +101,7 @@ class AdditionalEducationForm(forms.ModelForm):
     )
 
     description = forms.CharField(
+        required=False,
         label='Описание:',
         widget=forms.Textarea(attrs={'class': 'form-control',
                                      'aria-describedby': 'descriptionHelp',
@@ -104,16 +109,19 @@ class AdditionalEducationForm(forms.ModelForm):
     )
 
     website_url = forms.URLField(
+        required=False,
         label='Веб-сайт:',
         widget=forms.URLInput(attrs={'class': 'form-control'}),
     )
 
     diploma = forms.FileField(
+        required=False,
         label='Документ об окончании:',
         widget=forms.FileInput(attrs={'class': 'form-control'}),
     )
 
     completion_date = forms.DateField(
+        required=False,
         label='Дата окончания:',
         widget=forms.DateInput(attrs={'class': 'form-control',
                                       'type': 'date'}),
@@ -137,16 +145,19 @@ class ElectronicCertificateForm(forms.ModelForm):
     )
 
     certificate_url = forms.URLField(
+        required=False,
         label='URL ссылка на электронный сертификат:',
         widget=forms.URLInput(attrs={'class': 'form-control'})
     )
 
     certificate = forms.FileField(
+        required=False,
         label='Сертификат:',
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )
 
     completion_percentage = forms.IntegerField(
+        required=False,
         label='Процент выполнения:',
         widget=forms.NumberInput(attrs={'type': 'range',
                                         'class': 'form-range',
@@ -154,6 +165,14 @@ class ElectronicCertificateForm(forms.ModelForm):
                                         'max': '100'})
     )
 
+    completion_date = forms.DateField(
+        required=False,
+        label='Дата окончания:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
+
+
     class Meta:
         model = ElectronicCertificate
-        fields = ['title', 'certificate_url', 'certificate', 'completion_percentage']
+        fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']

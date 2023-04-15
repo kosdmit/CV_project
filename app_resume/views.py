@@ -154,4 +154,4 @@ class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, 
 
 class ElectronicCertificateUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     model = ElectronicCertificate
-    fields = ['title', 'certificate_url', 'certificate', 'completion_percentage']
+    fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
