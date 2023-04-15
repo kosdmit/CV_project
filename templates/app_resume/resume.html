@@ -234,14 +234,63 @@
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
                   <ul class="list-group list-group mt-3">
                     {% for certificate in electronic_certificates %}
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 w-100 me-5">
-                          <div class=""><a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a></div>
-                          <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: 100%"></div>
+                      <li class="list-group-item">
+                        <div class="item-header">
+                          <div class="ms-2 w-100 me-3">
+                            <div class="mb-2"><a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a></div>
                           </div>
                         </div>
-                        <span class="badge bg-primary rounded-pill mt-auto">{{ certificate.completion_percentage }}</span>
+                        <div class="item-body d-flex justify-content-between align-items-start">
+                          {% if certificate.completion_percentage %}
+                            <div class="ms-2" style="width: 90%">
+                              <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
+                              </div>
+                            </div>
+                            <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ certificate.completion_percentage }}%</span>
+                          {% endif %}
+                        </div>
+                        <div class="item-footer d-flex justify-content-between">
+                          {% if certificate.completion_date %}
+                            <small class="align-self-center">{{ certificate.completion_date | date:'Y' }}г.</small>
+                          {% endif %}
+                          <button type="button" class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ certificate.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <form method="post" action="{% url 'electronic_certificate_update' username=user.username slug=resume.slug pk=certificate.pk %}">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  {% for field in  electronic_certificate_forms|get_value_from_dict:certificate %}
+                                    <div class="mb-3">
+                                      <label class="form-label">{{ field.label }}</label>
+                                      {{ field }}
+                                      {% if field.name == 'description' %}
+                                        <div id="descriptionHelp" class="form-text">Опишите учебную программу которую вы освоили.</div>
+                                      {% elif field.name == 'website_url' %}
+                                        <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебной программы.</div>
+                                      {% elif field.name == 'diploma' %}
+                                        <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом или сертификат.</div>
+                                      {% endif %}
+                                    </div>
+                                  {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
                       </li>
                     {% endfor %}
                   </ul>

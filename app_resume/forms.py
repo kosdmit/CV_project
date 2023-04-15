@@ -93,7 +93,7 @@ class AdditionalEducationForm(forms.ModelForm):
     title = forms.CharField(
         label='Наименование учебной программы:',
         widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': "Наименование пройденного курса"}),
+                                      'placeholder': "Наименование учебной программы"}),
     )
 
     description = forms.CharField(
@@ -130,13 +130,29 @@ class ElectronicCertificateCreateForm(forms.Form):
 
 
 class ElectronicCertificateForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Наименование курса:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Наименование курса курса"})
+    )
 
-    certificate_url = forms.URLField(widget=forms.URLInput(attrs={'class': 'form-control'}))
-    certificate = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control'}))
-    completion_percentage = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'range',
-                                                                               'class': 'form-range',
-                                                                               'min': '0',
-                                                                               'max': '100'}))
+    certificate_url = forms.URLField(
+        label='URL ссылка на электронный сертификат:',
+        widget=forms.URLInput(attrs={'class': 'form-control'})
+    )
+
+    certificate = forms.FileField(
+        label='Сертификат:',
+        widget=forms.FileInput(attrs={'class': 'form-control'})
+    )
+
+    completion_percentage = forms.IntegerField(
+        label='Процент выполнения:',
+        widget=forms.NumberInput(attrs={'type': 'range',
+                                        'class': 'form-range',
+                                        'min': '0',
+                                        'max': '100'})
+    )
 
     class Meta:
         model = ElectronicCertificate

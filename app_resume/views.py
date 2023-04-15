@@ -68,6 +68,11 @@ class ResumeView(TemplateView):
         electronic_certificates = ElectronicCertificate.objects.filter(resume=resume)
         context['electronic_certificates'] = electronic_certificates
 
+        context['electronic_certificate_forms'] = {}
+        for certificate in electronic_certificates:
+            electronic_certificate_form = ElectronicCertificateForm(instance=certificate)
+            context['electronic_certificate_forms'][certificate] = electronic_certificate_form
+
         electronic_certificate_create_form = ElectronicCertificateCreateForm()
         context['electronic_certificate_create_form'] = electronic_certificate_create_form
 
@@ -145,3 +150,8 @@ class AdditionalEducationUpdateView(ResumeBounderMixin, ResumeValidatorMixin, Up
 class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = ElectronicCertificate
     fields = ['title']
+
+
+class ElectronicCertificateUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+    model = ElectronicCertificate
+    fields = ['title', 'certificate_url', 'certificate', 'completion_percentage']
