@@ -70,7 +70,10 @@ class ResumeView(TemplateView):
 
         context['electronic_certificate_forms'] = {}
         for certificate in electronic_certificates:
-            electronic_certificate_form = ElectronicCertificateForm(instance=certificate)
+            electronic_certificate_form = ElectronicCertificateForm(
+                instance=certificate,
+                auto_id=f"id_%s_{certificate.pk}"
+            )
             context['electronic_certificate_forms'][certificate] = electronic_certificate_form
 
         electronic_certificate_create_form = ElectronicCertificateCreateForm()

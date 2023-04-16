@@ -77,6 +77,7 @@ class ElectronicCertificate(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4())
+    slug = AutoSlugField(populate_from='title')
     title = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True, null=True)
     certificate = models.FileField(upload_to='files/certificates/', blank=True, null=True)

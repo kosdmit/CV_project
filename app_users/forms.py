@@ -36,10 +36,25 @@ class CreateProfileForm(forms.ModelForm):
         ('O', 'Other'),
     )
 
-    birthday_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control w-50'}), required=False)
-    gender = forms.CharField(widget=forms.Select(attrs={'class': 'form-control w-50'}, choices=GENDER_CHOICES), required=False)
-    phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50'}), required=False)
-    avatar = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control w-50'}), required=False)
+    birthday_date = forms.DateField(
+        widget=forms.DateInput(attrs={'class': 'form-control w-50'}),
+        required=False
+    )
+
+    gender = forms.CharField(
+        widget=forms.Select(attrs={'class': 'form-control w-50'}, choices=GENDER_CHOICES),
+        required=False
+    )
+
+    phone_number = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control w-50'}),
+        required=False
+    )
+
+    avatar = forms.FileField(
+        widget=forms.FileInput(attrs={'class': 'form-control w-50'}),
+        required=False
+    )
 
     class Meta:
         model = Profile
@@ -48,8 +63,8 @@ class CreateProfileForm(forms.ModelForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = UsernameField(widget=forms.TextInput(attrs={"autofocus": True,
-                                                                 'class': 'form-control w-50',
-                                                                 }))
+                                                           'class': 'form-control w-50',
+                                                           }))
     password = forms.CharField(
         label=_("Password"),
         strip=False,

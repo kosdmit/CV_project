@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load djutils %}
+{% load static %}
 
 
 {% block title %}Ваш профиль{% endblock %}
@@ -280,13 +281,21 @@
                                   {% for field in  electronic_certificate_forms|get_value_from_dict:certificate %}
                                     <div class="mb-3">
                                       <label class="form-label">{{ field.label }}</label>
-                                      {{ field }}
-                                      {% if field.name == 'description' %}
-                                        <div id="descriptionHelp" class="form-text">Опишите учебную программу которую вы освоили.</div>
-                                      {% elif field.name == 'website_url' %}
-                                        <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебной программы.</div>
-                                      {% elif field.name == 'diploma' %}
-                                        <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом или сертификат.</div>
+                                      {% if not field.name == 'completion_percentage' %}
+                                        {{ field }}
+                                      {% endif %}
+                                      {% if field.name == 'certificate_url' %}
+                                        <div id="certificate_urlHelp" class="form-text">Прикрепите ссылку на ваш сертификат в интернете.</div>
+                                      {% elif field.name == 'certificate' %}
+                                        <div id="certificateHelp" class="form-text">Вы можете загрузить ваш сертификат на сайт.</div>
+                                      {% elif field.name == 'completion_percentage' %}
+                                        <div class="mb-3 d-flex align-items-center">
+                                          {{ field }}
+                                          <span class="input-group-text ms-3">
+                                            <output id="range_value_{{ certificate.pk }}" class="completion-percentage-value"></output>
+                                          </span>
+                                        </div>
+                                        <div id="diplomaHelp" class="form-text">Оценка или процент выполнения курса по шкале от 0 до 100.</div>
                                       {% endif %}
                                     </div>
                                   {% endfor %}
@@ -317,6 +326,8 @@
         </div>
       </div>
     </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
 
   {% endblock %}
 

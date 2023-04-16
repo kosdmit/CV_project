@@ -146,7 +146,7 @@ class ElectronicCertificateForm(forms.ModelForm):
 
     certificate_url = forms.URLField(
         required=False,
-        label='URL ссылка на электронный сертификат:',
+        label='Cсылка на сертификат:',
         widget=forms.URLInput(attrs={'class': 'form-control'})
     )
 
@@ -160,7 +160,7 @@ class ElectronicCertificateForm(forms.ModelForm):
         required=False,
         label='Процент выполнения:',
         widget=forms.NumberInput(attrs={'type': 'range',
-                                        'class': 'form-range',
+                                        'class': 'form-range completion-percentage-input',
                                         'min': '0',
                                         'max': '100'})
     )
