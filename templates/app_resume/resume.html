@@ -118,7 +118,7 @@
                           {% if institution.completion_date %}
                             <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
                           {% endif %}
-                          <button type="button" class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
+                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
                         </div>
@@ -190,7 +190,7 @@
                           {% if education.completion_date %}
                             <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
                           {% endif %}
-                          <button type="button" class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
+                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
                         </div>
@@ -263,7 +263,7 @@
                           {% if certificate.completion_date %}
                             <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
                           {% endif %}
-                          <button type="button" class="btn ms-auto pb-0" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
+                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
                         </div>
@@ -321,6 +321,112 @@
                   </div>
                 </form>
               </li>
+            </ul>
+          </div>
+          <div class="skills mb-5">
+            <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
+            {% for skill in skills %}
+              <button class="btn btn-light mb-2" type="button">{{ skill.name }}</button>
+            {% endfor %}
+            <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
+              {% csrf_token %}
+              <div class="input-group mb-5">
+                <span class="input-group-text">Добавить навык</span>
+                {{ skill_create_form.name }}
+                <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+              </div>
+            </form>
+          </div>
+          <div class="work-experience mb-5">
+            <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
+            <ul class="list-unstyled">
+              <li>
+                {% for section in work_exp_sections %}
+                  <h3 class="text-uppercase fs-5 me-3">{{ section.title }}</h3>
+                  {% if section.start_date %}
+                    <p class="text-uppercase d-inline">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
+                  {% endif %}
+                  <ul class="list-group list-group-flush">
+                    {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
+                      <li class="list-group-item">
+                        {% if job_form_dict.job.company %}
+                          <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1">
+                            {{ job_form_dict.job.company }}
+                          </a>
+                        {% endif %}
+                        <p class="text-uppercase mb-1">{{ job_form_dict.job.title }}</p>
+                        {% if job_form_dict.job.start_date %}
+                          <p class="text-uppercase d-inline">// {{ job_form_dict.job.start_date | date:'Y' }} - {{ job_form_dict.job.finish_date | date:'Y' }}</p>
+                        {% endif %}
+                        {% if job_form_dict.job.description %}
+                          <p>{{ job_form_dict.job.description }}</p>
+                        {% endif %}
+                        <div class="item-footer d-flex justify-content-between">
+                          {% if job_form_dict.job.project_url %}
+                            <a href="{{ job_form_dict.job.project_url }}"><small class="align-self-center">Сайт проекта</small></a>
+                          {% endif %}
+                          {% if job_form_dict.job.git_url %}
+                            <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
+                          {% endif %}
+                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ job_form_dict.job.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <form method="post" action="{% url 'job_update' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  {% for field in  job_form_dict.job_update_form %}
+                                    <div class="mb-3">
+                                      <label class="form-label">{{ field.label }}</label>
+                                      {{ field }}
+                                      {% if field.name == 'description' %}
+                                        <div id="descriptionHelp" class="form-text">Опишите проект или ваши обязанности на должности в компании.</div>
+                                      {% elif field.name == 'project_url' %}
+                                        <div id="project-urlHelp" class="form-text">Вы можете добавить URL ссылку на портфолио или проект над которым вы работали.</div>
+                                      {% elif field.name == 'git_url' %}
+                                        <div id="git-urlHelp" class="form-text">Вы можете добавить URL ссылку на ваш в проект на GitHub.</div>
+                                      {% endif %}
+                                    </div>
+                                  {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-5">
+                      <span class="input-group-text">Проект или место работы</span>
+                      {{ job_create_form.title }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
+                {% endfor %}
+                <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
+                  {% csrf_token %}
+                  <div class="input-group my-3">
+                    <span class="input-group-text">Отрасль или период работы</span>
+                    {{ work_exp_section_form.title }}
+                    {{ work_exp_section_form.start_date }}
+                    {{ work_exp_section_form.finish_date }}
+                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                  </div>
+                </form>
             </ul>
           </div>
         </div>

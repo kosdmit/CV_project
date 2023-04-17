@@ -6,9 +6,10 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
-    InstitutionCreateForm, InstitutionForm
+    InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
+from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
+    WorkExpSection, Job
 from app_users.models import Profile, SocialLinks
 
 
@@ -78,6 +79,33 @@ class ResumeView(TemplateView):
 
         electronic_certificate_create_form = ElectronicCertificateCreateForm()
         context['electronic_certificate_create_form'] = electronic_certificate_create_form
+
+        skills = Skill.objects.filter(resume=resume)
+        context['skills'] = skills
+
+        skill_create_form = SkillCreateForm()
+        context['skill_create_form'] = skill_create_form
+
+        work_exp_sections = WorkExpSection.objects.filter(resume=resume)
+        context['work_exp_sections'] = work_exp_sections
+
+        work_exp_section_form = WorkExpSectionForm()
+        context['work_exp_section_form'] = work_exp_section_form
+
+        context['jobs_in_sections'] = {}
+        for section in work_exp_sections:
+            jobs = Job.objects.filter(work_exp_section=section)
+            job_form_dicts = []
+            for job in jobs:
+                job_update_form = JobForm(instance=job)
+                job_form_dicts.append({'job': job,
+                                       'job_update_form': job_update_form})
+            context['jobs_in_sections'][section] = job_form_dicts
+
+        job_create_form = JobCreateForm()
+        context['job_create_form'] = job_create_form
+
+
 
         breadcrumbs = [
             ('Резюме', 'resume/'),
@@ -158,3 +186,33 @@ class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, 
 class ElectronicCertificateUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     model = ElectronicCertificate
     fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
+
+
+class SkillCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+    model = Skill
+    fields = ['name']
+
+
+class WorkExpSectionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+    form_class = WorkExpSectionForm
+
+
+class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+    model = Job
+    fields = ['title']
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        work_exp_section = WorkExpSection.objects.get(pk=self.kwargs['section'])
+        self.object.work_exp_section = work_exp_section
+
+        super()
+        return super().form_valid(form)
+
+
+class JobUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+    form_class = JobForm
+
+    model = Job
+
+

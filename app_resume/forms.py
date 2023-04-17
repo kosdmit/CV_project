@@ -1,6 +1,7 @@
 from django import forms
 
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate
+from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, \
+    WorkExpSection, Job
 
 
 class ResumeForm(forms.ModelForm):
@@ -176,3 +177,101 @@ class ElectronicCertificateForm(forms.ModelForm):
     class Meta:
         model = ElectronicCertificate
         fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
+
+
+class SkillCreateForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+                                                          'placeholder': "Наименование навыка"}))
+
+
+class WorkExpSectionForm(forms.ModelForm):
+    title = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Наименование/Заголовок"})
+    )
+
+    start_date = forms.DateField(
+        required=False,
+        label='Дата окончания:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
+
+    finish_date = forms.DateField(
+        required=False,
+        label='Дата окончания:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
+
+    class Meta:
+        model = WorkExpSection
+        fields = ['title', 'start_date', 'finish_date']
+
+
+class JobCreateForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+                                                          'placeholder': "Наименование должности"}))
+
+
+class JobForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Проект/Должность',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    description = forms.CharField(
+        required=False,
+        label='Описание:',
+        widget=forms.Textarea(attrs={'class': 'form-control',
+                                     'aria-describedby': 'descriptionHelp',
+                                     'rows': '3'}),
+    )
+
+    project_url = forms.URLField(
+        required=False,
+        label='Веб-ссылка на проект:',
+        widget=forms.URLInput(attrs={'class': 'form-control'}),
+    )
+
+    git_url = forms.URLField(
+        required=False,
+        label='Ссылка на GitHub:',
+        widget=forms.URLInput(attrs={'class': 'form-control'}),
+    )
+
+    start_date = forms.DateField(
+        required=False,
+        label='Дата начала работы:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
+
+    finish_date = forms.DateField(
+        required=False,
+        label='Дата завершения работы:',
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'type': 'date'}),
+    )
+
+    position = forms.CharField(
+        required=False,
+        label='Ваша должность:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    company = forms.CharField(
+        required=False,
+        label='Компания:',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    company_url = forms.URLField(
+        required=False,
+        label='Ссылка на сайт компании:',
+        widget=forms.URLInput(attrs={'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = Job
+        fields = ['title', 'description', 'project_url', 'git_url', 'start_date', 'finish_date', 'position', 'company', 'company_url']

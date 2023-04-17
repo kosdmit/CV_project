@@ -76,7 +76,7 @@ class AdditionalEducation(models.Model):
 class ElectronicCertificate(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4())
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     slug = AutoSlugField(populate_from='title')
     title = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True, null=True)
@@ -88,7 +88,7 @@ class ElectronicCertificate(models.Model):
 class Skill(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=45)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -98,13 +98,14 @@ class WorkExpSection(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=150)
-    years_interval = models.CharField(max_length=11, validators=[years_interval_validator], blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    finish_date = models.DateField(blank=True, null=True)
 
 
 class Job(models.Model):
     work_exp_section = models.ForeignKey('WorkExpSection', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     project_url = models.URLField(blank=True, null=True)
@@ -113,6 +114,6 @@ class Job(models.Model):
     finish_date = models.DateField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    position = models.CharField(max_length=150)
-    company = models.CharField(max_length=150)
-    years_interval = models.CharField(max_length=11, validators=[years_interval_validator], blank=True, null=True)
+    position = models.CharField(max_length=150, blank=True, null=True)
+    company = models.CharField(max_length=150, blank=True, null=True)
+    company_url = models.URLField(blank=True, null=True)
