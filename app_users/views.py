@@ -9,7 +9,8 @@ from django.views.generic import ListView, TemplateView, CreateView
 import app_users
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
-from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm
+from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm, \
+    PrimaryResumeSelectForm
 from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect
@@ -83,6 +84,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
             resume_list = Resume.objects.filter(profile=profile)
             context['resume_list'] = resume_list
+
+            primary_resume_instance = Resume.objects.get(user=self.request.user, is_primary=True)
+            primary_resume_select_form = PrimaryResumeSelectForm(
+                user=self.request.user,
+                instance=primary_resume_instance,
+            )
+            context['primary_resume_select_form'] = primary_resume_select_form
 
             create_resume_form = CreateResumeForm()
             context['form'] = create_resume_form

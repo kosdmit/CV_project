@@ -83,3 +83,26 @@ class CreateResumeForm(forms.ModelForm):
     class Meta:
         model = app_resume.models.Resume
         fields = ('position',)
+
+
+class PrimaryResumeSelectForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        instance = kwargs.pop('instance', None)
+        super(PrimaryResumeSelectForm, self).__init__(*args, **kwargs)
+        self.fields['is_primary'].queryset = \
+            app_resume.models.Resume.objects.filter(user=self.user)
+
+        if instance:
+            self.fields['is_primary'].initial = instance
+
+    is_primary = forms.ModelChoiceField(
+        queryset=None,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input',
+                                        'value': '',
+                                        'onclick': 'javascript: submit()'}),
+    )
+
+    class Meta:
+        model = app_resume.models.Resume
+        fields = ['is_primary']

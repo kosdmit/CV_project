@@ -21,6 +21,18 @@ class Resume(models.Model):
     soft_skills = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    is_primary = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_primary:
+            try:
+                temp = Resume.objects.get(is_primary=True, user=self.user)
+                if self != temp:
+                    temp.is_primary = False
+                    temp.save()
+            except Resume.DoesNotExist:
+                pass
+        super(Resume, self).save(*args, **kwargs)
 
 
 class MainEducation(models.Model):

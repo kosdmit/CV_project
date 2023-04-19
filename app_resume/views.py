@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
@@ -14,6 +14,9 @@ from app_users.models import Profile, SocialLinks
 
 
 # Create your views here.
+class MainView(RedirectView):
+    url = '/kosdmit/full-stack'
+
 class ResumeView(TemplateView):
     template_name = 'app_resume/resume.html'
 
@@ -125,6 +128,16 @@ class ResumeAboutMeUpdateView(ResumeValidatorMixin, UpdateView):
 class ResumeSoftSkillsUpdateView(ResumeValidatorMixin, UpdateView):
     model = Resume
     fields = ['soft_skills']
+
+
+class ResumeIsPrimaryUpdateView(UpdateView):
+    model = Resume
+    fields = ['is_primary']
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        obj = Resume.objects.get(pk=self.request.POST['is_primary'])
+        return obj
 
 
 class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

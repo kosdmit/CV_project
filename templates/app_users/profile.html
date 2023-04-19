@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% load djutils %}
+{% load app_users_filters %}
+
 {% block title %}Ваш профиль{% endblock %}
 
 {% block content %}
@@ -81,16 +84,24 @@
           <div class="resume-list mb-5">
             <h3 class="text-uppercase fs-5 mb-5">Ваши резюме</h3>
             {% if resume_list %}
-              <div class="list-group my-3">
-                {% for resume in resume_list %}
-                  <a href="{% url 'resume' username=user.username slug=resume.slug %}" class="list-group-item list-group-item-action active my-1" aria-current="true">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h5 class="mb-1">{{ resume.position }}</h5>
-                      <small>{{ resume.updated_date | timesince }}</small>
-                    </div>
-                  </a>
-                {% endfor %}
-              </div>
+              <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
+                {% csrf_token %}
+                <div class="list-group my-3">
+                  {% for resume, radio in resume_list|zip:primary_resume_select_form.is_primary %}
+                    <a href="{% url 'resume' username=user.username slug=resume.slug %}"
+                       class="list-group-item list-group-item-action
+                       {% if resume.is_primary %} active{% endif %}" aria-current="true">
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ resume.position }}</h5>
+                        <div>
+                          <small class="me-3">updated {{ resume.updated_date | timesince }} ago</small>
+                          {{ radio.tag }}
+                        </div>
+                      </div>
+                    </a>
+                  {% endfor %}
+                </div>
+              </form>
             {% else %}
               <ul class="list-group list-group-flush">
                 <li class="list-group-item mb-3">
