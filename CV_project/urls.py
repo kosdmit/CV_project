@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from app_resume.views import MainView
+
 urlpatterns = [
-    # path('/', MainView.as_view(), name='main'),
+    path('/', MainView.as_view(), name='main'),
     path('admin/', admin.site.urls),
     path('users/', include('app_users.urls')),
     path('resume/', include('app_resume.urls')),

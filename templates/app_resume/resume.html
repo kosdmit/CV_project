@@ -167,15 +167,17 @@
                     </div>
                   </form>
                 {% else %}
-                  <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group my-3">
-                      <span class="input-group-text">Образование и квалификация</span>
-                      {{ main_education_form.level }}
-                      {{ main_education_form.degree }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
+                  {% if user.is_authenticated %}
+                    <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
+                      {% csrf_token %}
+                      <div class="input-group my-3">
+                        <span class="input-group-text">Образование и квалификация</span>
+                        {{ main_education_form.level }}
+                        {{ main_education_form.degree }}
+                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                      </div>
+                    </form>
+                  {% endif %}
                 {% endif %}
                 {% if additional_educations %}
                   <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>
@@ -231,14 +233,16 @@
                     {% endfor %}
                   </ul>
                 {% endif %}
-                <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
-                  {% csrf_token %}
-                  <div class="input-group mb-5">
-                    <span class="input-group-text">Дополнительное образование</span>
-                    {{ additional_education_create_form.title }}
-                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                  </div>
-                </form>
+                {% if user.is_authenticated %}
+                  <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
+                    {% csrf_token %}
+                    <div class="input-group mb-5">
+                      <span class="input-group-text">Дополнительное образование</span>
+                      {{ additional_education_create_form.title }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
+                {% endif %}
                 {% if electronic_certificates %}
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
                   <ul class="list-group list-group mt-3">
@@ -312,14 +316,16 @@
                     {% endfor %}
                   </ul>
                 {% endif %}
-                <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
-                  {% csrf_token %}
-                  <div class="input-group my-3">
-                    <span class="input-group-text">Электронный сертификат</span>
-                    {{ electronic_certificate_create_form.title }}
-                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                  </div>
-                </form>
+                {% if user.is_authenticated %}
+                  <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
+                    {% csrf_token %}
+                    <div class="input-group my-3">
+                      <span class="input-group-text">Электронный сертификат</span>
+                      {{ electronic_certificate_create_form.title }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
+                {% endif %}
               </li>
             </ul>
           </div>
@@ -328,14 +334,16 @@
             {% for skill in skills %}
               <button class="btn btn-light mb-2" type="button">{{ skill.name }}</button>
             {% endfor %}
-            <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
-              {% csrf_token %}
-              <div class="input-group mb-5">
-                <span class="input-group-text">Добавить навык</span>
-                {{ skill_create_form.name }}
-                <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-              </div>
-            </form>
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
+                {% csrf_token %}
+                <div class="input-group mb-5">
+                  <span class="input-group-text">Добавить навык</span>
+                  {{ skill_create_form.name }}
+                  <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                </div>
+              </form>
+            {% endif %}
           </div>
           <div class="work-experience mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
@@ -417,16 +425,18 @@
                     </div>
                   </form>
                 {% endfor %}
-                <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
-                  {% csrf_token %}
-                  <div class="input-group my-3">
-                    <span class="input-group-text">Отрасль или период работы</span>
-                    {{ work_exp_section_form.title }}
-                    {{ work_exp_section_form.start_date }}
-                    {{ work_exp_section_form.finish_date }}
-                    <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                  </div>
-                </form>
+                {% if user.is_authenticated %}
+                  <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group my-3">
+                      <span class="input-group-text">Отрасль или период работы</span>
+                      {{ work_exp_section_form.title }}
+                      {{ work_exp_section_form.start_date }}
+                      {{ work_exp_section_form.finish_date }}
+                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                    </div>
+                  </form>
+                {% endif %}
             </ul>
           </div>
         </div>

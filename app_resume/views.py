@@ -15,22 +15,30 @@ from app_users.models import Profile, SocialLinks
 
 # Create your views here.
 class MainView(RedirectView):
-    url = '/kosdmit/full-stack'
+    url = 'resume/kosdmit/'
 
 class ResumeView(TemplateView):
     template_name = 'app_resume/resume.html'
 
-    def get_context_data(self, username, slug, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user = User.objects.get(username=username)
-        context['user'] = user
+        user = User.objects.get(username=kwargs['username'])
+        if self.request.user.is_authenticated:
+            context['user'] = user
 
         profile = Profile.objects.get(user=user)
         context['profile'] = profile
 
-        resume = Resume.objects.get(slug=slug, profile=profile)
+        try:
+            slug = kwargs['slug']
+            resume = Resume.objects.get(slug=slug, profile=profile)
+
+        except KeyError:
+            slug = ''
+            resume = Resume.objects.get(profile=profile, is_primary=True)
         context['resume'] = resume
+
 
         resume_about_me_form = ResumeAboutMeForm()
         context['resume_about_me_form'] = resume_about_me_form
@@ -113,7 +121,7 @@ class ResumeView(TemplateView):
         breadcrumbs = [
             ('Резюме', 'resume/'),
             (user.username, '#'),
-            (resume.position, ''.join(['resume/', username, '-', slug, '/'])),
+            (resume.position, ''.join(['resume/', kwargs['username'], '-', slug, '/'])),
         ]
         context['breadcrumbs'] = breadcrumbs
 
