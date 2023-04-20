@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, CreateView
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 
 import app_users
 from app_resume.models import Resume
@@ -43,9 +43,12 @@ class CreateProfileView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['page_title'] = 'Добавление профиля пользователя'
+        context['page_description'] = 'Перед тем как перейти к созданию резюме, расскажите немного о себе.'
+
         breadcrumbs = [
-            ('Пользователь', 'users/'),
-            ('Создание профиля', 'users/create_profile/'),
+            ('Пользователь', '/users/'),
+            ('Создание профиля', '/users/create_profile/'),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -56,6 +59,42 @@ class CreateProfileView(CreateView):
         self.object.user = self.request.user
         self.object.save()
         return super().form_valid(form)
+
+
+class ProfileUpdateView(UpdateView):
+    model = Profile
+    form_class = CreateProfileForm
+    success_url = reverse_lazy('profile')
+    template_name = 'app_users/create_profile.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = Profile.objects.get(user=self.request.user)
+        return self.render_to_response(self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
+        self.object = Profile.objects.get(user=self.request.user)
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['page_title'] = 'Редактирование профиля пользователя'
+        context['page_description'] = 'Добавьте недостающие данные профиля.'
+
+        breadcrumbs = [
+            ('Пользователь', '/users/'),
+            ('Редактирование профиля', '/users/profile_update/'),
+        ]
+        context['breadcrumbs'] = breadcrumbs
+
+        return context
+
+
+
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
