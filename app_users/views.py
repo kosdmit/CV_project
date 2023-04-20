@@ -11,7 +11,7 @@ import app_users
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
 from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm, \
-    PrimaryResumeSelectForm
+    PrimaryResumeSelectForm, UserUpdateForm
 from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect
@@ -29,6 +29,39 @@ class SignUpView(CreateView):
         breadcrumbs = [
             ('Пользователь', 'users/'),
             ('Регистрация', 'users/signup/'),
+        ]
+        context['breadcrumbs'] = breadcrumbs
+
+        return context
+
+
+class UserUpdateView(UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    success_url = reverse_lazy('profile')
+    template_name = 'app_users/user_update.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = User.objects.get(pk=self.request.user.pk)
+        return self.render_to_response(self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
+        self.object = User.objects.get(pk=self.request.user.pk)
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['page_title'] = 'Редактирование учетной записи пользователя'
+        context['page_description'] = 'Укажите ваши имя и фамилию.'
+
+        breadcrumbs = [
+            ('Пользователь', '/users/'),
+            ('Редактирование учетной записи', '/users/user_update/'),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -92,9 +125,6 @@ class ProfileUpdateView(UpdateView):
         context['breadcrumbs'] = breadcrumbs
 
         return context
-
-
-
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

@@ -29,6 +29,19 @@ class SignUpUserForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name')
 
 
+class UserUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50',
+                                                               'area-describedby': 'first_nameHelp',
+                                                               }))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50',
+                                                               'area-describedby': 'last_nameHelp',
+                                                               }))
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+
+
 class CreateProfileForm(forms.ModelForm):
     GENDER_CHOICES = (
         ('M', 'Male'),

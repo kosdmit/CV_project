@@ -44,7 +44,7 @@
               <p class="text-center">
                 Вы не указали ваше имя или фамилию
                 <br>
-                <a href="#">Редактировать</a>
+                <a href="{% url 'user_update' %}">Редактировать</a>
               </p>
             {% endif %}
           </div>
@@ -71,7 +71,7 @@
               </li>
               <li class="list-group-item mb-3">
                 <label for="id_gender" class="form-label">Пол:</label>
-                {{ profile.gender }}
+                {{ profile.get_gender }}
               </li>
               <li class="list-group-item mb-3">
                 <label for="id_phone_number" class="form-label">Телефон:</label>

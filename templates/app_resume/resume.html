@@ -158,14 +158,16 @@
                       </li>
                     {% endfor %}
                   </ul>
-                  <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-5">
-                      <span class="input-group-text">Учебное учреждение</span>
-                      {{ institution_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
+                  {% if user.is_authenticated %}
+                    <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
+                      {% csrf_token %}
+                      <div class="input-group mb-5">
+                        <span class="input-group-text">Учебное учреждение</span>
+                        {{ institution_create_form.title }}
+                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                      </div>
+                    </form>
+                  {% endif %}
                 {% else %}
                   {% if user.is_authenticated %}
                     <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">

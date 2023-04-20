@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+  {% include 'breadcrumbs_base.html' %}
+  {% block main_content %}
+
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-12">
+          <h1>{{ page_title }}</h1>
+          <p>{{ page_description }}</p>
+        </div>
+      </div>
+      <div class="row mb-5">
+        <div class="col-12">
+
+          <form method="post">
+            {% csrf_token %}
+              <div class="mb-3">
+                <label for="id_first_name" class="form-label">Имя:</label>
+                {{ form.first_name }}
+              </div>
+              <div class="mb-3">
+                <label for="id_last_name" class="form-label">Фамилия:</label>
+                {{ form.last_name }}
+              </div>
+              <button type="submit" class="btn btn-primary">Отправить</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+  {% endblock %}
+
+{% endblock %}
