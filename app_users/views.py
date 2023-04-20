@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
 
@@ -62,6 +63,15 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'app_users/profile.html'
     login_url = '/users/login/'
 
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            profile = Profile.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            return redirect('create_profile')
+
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -85,7 +95,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             resume_list = Resume.objects.filter(profile=profile)
             context['resume_list'] = resume_list
 
-            primary_resume_instance = Resume.objects.get(user=self.request.user, is_primary=True)
+            primary_resume_instance = Resume.objects.filter(user=self.request.user, is_primary=True).first()
             primary_resume_select_form = PrimaryResumeSelectForm(
                 user=self.request.user,
                 instance=primary_resume_instance,

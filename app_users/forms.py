@@ -37,7 +37,8 @@ class CreateProfileForm(forms.ModelForm):
     )
 
     birthday_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control w-50'}),
+        widget=forms.DateInput(attrs={'class': 'form-control w-50',
+                                      'type': 'date'}),
         required=False
     )
 
