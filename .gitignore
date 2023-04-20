@@ -3,4 +3,5 @@
 /design/SV_project_db_model.mwb.bak
 /.idea
 /templates/test.html
-db.sqlite3
+/db.sqlite3
+/media/

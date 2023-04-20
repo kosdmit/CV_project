@@ -27,8 +27,11 @@
       <div class="row">
         <div class="col-md-5 bg-light rounded-5 pt-5 px-5 mb-5">
           <div class="hero mb-5">
-            {% if user.avatar %}
-              <img src="{{ user.avatar.url }}" class="rounded-circle  mx-auto d-block mb-3" alt="user`s avatar" height="250">
+            {% if profile.avatar %}
+              <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
+                <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+                     style="object-fit: cover; aspect-ratio: 1 / 1;">
+              </div>
             {% else %}
               <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
                 <p class="mx-auto text-light">Здесь будет ваше фото</p>

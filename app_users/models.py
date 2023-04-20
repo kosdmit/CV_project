@@ -16,7 +16,7 @@ class Profile(models.Model):
     birthday_date = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=6, blank=True, null=True, choices=GENDERS)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    avatar = models.ImageField(upload_to='files/avatars/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def get_gender(self):
         return dict(self.GENDERS).get(self.gender)
