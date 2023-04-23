@@ -63,7 +63,7 @@ class ResumeView(TemplateView):
         main_education = MainEducation.objects.filter(resume=resume).first()
         context['main_education'] = main_education
 
-        main_education_form = MainEducationForm()
+        main_education_form = MainEducationForm(instance=main_education)
         context['main_education_form'] = main_education_form
 
         institutions = Institution.objects.filter(main_education=main_education)
@@ -161,6 +161,14 @@ class ResumeIsPrimaryUpdateView(UpdateView):
 
 class MainEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     form_class = MainEducationForm
+
+
+class MainEducationUpdateView(UpdateView):
+    form_class = MainEducationForm
+    model = MainEducation
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
 
 
 class InstitutionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

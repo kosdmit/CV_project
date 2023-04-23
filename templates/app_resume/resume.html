@@ -101,7 +101,17 @@
             <ul class="list-unstyled">
               <li>
                 {% if main_education %}
-                  <h3 class="text-uppercase fs-5 me-3">{{ main_education.get_level }}</h3><p class="text-uppercase d-inline">// {{ main_education.get_degree.upper }}</p>
+                  <div class="d-flex mb-2">
+                    <h3 class="text-uppercase fs-5 me-3 mb-0">{{ main_education.get_level }}</h3>
+                    <p class="text-uppercase mb-0">// {{ main_education.get_degree.upper }}</p>
+                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                  </div>
+                  <!-- Modal -->
+                  {% if owner == user %}
+                    {% include 'app_resume/blocks/main_education_update_modal.html' %}
+                  {% endif %}
                   <ul class="list-group list-group-flush">
                     {% for institution in institutions %}
                       <li class="list-group-item">

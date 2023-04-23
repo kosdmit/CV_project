@@ -35,10 +35,17 @@ class MainEducationForm(forms.ModelForm):
         ('Master', 'Магистр'),
     ]
 
-    level = forms.ChoiceField(choices=EDUCATION_LEVELS,
-                              widget=forms.Select(attrs={'class': 'form-select'}))
-    degree = forms.ChoiceField(choices=DEGREES,
-                               widget=forms.Select(attrs={'class': 'form-select'}))
+    level = forms.ChoiceField(
+        label='Уровень образования:',
+        choices=EDUCATION_LEVELS,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    degree = forms.ChoiceField(
+        label='Степень или квалификация:',
+        choices=DEGREES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
 
     class Meta:
         model = MainEducation

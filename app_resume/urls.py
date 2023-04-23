@@ -3,7 +3,7 @@ from django.urls import path
 from app_resume.views import ResumeView, ResumeAboutMeUpdateView, ResumeSoftSkillsUpdateView, MainEducationCreateView, \
     AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView, \
     AdditionalEducationUpdateView, ElectronicCertificateUpdateView, SkillCreateView, WorkExpSectionCreateView, \
-    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView
+    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView, MainEducationUpdateView
 
 urlpatterns = [
     path('<username>/', ResumeView.as_view(), name='primary_resume'),
@@ -14,6 +14,7 @@ urlpatterns = [
 
     # Main education items
     path('<username>/<slug>/main_education_create', MainEducationCreateView.as_view(), name='main_education_create'),
+    path('<username>/<slug>/<pk>/main_education_update', MainEducationUpdateView.as_view(), name='main_education_update'),
     path('<username>/<slug>/institution_create', InstitutionCreateView.as_view(), name='institution_create'),
     path('<username>/<slug>/<pk>/institution_update/', InstitutionUpdateView.as_view(), name='institution_update'),
     path('<username>/<slug>/<pk>/institution_delete/', InstitutionDeleteView.as_view(), name='institution_delete'),
