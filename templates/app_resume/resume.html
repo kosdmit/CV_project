@@ -23,17 +23,17 @@
                 <p class="mx-auto text-light">Здесь будет ваше фото</p>
               </div>
             {% endif %}
-            {% if user.first_name and user.last_name %}
+            {% if owner.first_name and owner.last_name %}
               <h1 class="text-uppercase text-center">
-                {{ user.first_name }}
+                {{ owner.first_name }}
                 <br>
-                <strong>{{ user.last_name }}</strong>
+                <strong>{{ owner.last_name }}</strong>
               </h1>
             {% else %}
               <p class="text-center">
                 Вы не указали ваше имя или фамилию
                 <br>
-                <a href="#">Редактировать</a>
+                <a href="{% url 'user_update' %}">Редактировать</a>
               </p>
             {% endif %}
             <p class="text-uppercase text-center lead"><strong>{{ resume.position }}</strong></p>
@@ -43,23 +43,27 @@
             {% if resume.about_me %}
               <p>{{ resume.about_me }}</p>
             {% else %}
-              <div class="mb-3">
-                <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
-                  {% csrf_token %}
-                  <label for="id_about_me" class="form-label">Расскажите о себе:</label>
-                  <div class="input-group">
-                    {{ resume_about_me_form.about_me }}
-                    <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                  </div>
-                </form>
-              </div>
+              {% if owner == user %}
+                <div class="mb-3">
+                  <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
+                    {% csrf_token %}
+                    <label for="id_about_me" class="form-label">Расскажите о себе:</label>
+                    <div class="input-group">
+                      {{ resume_about_me_form.about_me }}
+                      <button type="submit" class="btn btn-secondary fw-bold">+</button>
+                    </div>
+                  </form>
+                </div>
+              {% else %}
+                <p>Пользователь еще не добавил информацию в этот раздел</p>
+              {% endif %}
             {% endif %}
           </div>
           <div class="my-contacts mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-address-book title-icon fs-1 me-3 mb-1"></i>Контакты</h2>
             <ul class="list-unstyled">
               <li class="list-group-item mb-3">
-                <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
               </li>
               <li class="list-group-item mb-3">
                 <h3 class="text-uppercase fs-5 me-3">Телефон:</h3><a href="tel:{{ profile.phone_number }}">{{ profile.phone_number }}</a>
@@ -74,16 +78,20 @@
             {% if resume.soft_skills %}
               <p>{{ resume.soft_skills }}</p>
             {% else %}
-              <div class="mb-3">
-                <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
-                  {% csrf_token %}
-                  <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
-                  <div class="input-group">
-                    {{ resume_soft_skills_form.soft_skills }}
-                    <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                  </div>
-                </form>
-              </div>
+              {% if owner == user %}
+                <div class="mb-3">
+                  <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
+                    {% csrf_token %}
+                    <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
+                    <div class="input-group">
+                      {{ resume_soft_skills_form.soft_skills }}
+                      <button type="submit" class="btn btn-secondary fw-bold">+</button>
+                    </div>
+                  </form>
+                </div>
+              {% else %}
+                <p>Пользователь еще не добавил информацию в этот раздел</p>
+              {% endif %}
             {% endif %}
           </div>
         </div>
@@ -110,42 +118,13 @@
                           </button>
                         </div>
                         <!-- Modal -->
-                        <div class="modal fade" id="{{ institution.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <form method="post" action="{% url 'institution_update' username=user.username slug=resume.slug pk=institution.pk %}">
-                                {% csrf_token %}
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  {% for field in  institution_forms|get_value_from_dict:institution %}
-                                    <div class="mb-3">
-                                      <label class="form-label">{{ field.label }}</label>
-                                      {{ field }}
-                                      {% if field.name == 'description' %}
-                                        <div id="descriptionHelp" class="form-text">Опишите факультет или специальность которую вы получили.</div>
-                                      {% elif field.name == 'website_url' %}
-                                        <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебного учреждения.</div>
-                                      {% elif field.name == 'diploma' %}
-                                        <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом.</div>
-                                      {% endif %}
-                                    </div>
-                                  {% endfor %}
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary">Сохранить</button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
+                        {% if owner == user %}
+                          {% include 'app_resume/blocks/institution_update_modal.html' %}
+                        {% endif %}
                       </li>
                     {% endfor %}
                   </ul>
-                  {% if user.is_authenticated %}
+                  {% if owner == user %}
                     <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
                       {% csrf_token %}
                       <div class="input-group mb-5">
@@ -156,7 +135,7 @@
                     </form>
                   {% endif %}
                 {% else %}
-                  {% if user.is_authenticated %}
+                  {% if owner == user %}
                     <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
                       {% csrf_token %}
                       <div class="input-group my-3">
@@ -186,43 +165,14 @@
                           </button>
                         </div>
                         <!-- Modal -->
-                        <div class="modal fade" id="{{ education.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <form method="post" action="{% url 'additional_education_update' username=user.username slug=resume.slug pk=education.pk %}">
-                                {% csrf_token %}
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  {% for field in  additional_education_forms|get_value_from_dict:education %}
-                                    <div class="mb-3">
-                                      <label class="form-label">{{ field.label }}</label>
-                                      {{ field }}
-                                      {% if field.name == 'description' %}
-                                        <div id="descriptionHelp" class="form-text">Опишите учебную программу которую вы освоили.</div>
-                                      {% elif field.name == 'website_url' %}
-                                        <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебной программы.</div>
-                                      {% elif field.name == 'diploma' %}
-                                        <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом или сертификат.</div>
-                                      {% endif %}
-                                    </div>
-                                  {% endfor %}
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary">Сохранить</button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
+                        {% if owner == user %}
+                          {% include 'app_resume/blocks/additional_education_update_modal.html' %}
+                        {% endif %}
                       </li>
                     {% endfor %}
                   </ul>
                 {% endif %}
-                {% if user.is_authenticated %}
+                {% if owner == user %}
                   <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
                     <div class="input-group mb-5">
@@ -261,51 +211,14 @@
                           </button>
                         </div>
                         <!-- Modal -->
-                        <div class="modal fade" id="{{ certificate.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <form method="post" action="{% url 'electronic_certificate_update' username=user.username slug=resume.slug pk=certificate.pk %}">
-                                {% csrf_token %}
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  {% for field in  electronic_certificate_forms|get_value_from_dict:certificate %}
-                                    <div class="mb-3">
-                                      <label class="form-label">{{ field.label }}</label>
-                                      {% if not field.name == 'completion_percentage' %}
-                                        {{ field }}
-                                      {% endif %}
-                                      {% if field.name == 'certificate_url' %}
-                                        <div id="certificate_urlHelp" class="form-text">Прикрепите ссылку на ваш сертификат в интернете.</div>
-                                      {% elif field.name == 'certificate' %}
-                                        <div id="certificateHelp" class="form-text">Вы можете загрузить ваш сертификат на сайт.</div>
-                                      {% elif field.name == 'completion_percentage' %}
-                                        <div class="mb-3 d-flex align-items-center">
-                                          {{ field }}
-                                          <span class="input-group-text ms-3">
-                                            <output id="range_value_{{ certificate.pk }}" class="completion-percentage-value"></output>
-                                          </span>
-                                        </div>
-                                        <div id="diplomaHelp" class="form-text">Оценка или процент выполнения курса по шкале от 0 до 100.</div>
-                                      {% endif %}
-                                    </div>
-                                  {% endfor %}
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary">Сохранить</button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
+                        {% if owner == user %}
+                          {% include 'app_resume/blocks/electronic_certificate_update_modal.html' %}
+                        {% endif %}
                       </li>
                     {% endfor %}
                   </ul>
                 {% endif %}
-                {% if user.is_authenticated %}
+                {% if owner == user %}
                   <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
                     <div class="input-group my-3">
@@ -323,7 +236,7 @@
             {% for skill in skills %}
               <button class="btn btn-light mb-2" type="button">{{ skill.name }}</button>
             {% endfor %}
-            {% if user.is_authenticated %}
+            {% if owner == user %}
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
                 {% csrf_token %}
                 <div class="input-group mb-5">
@@ -370,51 +283,24 @@
                           </button>
                         </div>
                         <!-- Modal -->
-                        <div class="modal fade" id="{{ job_form_dict.job.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <form method="post" action="{% url 'job_update' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}">
-                                {% csrf_token %}
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  {% for field in  job_form_dict.job_update_form %}
-                                    <div class="mb-3">
-                                      <label class="form-label">{{ field.label }}</label>
-                                      {{ field }}
-                                      {% if field.name == 'description' %}
-                                        <div id="descriptionHelp" class="form-text">Опишите проект или ваши обязанности на должности в компании.</div>
-                                      {% elif field.name == 'project_url' %}
-                                        <div id="project-urlHelp" class="form-text">Вы можете добавить URL ссылку на портфолио или проект над которым вы работали.</div>
-                                      {% elif field.name == 'git_url' %}
-                                        <div id="git-urlHelp" class="form-text">Вы можете добавить URL ссылку на ваш в проект на GitHub.</div>
-                                      {% endif %}
-                                    </div>
-                                  {% endfor %}
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary">Сохранить</button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
+                        {% if owner == user %}
+                          {% include 'app_resume/blocks/job_update_modal.html' %}
+                        {% endif %}
                       </li>
                     {% endfor %}
                   </ul>
-                  <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-5">
-                      <span class="input-group-text">Проект или место работы</span>
-                      {{ job_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
+                  {% if owner == user %}
+                    <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
+                      {% csrf_token %}
+                      <div class="input-group mb-5">
+                        <span class="input-group-text">Проект или место работы</span>
+                        {{ job_create_form.title }}
+                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                      </div>
+                    </form>
+                  {% endif %}
                 {% endfor %}
-                {% if user.is_authenticated %}
+                {% if owner == user %}
                   <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
                     <div class="input-group my-3">

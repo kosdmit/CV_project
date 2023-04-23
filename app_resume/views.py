@@ -32,11 +32,11 @@ class ResumeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user = User.objects.get(username=kwargs['username'])
+        owner = User.objects.get(username=kwargs['username'])
         if self.request.user.is_authenticated:
-            context['user'] = user
+            context['owner'] = owner
 
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.get(user=owner)
         context['profile'] = profile
 
         try:
@@ -131,7 +131,7 @@ class ResumeView(TemplateView):
 
         breadcrumbs = [
             ('Резюме', 'resume/'),
-            (user.username, '#'),
+            (owner.username, '#'),
             (resume.position, ''.join(['resume/', kwargs['username'], '-', slug, '/'])),
         ]
         context['breadcrumbs'] = breadcrumbs
