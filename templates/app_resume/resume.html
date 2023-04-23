@@ -116,6 +116,12 @@
                           <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
+                          <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn ms-auto btn-sm" type="submit">
+                              <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                          </form>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}

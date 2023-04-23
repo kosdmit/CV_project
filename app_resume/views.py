@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView
+from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
@@ -189,6 +189,13 @@ class InstitutionUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView
 
         super()
         return super().form_valid(form)
+
+
+class InstitutionDeleteView(DeleteView):
+    model = Institution
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
 
 
 class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
