@@ -10,12 +10,21 @@ from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducat
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
+from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
 
 
 # Create your views here.
 class MainView(RedirectView):
-    url = 'resume/kosdmit/'
+    USER_TO_REDIRECT = 'kosdmit'
+
+    if Resume.objects.filter(user__username=USER_TO_REDIRECT, is_primary=True).first():
+        url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
+    else:
+        url_to_redirect = reverse_lazy('login')
+
+    url = url_to_redirect
+
 
 class ResumeView(TemplateView):
     template_name = 'app_resume/resume.html'
@@ -33,7 +42,6 @@ class ResumeView(TemplateView):
         try:
             slug = kwargs['slug']
             resume = Resume.objects.get(slug=slug, profile=profile)
-
         except KeyError:
             slug = ''
             resume = Resume.objects.get(profile=profile, is_primary=True)
@@ -48,6 +56,9 @@ class ResumeView(TemplateView):
 
         social_links = SocialLinks.objects.filter(profile=profile).first()
         context['social_links'] = social_links
+
+        social_links_form = SocialLinksForm(instance=social_links)
+        context['social_links_form'] = social_links_form
 
         main_education = MainEducation.objects.filter(resume=resume).first()
         context['main_education'] = main_education
@@ -233,7 +244,6 @@ class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
 
 class JobUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     form_class = JobForm
-
     model = Job
 
 

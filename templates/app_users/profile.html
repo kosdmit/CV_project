@@ -60,6 +60,9 @@
               <li class="list-group-item mb-3">
                 <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
               </li>
+              <li class="list-group-item mb-3">
+                {% include 'app_users/blocks/social_links_block.html' %}
+              </li>
             </ul>
           </div>
         </div>

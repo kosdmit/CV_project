@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django.contrib.auth.models import User
 
 import app_resume.models
-from .models import Profile
+from .models import Profile, SocialLinks
 
 from django.utils.translation import gettext_lazy as _
 
@@ -120,3 +120,45 @@ class PrimaryResumeSelectForm(forms.Form):
     class Meta:
         model = app_resume.models.Resume
         fields = ['is_primary']
+
+
+class SocialLinksForm(forms.ModelForm):
+    twitter = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    facebook = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    linked_in = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    vk = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    instagram = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    hh = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    git_hub = forms.URLField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    class Meta:
+        model = SocialLinks
+        fields = ['twitter', 'facebook', 'linked_in', 'vk', 'instagram', 'hh', 'git_hub']
+

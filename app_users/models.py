@@ -26,12 +26,13 @@ class SocialLinks(models.Model):
     profile = models.OneToOneField('Profile', on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    twitter = models.CharField(max_length=150, blank=True)
-    facebook = models.CharField(max_length=150, blank=True)
-    linked_in = models.CharField(max_length=150, blank=True)
-    vk = models.CharField(max_length=150, blank=True)
-    instagram = models.CharField(max_length=150, blank=True)
-    hh = models.CharField(max_length=150, blank=True)
+    twitter = models.URLField(blank=True, null=True)
+    facebook = models.URLField(blank=True, null=True)
+    linked_in = models.URLField(blank=True, null=True)
+    vk = models.URLField(blank=True, null=True)
+    instagram = models.URLField(blank=True, null=True)
+    hh = models.URLField(blank=True, null=True)
+    git_hub = models.URLField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Social Links"

@@ -22,7 +22,7 @@ from CV_project import settings
 from app_resume.views import MainView
 
 urlpatterns = [
-    path('/', MainView.as_view(), name='main'),
+    path('', MainView.as_view(), name='main'),
     path('admin/', admin.site.urls),
     path('users/', include('app_users.urls')),
     path('resume/', include('app_resume.urls')),

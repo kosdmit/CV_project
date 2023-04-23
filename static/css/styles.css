@@ -2,7 +2,7 @@ h2 {
     color: #146bb0;
 }
 
-h3 {
+h3:not(.popover-header) {
     display: inline;
     color: #146bb0;
 }
@@ -17,4 +17,14 @@ a {
 
 .title-icon {
     vertical-align: sub;
+}
+
+.social-plus-sign {
+ display:none;
+}
+.social-link:hover .social-logo {
+ display:none;
+}
+.social-link:hover .social-plus-sign{
+ display:block;
 }

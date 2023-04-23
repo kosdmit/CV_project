@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView
 
@@ -11,7 +12,7 @@ import app_users
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
 from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm, \
-    PrimaryResumeSelectForm, UserUpdateForm
+    PrimaryResumeSelectForm, UserUpdateForm, SocialLinksForm
 from django.contrib.auth.models import User
 
 from django.shortcuts import render, redirect
@@ -88,9 +89,18 @@ class CreateProfileView(CreateView):
         return context
 
     def form_valid(self, form):
+        # Bound user and save Profile object
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
+
+        # create SocialLink object
+        social_links_form = SocialLinksForm()
+        social_links = social_links_form.save(commit=False)
+        social_links.profile = self.object
+        social_links.user = self.request.user
+        social_links.save()
+
         return super().form_valid(form)
 
 
@@ -158,8 +168,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             profile = Profile.objects.filter(user=self.request.user).first()
             context['profile'] = profile
 
-            social_links = SocialLinks.objects.filter(profile=profile)
+            social_links = SocialLinks.objects.filter(profile=profile).first()
             context['social_links'] = social_links
+
+            social_links_form = SocialLinksForm(instance=social_links)
+            context['social_links_form'] = social_links_form
 
             resume_list = Resume.objects.filter(profile=profile)
             context['resume_list'] = resume_list
@@ -182,6 +195,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             resume = create_resume_form.save(commit=False)
             resume.profile_id = Profile.objects.get(user=self.request.user).id
             resume.user_id = self.request.user.id
+            if not Resume.objects.filter(user=self.request.user, is_primary=True).first():
+                resume.is_primary = True
             resume.save()
             return redirect('profile')
         else:
@@ -209,3 +224,24 @@ class Login(LoginView):
 
 class Logout(LogoutView):
     next_page = 'main'
+
+
+class SocialLinksUpdateView(UpdateView):
+    model = SocialLinks
+    fields = ['twitter', 'facebook', 'linked_in', 'vk', 'instagram', 'hh', 'git_hub']
+
+    def post(self, request, *args, **kwargs):
+        self.success_url = self.request.META['HTTP_REFERER']
+
+        self.object = SocialLinks.objects.get(user=self.request.user)
+
+        for key in self.request.POST:
+            if key in self.fields:
+                setattr(self.object, key, self.request.POST[key])
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+
+
+

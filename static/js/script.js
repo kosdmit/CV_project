@@ -1,3 +1,4 @@
+// Display window for range input
 const values = document.querySelectorAll(".completion-percentage-value")
 const inputs = document.querySelectorAll(".completion-percentage-input")
 
@@ -13,3 +14,9 @@ for (let i = 0; i < values.length; i++) {
 }
 
 
+// Bootstrap Popovers
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl,{
+  sanitize: false,
+  // trigger: 'focus',
+}))
