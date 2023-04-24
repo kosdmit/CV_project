@@ -4,7 +4,7 @@ from app_resume.views import ResumeView, ResumeAboutMeUpdateView, ResumeSoftSkil
     AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView, \
     AdditionalEducationUpdateView, ElectronicCertificateUpdateView, SkillCreateView, WorkExpSectionCreateView, \
     JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView, MainEducationUpdateView, \
-    AdditionalEducationDeleteView, ElectronicCertificateDeleteView
+    AdditionalEducationDeleteView, ElectronicCertificateDeleteView, SkillDeleteView
 
 urlpatterns = [
     path('<username>/', ResumeView.as_view(), name='primary_resume'),
@@ -32,6 +32,7 @@ urlpatterns = [
 
     # Skill items
     path('<username>/<slug>/skill_create', SkillCreateView.as_view(), name='skill_create'),
+    path('<username>/<slug>/<pk>/skill_delete', SkillDeleteView.as_view(), name='skill_delete'),
 
     # Job items
     path('<username>/<slug>/work_exp_section_create', WorkExpSectionCreateView.as_view(), name='work_exp_section_create'),

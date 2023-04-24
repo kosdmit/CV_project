@@ -262,7 +262,14 @@
           <div class="skills mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
             {% for skill in skills %}
-              <button class="btn btn-light mb-2" type="button">{{ skill.name }}</button>
+              <button class="btn btn-light position-relative mb-3 me-3" type="button" id="skill-{{ skill.pk }}">
+                {{ skill.name }}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
+                      onclick="skillDelete('{{ owner.username }}', '{{ resume.slug }}', '{{ skill.pk }}')">
+                  <i class="fa-solid fa-xmark"></i>
+                  <span class="visually-hidden">unread messages</span>
+                </span>
+              </button>
             {% endfor %}
             {% if owner == user %}
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">

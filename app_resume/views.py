@@ -254,6 +254,13 @@ class SkillCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     fields = ['name']
 
 
+class SkillDeleteView(DeleteView):
+    model = Skill
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
+
+
 class WorkExpSectionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     form_class = WorkExpSectionForm
 
