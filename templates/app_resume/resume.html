@@ -179,6 +179,12 @@
                           <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
+                          <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn ms-auto btn-sm" type="submit">
+                              <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                          </form>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}
@@ -225,6 +231,12 @@
                           <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
+                          <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn ms-auto btn-sm" type="submit">
+                              <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                          </form>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}

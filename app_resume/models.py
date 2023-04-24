@@ -77,7 +77,7 @@ class Institution(models.Model):
 class AdditionalEducation(models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
 
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4())
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)

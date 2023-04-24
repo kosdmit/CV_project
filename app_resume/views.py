@@ -211,6 +211,13 @@ class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, Cr
     fields = ['title']
 
 
+class AdditionalEducationDeleteView(DeleteView):
+    model = AdditionalEducation
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
+
+
 class AdditionalEducationUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     model = AdditionalEducation
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
@@ -233,6 +240,13 @@ class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, 
 class ElectronicCertificateUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     model = ElectronicCertificate
     fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
+
+
+class ElectronicCertificateDeleteView(DeleteView):
+    model = ElectronicCertificate
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
 
 
 class SkillCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

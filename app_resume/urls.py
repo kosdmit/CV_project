@@ -3,7 +3,8 @@ from django.urls import path
 from app_resume.views import ResumeView, ResumeAboutMeUpdateView, ResumeSoftSkillsUpdateView, MainEducationCreateView, \
     AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView, \
     AdditionalEducationUpdateView, ElectronicCertificateUpdateView, SkillCreateView, WorkExpSectionCreateView, \
-    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView, MainEducationUpdateView
+    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView, MainEducationUpdateView, \
+    AdditionalEducationDeleteView, ElectronicCertificateDeleteView
 
 urlpatterns = [
     path('<username>/', ResumeView.as_view(), name='primary_resume'),
@@ -22,10 +23,12 @@ urlpatterns = [
     # Additional education items
     path('<username>/<slug>/additional_education_create', AdditionalEducationCreateView.as_view(), name='additional_education_create'),
     path('<username>/<slug>/<pk>/additional_education_update/', AdditionalEducationUpdateView.as_view(), name='additional_education_update'),
+    path('<username>/<slug>/<pk>/additional_education_delete/', AdditionalEducationDeleteView.as_view(), name='additional_education_delete'),
 
     # Electronic certificate items
     path('<username>/<slug>/electronic_certificate_create', ElectronicCertificateCreateView.as_view(), name='electronic_certificate_create'),
     path('<username>/<slug>/<pk>/electronic_certificate_update/', ElectronicCertificateUpdateView.as_view(), name='electronic_certificate_update'),
+    path('<username>/<slug>/<pk>/electronic_certificate_delete/', ElectronicCertificateDeleteView.as_view(), name='electronic_certificate_delete'),
 
     # Skill items
     path('<username>/<slug>/skill_create', SkillCreateView.as_view(), name='skill_create'),
