@@ -295,6 +295,12 @@
                     <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
                       <i class="fa-regular fa-pen-to-square"></i>
                     </button>
+                    <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
+                      {% csrf_token %}
+                      <button class="btn ms-auto btn-sm" type="submit">
+                        <i class="fa-regular fa-trash-can"></i>
+                      </button>
+                    </form>
                   </div>
                   <!-- Modal -->
                   {% if owner == user %}
@@ -325,6 +331,12 @@
                           <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
+                          <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn ms-auto btn-sm" type="submit">
+                              <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                          </form>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}

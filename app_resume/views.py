@@ -280,6 +280,13 @@ class WorkExpSectionUpdateView(UpdateView):
         return self.request.META['HTTP_REFERER']
 
 
+class WorkExpSectionDeleteView(DeleteView):
+    model = WorkExpSection
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
+
+
 class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     model = Job
     fields = ['title']
@@ -296,5 +303,12 @@ class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
 class JobUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     form_class = JobForm
     model = Job
+
+
+class JobDeleteView(DeleteView):
+    model = Job
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
 
 
