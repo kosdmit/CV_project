@@ -193,6 +193,7 @@ class SkillCreateForm(forms.Form):
 
 class WorkExpSectionForm(forms.ModelForm):
     title = forms.CharField(
+        label='Заголовок:',
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'placeholder': "Наименование/Заголовок"})
     )

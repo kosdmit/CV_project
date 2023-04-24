@@ -114,6 +114,14 @@ class ResumeView(TemplateView):
         work_exp_section_form = WorkExpSectionForm()
         context['work_exp_section_form'] = work_exp_section_form
 
+        context['work_exp_section_update_forms'] = {}
+        for section in work_exp_sections:
+            work_exp_section_update_form = WorkExpSectionForm(
+                instance=section,
+                auto_id=f"id_%s_{section.pk}"
+            )
+            context['work_exp_section_update_forms'][section] = work_exp_section_update_form
+
         context['jobs_in_sections'] = {}
         for section in work_exp_sections:
             jobs = Job.objects.filter(work_exp_section=section)
@@ -126,7 +134,6 @@ class ResumeView(TemplateView):
 
         job_create_form = JobCreateForm()
         context['job_create_form'] = job_create_form
-
 
 
         breadcrumbs = [
@@ -263,6 +270,14 @@ class SkillDeleteView(DeleteView):
 
 class WorkExpSectionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
     form_class = WorkExpSectionForm
+
+
+class WorkExpSectionUpdateView(UpdateView):
+    form_class = WorkExpSectionForm
+    model = WorkExpSection
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
 
 
 class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):

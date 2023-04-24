@@ -287,9 +287,18 @@
             <ul class="list-unstyled">
               <li>
                 {% for section in work_exp_sections %}
-                  <h3 class="text-uppercase fs-5 me-3">{{ section.title }}</h3>
-                  {% if section.start_date %}
-                    <p class="text-uppercase d-inline">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
+                  <div class="d-flex mb-2">
+                    <h3 class="text-uppercase fs-5 me-3 mb-0">{{ section.title }}</h3>
+                    {% if section.start_date %}
+                      <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
+                    {% endif %}
+                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                  </div>
+                  <!-- Modal -->
+                  {% if owner == user %}
+                    {% include 'app_resume/blocks/work_exp_section_update_modal.html' %}
                   {% endif %}
                   <ul class="list-group list-group-flush">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
