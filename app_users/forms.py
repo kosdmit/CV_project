@@ -30,16 +30,22 @@ class SignUpUserForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50',
+                                                             'area-describedby': 'usernameHelp',
+                                                             }))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50',
                                                                'area-describedby': 'first_nameHelp',
                                                                }))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control w-50',
-                                                               'area-describedby': 'last_nameHelp',
-                                                               }))
+                                                              'area-describedby': 'last_nameHelp',
+                                                              }))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control w-50',
+                                                            'area-describedby': 'last_nameHelp',
+                                                            }))
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name')
+        fields = ('username', 'first_name', 'last_name', 'email')
 
 
 class CreateProfileForm(forms.ModelForm):

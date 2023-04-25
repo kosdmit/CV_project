@@ -19,12 +19,20 @@
           <form method="post">
             {% csrf_token %}
               <div class="mb-3">
+                <label for="id_username" class="form-label">Имя пользователя:</label>
+                {{ form.username }}
+              </div>
+              <div class="mb-3">
                 <label for="id_first_name" class="form-label">Имя:</label>
                 {{ form.first_name }}
               </div>
               <div class="mb-3">
                 <label for="id_last_name" class="form-label">Фамилия:</label>
                 {{ form.last_name }}
+              </div>
+              <div class="mb-3">
+                <label for="id_email" class="form-label">Адрес электронной почты:</label>
+                {{ form.email }}
               </div>
               <button type="submit" class="btn btn-primary">Отправить</button>
           </form>

@@ -52,7 +52,7 @@
             {% endif %}
           </div>
 
-          <div class="user-info mb-5">
+          <div class="user-info mb-4">
             <ul class="list-unstyled">
               <li class="list-group-item mb-3">
                 <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
@@ -65,6 +65,7 @@
               </li>
             </ul>
           </div>
+          <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
         </div>
 
         <div class="col-md-7 ps-5">

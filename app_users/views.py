@@ -58,7 +58,7 @@ class UserUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
 
         context['page_title'] = 'Редактирование учетной записи пользователя'
-        context['page_description'] = 'Укажите ваши имя и фамилию.'
+        context['page_description'] = 'Вы можете изменить имя пользователя, адрес электронной почты или личные данные.'
 
         breadcrumbs = [
             ('Пользователь', '/users/'),
