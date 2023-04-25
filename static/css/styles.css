@@ -28,3 +28,59 @@ a {
 .social-link:hover .social-plus-sign{
  display:block;
 }
+
+.main-education-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.main-education-item:hover .main-education-buttons-block {
+    opacity: 1;
+}
+
+.institution-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.institution-item:hover .institution-buttons-block {
+    opacity: 1;
+}
+
+.additional-education-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.additional-education-item:hover .additional-education-buttons-block {
+    opacity: 1;
+}
+
+.electronic-certificate-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.electronic-certificate-item:hover .electronic-certificate-buttons-block {
+    opacity: 1;
+}
+
+.close-skill-badge {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.skill-item:hover .close-skill-badge {
+    opacity: 1;
+}
+
+.work-exp-section-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.work-exp-section-item:hover .work-exp-section-buttons-block {
+    opacity: 1;
+}
+
+.job-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.job-item:hover .job-buttons-block {
+    opacity: 1;
+}

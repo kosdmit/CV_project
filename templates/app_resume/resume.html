@@ -101,12 +101,14 @@
             <ul class="list-unstyled">
               <li>
                 {% if main_education %}
-                  <div class="d-flex mb-2">
-                    <h3 class="text-uppercase fs-5 me-3 mb-0">{{ main_education.get_level }}</h3>
-                    <p class="text-uppercase mb-0">// {{ main_education.get_degree.upper }}</p>
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
+                  <div class="d-flex mb-2 main-education-item">
+                    <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ main_education.get_level }}</h3>
+                    <p class="text-uppercase mb-0 py-1">// {{ main_education.get_degree.upper }}</p>
+                    <div class="main-education-buttons-block ms-auto">
+                      <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                      </button>
+                    </div>
                   </div>
                   <!-- Modal -->
                   {% if owner == user %}
@@ -115,23 +117,27 @@
                   <ul class="list-group list-group-flush">
                     {% for institution in institutions %}
                       <li class="list-group-item">
-                        <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
-                        {% if institution.description %}
-                          <p>{{ institution.description }}</p>
-                        {% endif %}
-                        <div class="item-footer d-flex justify-content-between">
-                          {% if institution.completion_date %}
-                            <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
+                        <div class="institution-item">
+                          <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
+                          {% if institution.description %}
+                            <p>{{ institution.description }}</p>
                           {% endif %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
+                          <div class="item-footer d-flex justify-content-between">
+                            {% if institution.completion_date %}
+                              <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
+                            {% endif %}
+                            <div class="institution-buttons-block d-flex">
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn ms-auto btn-sm" type="submit">
+                                  <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </div>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}
@@ -168,23 +174,27 @@
                   <ul class="list-group list-group-flush">
                     {% for education in additional_educations %}
                       <li class="list-group-item">
-                        <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
-                        {% if education.description %}
-                          <p>{{ education.description }}</p>
-                        {% endif %}
-                        <div class="item-footer d-flex justify-content-between">
-                          {% if education.completion_date %}
-                            <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
+                        <div class="additional-education-item">
+                          <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
+                          {% if education.description %}
+                            <p>{{ education.description }}</p>
                           {% endif %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
+                          <div class="item-footer d-flex justify-content-between">
+                            {% if education.completion_date %}
+                              <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
+                            {% endif %}
+                            <div class="additional-education-buttons-block d-flex">
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn ms-auto btn-sm" type="submit">
+                                  <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </div>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}
@@ -209,34 +219,38 @@
                   <ul class="list-group list-group mt-3">
                     {% for certificate in electronic_certificates %}
                       <li class="list-group-item">
-                        <div class="item-header">
-                          <div class="ms-2 w-100 me-3">
-                            <div class="mb-2"><a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a></div>
-                          </div>
-                        </div>
-                        <div class="item-body d-flex justify-content-between align-items-start">
-                          {% if certificate.completion_percentage %}
-                            <div class="ms-2" style="width: 90%">
-                              <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
-                              </div>
+                        <div class="electronic-certificate-item">
+                          <div class="item-header">
+                            <div class="ms-2 w-100 me-3">
+                              <div class="mb-2"><a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a></div>
                             </div>
-                            <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ certificate.completion_percentage }}%</span>
-                          {% endif %}
-                        </div>
-                        <div class="item-footer d-flex justify-content-between ms-2">
-                          {% if certificate.completion_date %}
-                            <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
-                          {% endif %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
+                          </div>
+                          <div class="item-body d-flex justify-content-between align-items-start">
+                            {% if certificate.completion_percentage %}
+                              <div class="ms-2" style="width: 90%">
+                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                  <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
+                                </div>
+                              </div>
+                              <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ certificate.completion_percentage }}%</span>
+                            {% endif %}
+                          </div>
+                          <div class="item-footer d-flex justify-content-between ms-2">
+                            {% if certificate.completion_date %}
+                              <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
+                            {% endif %}
+                            <div class="electronic-certificate-buttons-block d-flex">
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn ms-auto btn-sm" type="submit">
+                                  <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </div>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}
@@ -262,7 +276,7 @@
           <div class="skills mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
             {% for skill in skills %}
-              <button class="btn btn-light position-relative mb-3 me-3" type="button" id="skill-{{ skill.pk }}">
+              <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="skill-{{ skill.pk }}">
                 {{ skill.name }}
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
                       onclick="skillDelete('{{ owner.username }}', '{{ resume.slug }}', '{{ skill.pk }}')">
@@ -287,20 +301,22 @@
             <ul class="list-unstyled">
               <li>
                 {% for section in work_exp_sections %}
-                  <div class="d-flex mb-2">
+                  <div class="d-flex mb-2 align-items-center work-exp-section-item">
                     <h3 class="text-uppercase fs-5 me-3 mb-0">{{ section.title }}</h3>
                     {% if section.start_date %}
                       <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                     {% endif %}
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
-                    <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
-                      {% csrf_token %}
-                      <button class="btn ms-auto btn-sm" type="submit">
-                        <i class="fa-regular fa-trash-can"></i>
+                    <div class="work-exp-section-buttons-block d-flex ms-auto">
+                      <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
+                        <i class="fa-regular fa-pen-to-square"></i>
                       </button>
-                    </form>
+                      <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn ms-auto btn-sm" type="submit">
+                          <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                      </form>
+                    </div>
                   </div>
                   <!-- Modal -->
                   {% if owner == user %}
@@ -309,34 +325,38 @@
                   <ul class="list-group list-group-flush">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
                       <li class="list-group-item">
-                        {% if job_form_dict.job.company %}
-                          <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1">
-                            {{ job_form_dict.job.company }}
-                          </a>
-                        {% endif %}
-                        <p class="text-uppercase mb-1">{{ job_form_dict.job.title }}</p>
-                        {% if job_form_dict.job.start_date %}
-                          <p class="text-uppercase d-inline">// {{ job_form_dict.job.start_date | date:'Y' }} - {{ job_form_dict.job.finish_date | date:'Y' }}</p>
-                        {% endif %}
-                        {% if job_form_dict.job.description %}
-                          <p>{{ job_form_dict.job.description }}</p>
-                        {% endif %}
-                        <div class="item-footer d-flex justify-content-between">
-                          {% if job_form_dict.job.project_url %}
-                            <a href="{{ job_form_dict.job.project_url }}"><small class="align-self-center">Сайт проекта</small></a>
+                        <div class="job-item">
+                          {% if job_form_dict.job.company %}
+                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1">
+                              {{ job_form_dict.job.company }}
+                            </a>
                           {% endif %}
-                          {% if job_form_dict.job.git_url %}
-                            <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
+                          <p class="text-uppercase mb-1 d-inline">{{ job_form_dict.job.title }}</p>
+                          {% if job_form_dict.job.start_date %}
+                            <p class="text-uppercase d-inline">// {{ job_form_dict.job.start_date | date:'Y' }} - {{ job_form_dict.job.finish_date | date:'Y' }}</p>
                           {% endif %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
+                          {% if job_form_dict.job.description %}
+                            <p>{{ job_form_dict.job.description }}</p>
+                          {% endif %}
+                          <div class="item-footer d-flex justify-content-between">
+                            {% if job_form_dict.job.project_url %}
+                              <a href="{{ job_form_dict.job.project_url }}"><small class="align-self-center">Сайт проекта</small></a>
+                            {% endif %}
+                            {% if job_form_dict.job.git_url %}
+                              <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
+                            {% endif %}
+                            <div class="job-buttons-block d-flex ms-auto">
+                              <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn ms-auto btn-sm" type="submit">
+                                  <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </div>
                         </div>
                         <!-- Modal -->
                         {% if owner == user %}
