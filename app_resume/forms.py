@@ -21,14 +21,28 @@ class ResumePositionForm(forms.ModelForm):
         fields = ('position',)
 
 
-class ResumeAboutMeForm(forms.Form):
-    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
-                                                            'rows': '3'}))
+class ResumeAboutMeForm(forms.ModelForm):
+    about_me = forms.CharField(
+        label='О себе:',
+        widget=forms.Textarea(attrs={'class': 'form-control',
+                                     'rows': '3'})
+    )
+
+    class Meta:
+        model = Resume
+        fields = ('about_me',)
 
 
-class ResumeSoftSkillsForm(forms.Form):
-    soft_skills = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
-                                                               'rows': '3'}))
+class ResumeSoftSkillsForm(forms.ModelForm):
+    soft_skills = forms.CharField(
+        label='Положительные качества:',
+        widget=forms.Textarea(attrs={'class': 'form-control',
+                                     'rows': '3'})
+    )
+
+    class Meta:
+        model = Resume
+        fields = ('soft_skills',)
 
 
 class MainEducationForm(forms.ModelForm):

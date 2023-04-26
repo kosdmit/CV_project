@@ -50,7 +50,18 @@
           <div class="about-me mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
             {% if resume.about_me %}
-              <p>{{ resume.about_me }}</p>
+              <div class="resume-about-me-item">
+                <p>{{ resume.about_me }}</p>
+                <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
+                  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- Modal -->
+              {% if owner == user %}
+                  {% include 'app_resume/blocks/resume_about_me_update_modal.html' %}
+              {% endif %}
             {% else %}
               {% if owner == user %}
                 <div class="mb-3">
@@ -85,7 +96,18 @@
           <div class="personal-qualities mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
             {% if resume.soft_skills %}
-              <p>{{ resume.soft_skills }}</p>
+              <div class="resume-soft-skills-item">
+                <p>{{ resume.soft_skills }}</p>
+                <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
+                  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- Modal -->
+              {% if owner == user %}
+                  {% include 'app_resume/blocks/resume_soft_skills_update_modal.html' %}
+              {% endif %}
             {% else %}
               {% if owner == user %}
                 <div class="mb-3">

@@ -92,3 +92,19 @@ a {
 .resume-position-item:hover .resume-position-update-button {
     opacity: 1;
 }
+
+.resume-about-me-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.resume-about-me-item:hover .resume-about-me-buttons-block {
+    opacity: 1;
+}
+
+.resume-soft-skills-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.resume-soft-skills-item:hover .resume-soft-skills-buttons-block {
+    opacity: 1;
+}

@@ -51,10 +51,10 @@ class ResumeView(TemplateView):
         resume_position_form = ResumePositionForm(instance=resume)
         context['resume_position_form'] = resume_position_form
 
-        resume_about_me_form = ResumeAboutMeForm()
+        resume_about_me_form = ResumeAboutMeForm(instance=resume)
         context['resume_about_me_form'] = resume_about_me_form
 
-        resume_soft_skills_form = ResumeSoftSkillsForm()
+        resume_soft_skills_form = ResumeSoftSkillsForm(instance=resume)
         context['resume_soft_skills_form'] = resume_soft_skills_form
 
         social_links = SocialLinks.objects.filter(profile=profile).first()
