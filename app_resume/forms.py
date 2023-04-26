@@ -10,6 +10,17 @@ class ResumeForm(forms.ModelForm):
         fields = ['about_me', 'soft_skills', 'position']
 
 
+class ResumePositionForm(forms.ModelForm):
+    position = forms.CharField(
+        label='Желаемая должность:',
+        widget=forms.TextInput(attrs={'class': 'form-control',})
+    )
+
+    class Meta:
+        model = Resume
+        fields = ('position',)
+
+
 class ResumeAboutMeForm(forms.Form):
     about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control',
                                                             'rows': '3'}))

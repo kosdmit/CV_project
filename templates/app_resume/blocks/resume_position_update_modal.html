@@ -1,0 +1,30 @@
+{% load djutils %}
+
+{% block resume_position_update_modal %}
+
+  <div class="modal fade" id="position-update-{{ resume.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'resume_position_update' username=user.username slug=resume.slug %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">{{ resume_position_form.position.label }}</label>
+              {{ resume_position_form.position }}
+              <div id="positionHelp" class="form-text">Укажите желаемую должность, данная строка служит в качестве заголовка вашего резюме.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

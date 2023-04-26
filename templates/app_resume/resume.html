@@ -36,7 +36,16 @@
                 <a href="{% url 'user_update' %}">Редактировать</a>
               </p>
             {% endif %}
-            <p class="text-uppercase text-center lead"><strong>{{ resume.position }}</strong></p>
+            <div class="resume-position-item d-flex justify-content-center">
+              <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
+              <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+            </div>
+            <!-- Modal -->
+            {% if owner == user %}
+              {% include 'app_resume/blocks/resume_position_update_modal.html' %}
+            {% endif %}
           </div>
           <div class="about-me mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>

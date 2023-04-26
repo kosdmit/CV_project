@@ -84,3 +84,11 @@ a {
 .job-item:hover .job-buttons-block {
     opacity: 1;
 }
+
+.resume-position-update-button {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+}
+.resume-position-item:hover .resume-position-update-button {
+    opacity: 1;
+}

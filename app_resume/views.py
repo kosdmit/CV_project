@@ -6,7 +6,8 @@ from django.views.generic import CreateView, TemplateView, UpdateView, RedirectV
 
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
-    InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm
+    InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm, \
+    ResumePositionForm
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
@@ -47,6 +48,8 @@ class ResumeView(TemplateView):
             resume = Resume.objects.get(profile=profile, is_primary=True)
         context['resume'] = resume
 
+        resume_position_form = ResumePositionForm(instance=resume)
+        context['resume_position_form'] = resume_position_form
 
         resume_about_me_form = ResumeAboutMeForm()
         context['resume_about_me_form'] = resume_about_me_form
@@ -144,6 +147,11 @@ class ResumeView(TemplateView):
         context['breadcrumbs'] = breadcrumbs
 
         return context
+
+
+class ResumePositionUpdateView(ResumeValidatorMixin, UpdateView):
+    model = Resume
+    fields = ['position']
 
 
 class ResumeAboutMeUpdateView(ResumeValidatorMixin, UpdateView):
