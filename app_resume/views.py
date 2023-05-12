@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
@@ -11,6 +12,7 @@ from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducat
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
+from app_social.models import Like
 from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
 
@@ -34,8 +36,7 @@ class ResumeView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         owner = User.objects.get(username=kwargs['username'])
-        if self.request.user.is_authenticated:
-            context['owner'] = owner
+        context['owner'] = owner
 
         profile = Profile.objects.get(user=owner)
         context['profile'] = profile
@@ -138,6 +139,20 @@ class ResumeView(TemplateView):
         job_create_form = JobCreateForm()
         context['job_create_form'] = job_create_form
 
+        if self.request.user.is_authenticated:
+            user_likes = Like.objects.filter(user=self.request.user).all()
+            user_likes_uuid = []
+            for like in user_likes:
+                user_likes_uuid.append(like.uuid_key)
+            context['users_likes_uuid'] = user_likes_uuid
+
+        like_counts_result = Like.objects.values('uuid_key') \
+                                  .order_by('uuid_key') \
+                                  .annotate(count=Count('uuid_key'))
+        like_counts = {}
+        for dict in like_counts_result:
+            like_counts[dict['uuid_key']] = dict['count']
+        context['like_counts'] = like_counts
 
         breadcrumbs = [
             ('Резюме', 'resume/'),

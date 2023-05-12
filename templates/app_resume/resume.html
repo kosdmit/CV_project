@@ -29,18 +29,24 @@
                 <br>
                 <strong>{{ owner.last_name }}</strong>
               </h1>
-            {% else %}
+            {% elif owner == user %}
               <p class="text-center">
                 Вы не указали ваше имя или фамилию
                 <br>
                 <a href="{% url 'user_update' %}">Редактировать</a>
               </p>
+            {% else %}
+              <p class="text-center">
+                Пользователь {{ owner.username }} еще не указал имя или фамилию
+              </p>
             {% endif %}
             <div class="resume-position-item d-flex justify-content-center">
               <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
-              <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
-                <i class="fa-regular fa-pen-to-square"></i>
-              </button>
+              {% if owner == user %}
+                <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+              {% endif %}
             </div>
             <!-- Modal -->
             {% if owner == user %}
@@ -136,9 +142,11 @@
                     <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ main_education.get_level }}</h3>
                     <p class="text-uppercase mb-0 py-1">// {{ main_education.get_degree.upper }}</p>
                     <div class="main-education-buttons-block ms-auto">
-                      <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                      </button>
+                      {% if owner == user %}
+                        <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
+                          <i class="fa-regular fa-pen-to-square"></i>
+                        </button>
+                      {% endif %}
                     </div>
                   </div>
                   <!-- Modal -->
@@ -157,17 +165,40 @@
                             {% if institution.completion_date %}
                               <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
                             {% endif %}
+
                             <div class="institution-buttons-block d-flex">
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
+                              {% if owner == user %}
+                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
+                                  <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                              </form>
+                                <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
+                                  {% csrf_token %}
+                                  <button class="btn ms-auto btn-sm" type="submit">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                  </button>
+                                </form>
+                              {% endif %}
+                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ institution.pk }}"
+                                      onclick="clickLike('{{ institution.pk }}')">
+
+                                <i class="fa-heart
+                                  {% if institution.pk in users_likes_uuid %}
+                                    fa-solid">
+                                  {% else %}
+                                    fa-regular">
+                                  {% endif %}
+                                </i>
+                                <small>
+                                  {% if like_counts|get_value_from_dict:institution.pk %}
+                                    {{ like_counts|get_value_from_dict:institution.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
+
+                              </button>
                             </div>
+
                           </div>
                         </div>
                         <!-- Modal -->
@@ -214,17 +245,19 @@
                             {% if education.completion_date %}
                               <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
                             {% endif %}
-                            <div class="additional-education-buttons-block d-flex">
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
+                            {% if owner == user %}
+                              <div class="additional-education-buttons-block d-flex">
+                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
+                                  <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                              </form>
-                            </div>
+                                <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
+                                  {% csrf_token %}
+                                  <button class="btn ms-auto btn-sm" type="submit">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                  </button>
+                                </form>
+                              </div>
+                            {% endif %}
                           </div>
                         </div>
                         <!-- Modal -->
@@ -309,11 +342,13 @@
             {% for skill in skills %}
               <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="skill-{{ skill.pk }}">
                 {{ skill.name }}
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
-                      onclick="skillDelete('{{ owner.username }}', '{{ resume.slug }}', '{{ skill.pk }}')">
-                  <i class="fa-solid fa-xmark"></i>
-                  <span class="visually-hidden">unread messages</span>
-                </span>
+                {% if owner == user %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
+                        onclick="skillDelete('{{ owner.username }}', '{{ resume.slug }}', '{{ skill.pk }}')">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                {% endif %}
               </button>
             {% endfor %}
             {% if owner == user %}

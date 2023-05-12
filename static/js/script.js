@@ -41,6 +41,42 @@ function skillDelete(username, slug, pk) {
 
 }
 
+
+function clickLike(pk) {
+    fetch('/social/click_like', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({
+      pk: pk,
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Process the received JSON data
+    console.log(data);
+    // Perform any desired operations with the data
+    let likeSign = document.querySelector("#like-" + pk + " i");
+    let likesCount = document.querySelector("#like-" + pk + " small");
+    likesCount.innerHTML = data['likes_count']
+    if (data['is_liked']) {
+        likeSign.classList.remove("fa-regular")
+        likeSign.classList.add("fa-solid")
+    }
+    else {
+        likeSign.classList.remove("fa-solid")
+        likeSign.classList.add("fa-regular")
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+
+}
+
+
 // Function to get the CSRF token from the cookie
 function getCookie(name) {
   let cookieValue = null;

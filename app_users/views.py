@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -34,6 +35,12 @@ class SignUpView(CreateView):
         context['breadcrumbs'] = breadcrumbs
 
         return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, user=self.object)
+
+        return response
 
 
 class UserUpdateView(UpdateView):
