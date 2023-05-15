@@ -9,12 +9,15 @@ from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducat
     ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
     InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm, \
     ResumePositionForm
-from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin
+from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin, \
+    remove_parameters_from_url, OpenModalIfSuccessMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
 from app_social.models import Like
 from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
+
+from urllib.parse import urlparse, urlunparse
 
 
 # Create your views here.
@@ -201,7 +204,10 @@ class MainEducationUpdateView(UpdateView):
         return self.request.META['HTTP_REFERER']
 
 
-class InstitutionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+class InstitutionCreateView(OpenModalIfSuccessMixin,
+                            ResumeBounderMixin,
+                            ResumeValidatorMixin,
+                            CreateView):
     model = Institution
     fields = ['title']
 
@@ -236,7 +242,10 @@ class InstitutionDeleteView(DeleteView):
         return self.request.META['HTTP_REFERER']
 
 
-class AdditionalEducationCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+class AdditionalEducationCreateView(OpenModalIfSuccessMixin,
+                                    ResumeBounderMixin,
+                                    ResumeValidatorMixin,
+                                    CreateView):
     model = AdditionalEducation
     fields = ['title']
 
@@ -262,7 +271,10 @@ class AdditionalEducationUpdateView(ResumeBounderMixin, ResumeValidatorMixin, Up
         return super().form_valid(form)
 
 
-class ElectronicCertificateCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
+                                      ResumeBounderMixin,
+                                      ResumeValidatorMixin,
+                                      CreateView):
     model = ElectronicCertificate
     fields = ['title']
 
@@ -310,7 +322,10 @@ class WorkExpSectionDeleteView(DeleteView):
         return self.request.META['HTTP_REFERER']
 
 
-class JobCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+class JobCreateView(OpenModalIfSuccessMixin,
+                    ResumeBounderMixin,
+                    ResumeValidatorMixin,
+                    CreateView):
     model = Job
     fields = ['title']
 

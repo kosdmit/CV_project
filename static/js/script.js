@@ -41,7 +41,7 @@ function skillDelete(username, slug, pk) {
 
 }
 
-
+// Add and delete Likes
 function clickLike(pk) {
     fetch('/social/click_like', {
     method: 'POST',
@@ -105,3 +105,16 @@ const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstra
 // Bootstrap Tooltips
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
+// Open modal then item added
+window.addEventListener('load', function() {
+  var urlParams = new URLSearchParams(window.location.search);
+  var modalId = urlParams.get('modal_id');
+  console.log(modalId)
+
+  if (modalId) {
+    var modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.show();
+  }
+});
