@@ -245,19 +245,41 @@
                             {% if education.completion_date %}
                               <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
                             {% endif %}
-                            {% if owner == user %}
-                              <div class="additional-education-buttons-block d-flex">
-                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
+
+                            <div class="additional-education-buttons-block d-flex">
+                              {% if owner == user %}
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn ms-auto btn-sm" type="submit">
+                                  <i class="fa-regular fa-trash-can"></i>
                                 </button>
-                                <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                                  {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
-                                </form>
-                              </div>
-                            {% endif %}
+                              </form>
+                              {% endif %}
+
+                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ education.pk }}"
+                                    onclick="clickLike('{{ education.pk }}')">
+
+                              <i class="fa-heart
+                                {% if education.pk in users_likes_uuid %}
+                                  fa-solid">
+                                {% else %}
+                                  fa-regular">
+                                {% endif %}
+                              </i>
+                              <small>
+                                {% if like_counts|get_value_from_dict:education.pk %}
+                                  {{ like_counts|get_value_from_dict:education.pk }}
+                                {% else %}
+                                  0
+                                {% endif %}
+                              </small>
+
+                            </button>
+                            </div>
+
                           </div>
                         </div>
                         <!-- Modal -->
@@ -304,15 +326,38 @@
                               <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
                             {% endif %}
                             <div class="electronic-certificate-buttons-block d-flex">
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
+                              {% if owner == user %}
+                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
+                                  <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                              </form>
+                                <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
+                                  {% csrf_token %}
+                                  <button class="btn ms-auto btn-sm" type="submit">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                  </button>
+                                </form>
+                              {% endif %}
+
+                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ certificate.pk }}"
+                                    onclick="clickLike('{{ certificate.pk }}')">
+
+                                <i class="fa-heart
+                                  {% if certificate.pk in users_likes_uuid %}
+                                    fa-solid">
+                                  {% else %}
+                                    fa-regular">
+                                  {% endif %}
+                                </i>
+                                <small>
+                                  {% if like_counts|get_value_from_dict:certificate.pk %}
+                                    {{ like_counts|get_value_from_dict:certificate.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
+
+                              </button>
+
                             </div>
                           </div>
                         </div>
@@ -349,6 +394,25 @@
                     <span class="visually-hidden">unread messages</span>
                   </span>
                 {% endif %}
+                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
+                        onclick="clickLike('{{ skill.pk }}')" id="like-{{ skill.pk }}">
+
+                  <i class="fa-heart
+                    {% if skill.pk in users_likes_uuid %}
+                      fa-solid">
+                    {% else %}
+                      fa-regular">
+                    {% endif %}
+                  </i>
+                  <small>
+                    {% if like_counts|get_value_from_dict:skill.pk %}
+                      {{ like_counts|get_value_from_dict:skill.pk }}
+                    {% else %}
+                      0
+                    {% endif %}
+                  </small>
+
+                </span>
               </button>
             {% endfor %}
             {% if owner == user %}
@@ -373,15 +437,17 @@
                       <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                     {% endif %}
                     <div class="work-exp-section-buttons-block d-flex ms-auto">
-                      <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                      </button>
-                      <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
-                        {% csrf_token %}
-                        <button class="btn ms-auto btn-sm" type="submit">
-                          <i class="fa-regular fa-trash-can"></i>
+                      {% if owner == user %}
+                        <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
+                          <i class="fa-regular fa-pen-to-square"></i>
                         </button>
-                      </form>
+                        <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
+                          {% csrf_token %}
+                          <button class="btn ms-auto btn-sm" type="submit">
+                            <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                        </form>
+                      {% endif %}
                     </div>
                   </div>
                   <!-- Modal -->
@@ -412,15 +478,36 @@
                               <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
                             {% endif %}
                             <div class="job-buttons-block d-flex ms-auto">
-                              <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
+                              {% if owner == user %}
+                                <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
+                                  <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                              </form>
+                                <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
+                                  {% csrf_token %}
+                                  <button class="btn ms-auto btn-sm" type="submit">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                  </button>
+                                </form>
+                              {% endif %}
+                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ job_form_dict.job.pk }}"
+                                    onclick="clickLike('{{ job_form_dict.job.pk }}')">
+
+                                <i class="fa-heart
+                                  {% if job_form_dict.job.pk in users_likes_uuid %}
+                                    fa-solid">
+                                  {% else %}
+                                    fa-regular">
+                                  {% endif %}
+                                </i>
+                                <small>
+                                  {% if like_counts|get_value_from_dict:job_form_dict.job.pk %}
+                                    {{ like_counts|get_value_from_dict:job_form_dict.job.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
+
+                              </button>
                             </div>
                           </div>
                         </div>
