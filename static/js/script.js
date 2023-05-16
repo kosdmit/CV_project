@@ -111,7 +111,6 @@ const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstra
 window.addEventListener('load', function() {
   var urlParams = new URLSearchParams(window.location.search);
   var modalId = urlParams.get('modal_id');
-  console.log(modalId)
 
   if (modalId) {
     var modal = new bootstrap.Modal(document.getElementById(modalId));
@@ -133,4 +132,18 @@ function toggleCommentEditForm(button) {
     commentText.style.display = 'none';
     editForm.style.display = 'block';
   }
+}
+
+
+//Clear url parameters then modals are hidden
+const modals = document.querySelectorAll('.modal')
+for (let i = 0 ; i < modals.length; i++) {
+  modals[i].addEventListener('hide.bs.modal', event => {
+    removeUrlParameters()
+  })
+};
+
+function removeUrlParameters() {
+  let urlWithoutParameters = window.location.origin + window.location.pathname;
+  window.history.replaceState({}, document.title, urlWithoutParameters);
 }
