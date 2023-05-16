@@ -13,7 +13,8 @@ from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin, \
     remove_parameters_from_url, OpenModalIfSuccessMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
-from app_social.models import Like
+from app_social.forms import CommentForm
+from app_social.models import Like, Comment
 from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
 
@@ -156,6 +157,17 @@ class ResumeView(TemplateView):
         for dict in like_counts_result:
             like_counts[dict['uuid_key']] = dict['count']
         context['like_counts'] = like_counts
+
+        comment_form = CommentForm()
+        context['comment_form'] = comment_form
+
+        uuid_with_comments = Comment.objects.filter(user__resume__id=resume.pk)\
+            .values_list('uuid_key', flat=True).distinct()
+
+        comments = {}
+        for uuid_key in uuid_with_comments:
+            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key)
+        context['comments'] = comments
 
         breadcrumbs = [
             ('Резюме', 'resume/'),

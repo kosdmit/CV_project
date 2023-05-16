@@ -196,6 +196,9 @@
                                   {% endif %}
                                 </small>
                               </button>
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ institution.pk }}">
+                                <i class="fa-regular fa-comment"></i>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -203,6 +206,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/institution_update_modal.html' %}
                         {% endif %}
+                        {% include 'app_resume/blocks/institution_comments_modal.html' %}
                       </li>
                     {% endfor %}
                   </ul>
