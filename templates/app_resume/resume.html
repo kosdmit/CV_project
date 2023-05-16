@@ -286,6 +286,16 @@
                                 {% endif %}
                               </small>
                             </button>
+                            <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ education.pk }}">
+                              <i class="fa-regular fa-comment"></i>
+                              <small>
+                                {% if comment_counts|get_value_from_dict:education.pk %}
+                                  {{ comment_counts|get_value_from_dict:education.pk }}
+                                {% else %}
+                                  0
+                                {% endif %}
+                              </small>
+                            </button>
                             </div>
                           </div>
                         </div>
@@ -293,6 +303,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/additional_education_update_modal.html' %}
                         {% endif %}
+                        {% include 'app_resume/blocks/additional_education_comments_modal.html' %}
                       </li>
                     {% endfor %}
                   </ul>
@@ -321,7 +332,7 @@
                           <div class="item-body d-flex justify-content-between align-items-start">
                             {% if certificate.completion_percentage %}
                               <div class="ms-2" style="width: 90%">
-                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress me-2" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
                                   <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
                                 </div>
                               </div>
@@ -364,6 +375,16 @@
                                   {% endif %}
                                 </small>
                               </button>
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ certificate.pk }}">
+                                <i class="fa-regular fa-comment"></i>
+                                <small>
+                                  {% if comment_counts|get_value_from_dict:certificate.pk %}
+                                    {{ comment_counts|get_value_from_dict:certificate.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -371,6 +392,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/electronic_certificate_update_modal.html' %}
                         {% endif %}
+                        {% include 'app_resume/blocks/electronic_certificate_comments_modal.html' %}
                       </li>
                     {% endfor %}
                   </ul>
@@ -497,7 +519,6 @@
                               {% endif %}
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ job_form_dict.job.pk }}"
                                     onclick="clickLike('{{ job_form_dict.job.pk }}')">
-
                                 <i class="fa-heart
                                   {% if job_form_dict.job.pk in users_likes_uuid %}
                                     fa-solid">
@@ -512,7 +533,16 @@
                                     0
                                   {% endif %}
                                 </small>
-
+                              </button>
+                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ job_form_dict.job.pk }}">
+                                <i class="fa-regular fa-comment"></i>
+                                <small>
+                                  {% if comment_counts|get_value_from_dict:job_form_dict.job.pk %}
+                                    {{ comment_counts|get_value_from_dict:job_form_dict.job.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
                               </button>
                             </div>
                           </div>
@@ -521,6 +551,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/job_update_modal.html' %}
                         {% endif %}
+                        {% include 'app_resume/blocks/job_comments_modal.html' %}
                       </li>
                     {% endfor %}
                   </ul>
