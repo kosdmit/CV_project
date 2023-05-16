@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
 from app_social.forms import CommentForm
 from app_social.models import Like, Comment
@@ -45,6 +45,14 @@ class CommentCreateView(CreateView):
 
 class CommentDeleteView(DeleteView):
     model = Comment
+
+    def get_success_url(self):
+        return self.request.META['HTTP_REFERER']
+
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    fields = ['message']
 
     def get_success_url(self):
         return self.request.META['HTTP_REFERER']

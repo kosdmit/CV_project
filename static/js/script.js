@@ -118,3 +118,19 @@ window.addEventListener('load', function() {
     modal.show();
   }
 });
+
+
+// Display comment edit form
+function toggleCommentEditForm(button) {
+  var commentItem = button.closest('.comment-item');
+  var commentText = commentItem.querySelector('.comment-text');
+  var editForm = commentItem.querySelector('.edit-form');
+
+  if (commentText.style.display === 'none') {
+    commentText.style.display = 'block';
+    editForm.style.display = 'none';
+  } else {
+    commentText.style.display = 'none';
+    editForm.style.display = 'block';
+  }
+}

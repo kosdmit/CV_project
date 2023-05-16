@@ -11,11 +11,24 @@
         </div>
         <div class="modal-body">
           <ul class="list-group list-group-flush mb-5">
+            {% if not comments|get_value_from_dict:institution.pk %}
+              <p>Комментариев пока нет, но вы можете оставить свой!</p>
+            {% endif %}
             {% for comment in comments|get_value_from_dict:institution.pk %}
               <li class="list-group-item">
                 <div class="comment-item">
                   <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
-                  <p>{{ comment.message }}</p>
+                  <p class="comment-text">{{ comment.message }}</p>
+                  <form method="post" action="{% url 'comment_update' pk=comment.pk %}"
+                        style="display: none;" class="edit-form">
+                    {% csrf_token %}
+                    <div class="">
+                      {{ comment_edit_forms|get_value_from_dict:comment.pk }}
+                      <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Сохранить</button>
+                      </div>
+                    </div>
+                  </form>
                   <div class="item-footer d-flex justify-content-between">
                     <div class="comment-info-block">
                       <small class="align-self-center">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
@@ -26,7 +39,7 @@
                     </div>
                     <div class="comment-buttons-block d-flex align-items-end">
                       {% if comment.user == user %}
-                        <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ comment.pk }}">
+                        <button type="button" class="btn ms-auto btn-sm edit-comment-button" onclick="toggleCommentEditForm(this)">
                           <i class="fa-regular fa-pen-to-square"></i>
                         </button>
                         <form action="{% url 'comment_delete' pk=comment.pk %}" method="post">
