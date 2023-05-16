@@ -162,10 +162,11 @@
                             <p>{{ institution.description }}</p>
                           {% endif %}
                           <div class="item-footer d-flex justify-content-between">
-                            {% if institution.completion_date %}
-                              <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
-                            {% endif %}
-
+                            <div class="institution-info-block">
+                              {% if institution.completion_date %}
+                                <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
+                              {% endif %}
+                            </div>
                             <div class="institution-buttons-block d-flex">
                               {% if owner == user %}
                                 <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
@@ -180,7 +181,6 @@
                               {% endif %}
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ institution.pk }}"
                                       onclick="clickLike('{{ institution.pk }}')">
-
                                 <i class="fa-heart
                                   {% if institution.pk in users_likes_uuid %}
                                     fa-solid">
@@ -195,10 +195,8 @@
                                     0
                                   {% endif %}
                                 </small>
-
                               </button>
                             </div>
-
                           </div>
                         </div>
                         <!-- Modal -->
@@ -242,10 +240,11 @@
                             <p>{{ education.description }}</p>
                           {% endif %}
                           <div class="item-footer d-flex justify-content-between">
-                            {% if education.completion_date %}
-                              <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
-                            {% endif %}
-
+                            <div class="additional-education-info-block">
+                              {% if education.completion_date %}
+                                <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
+                              {% endif %}
+                            </div>
                             <div class="additional-education-buttons-block d-flex">
                               {% if owner == user %}
                               <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
@@ -261,7 +260,6 @@
 
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ education.pk }}"
                                     onclick="clickLike('{{ education.pk }}')">
-
                               <i class="fa-heart
                                 {% if education.pk in users_likes_uuid %}
                                   fa-solid">
@@ -276,10 +274,8 @@
                                   0
                                 {% endif %}
                               </small>
-
                             </button>
                             </div>
-
                           </div>
                         </div>
                         <!-- Modal -->
@@ -322,9 +318,11 @@
                             {% endif %}
                           </div>
                           <div class="item-footer d-flex justify-content-between ms-2">
-                            {% if certificate.completion_date %}
-                              <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
-                            {% endif %}
+                            <div class="electronic-certificate-info-block">
+                              {% if certificate.completion_date %}
+                                <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
+                              {% endif %}
+                            </div>
                             <div class="electronic-certificate-buttons-block d-flex">
                               {% if owner == user %}
                                 <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
@@ -340,7 +338,6 @@
 
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ certificate.pk }}"
                                     onclick="clickLike('{{ certificate.pk }}')">
-
                                 <i class="fa-heart
                                   {% if certificate.pk in users_likes_uuid %}
                                     fa-solid">
@@ -355,9 +352,7 @@
                                     0
                                   {% endif %}
                                 </small>
-
                               </button>
-
                             </div>
                           </div>
                         </div>
