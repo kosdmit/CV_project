@@ -5,74 +5,72 @@
   <div class="modal fade" id="comments-{{ institution.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-
-
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Комментарии</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <ul class="list-group list-group-flush mb-5">
-              {% for comment in comments|get_value_from_dict:institution.pk %}
-                <li class="list-group-item">
-                  <div class="comment-item">
-                    <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
-                    <p>{{ comment.message }}</p>
-                    <div class="item-footer d-flex justify-content-between">
-                      <div class="comment-info-block">
-                        <small class="align-self-center">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
-                        <br>
-                        {% if comment.updated_date %}
-                          <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
-                        {% endif %}
-                      </div>
-                      <div class="comment-buttons-block d-flex align-items-end">
-                        {% if comment.user == user %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ comment.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="#" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
-                        {% endif %}
-                        <button type="button" class="btn ms-auto btn-sm" id="like-{{ comment.pk }}"
-                                onclick="clickLike('{{ comment.pk }}')">
-                          <i class="fa-heart
-                            {% if comment.pk in users_likes_uuid %}
-                              fa-solid">
-                            {% else %}
-                              fa-regular">
-                            {% endif %}
-                          </i>
-                          <small>
-                            {% if like_counts|get_value_from_dict:comment.pk %}
-                              {{ like_counts|get_value_from_dict:comment.pk }}
-                            {% else %}
-                              0
-                            {% endif %}
-                          </small>
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Комментарии</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group list-group-flush mb-5">
+            {% for comment in comments|get_value_from_dict:institution.pk %}
+              <li class="list-group-item">
+                <div class="comment-item">
+                  <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
+                  <p>{{ comment.message }}</p>
+                  <div class="item-footer d-flex justify-content-between">
+                    <div class="comment-info-block">
+                      <small class="align-self-center">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
+                      <br>
+                      {% if comment.updated_date %}
+                        <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
+                      {% endif %}
+                    </div>
+                    <div class="comment-buttons-block d-flex align-items-end">
+                      {% if comment.user == user %}
+                        <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ comment.pk }}">
+                          <i class="fa-regular fa-pen-to-square"></i>
                         </button>
-                      </div>
+                        <form action="{% url 'comment_delete' pk=comment.pk %}" method="post">
+                          {% csrf_token %}
+                          <button class="btn ms-auto btn-sm" type="submit">
+                            <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                        </form>
+                      {% endif %}
+                      <button type="button" class="btn ms-auto btn-sm" id="like-{{ comment.pk }}"
+                              onclick="clickLike('{{ comment.pk }}')">
+                        <i class="fa-heart
+                          {% if comment.pk in users_likes_uuid %}
+                            fa-solid">
+                          {% else %}
+                            fa-regular">
+                          {% endif %}
+                        </i>
+                        <small>
+                          {% if like_counts|get_value_from_dict:comment.pk %}
+                            {{ like_counts|get_value_from_dict:comment.pk }}
+                          {% else %}
+                            0
+                          {% endif %}
+                        </small>
+                      </button>
                     </div>
                   </div>
-                </li>
-              {% endfor %}
-            </ul>
-            <form method="post" action="{% url 'comment_create' pk=institution.pk %}">
-              {% csrf_token %}
-              <label for="id_message" class="form-label">Добавить комментарий:</label>
-              <div class="input-group">
-                {{ comment_form.message }}
-                <button type="submit" class="btn btn-secondary fw-bold">+</button>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          <form method="post" action="{% url 'comment_create' pk=institution.pk %}">
+            {% csrf_token %}
+            <label for="id_message" class="form-label">Добавить комментарий:</label>
+            <div class="input-group">
+              {{ comment_form.message }}
+              <button type="submit" class="btn btn-secondary fw-bold">+</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
       </div>
     </div>
   </div>
