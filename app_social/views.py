@@ -7,6 +7,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView
 
 from app_resume.mixins import remove_parameters_from_url
 from app_social.forms import CommentForm
+from app_social.mixins import OpenCommentModalIfSuccess
 from app_social.models import Like, Comment
 
 
@@ -29,7 +30,7 @@ class ClickLike(View):
                                  'likes_count': likes_count+1})
 
 
-class CommentCreateView(CreateView):
+class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
     form_class = CommentForm
 
     def form_valid(self, form):
@@ -40,9 +41,6 @@ class CommentCreateView(CreateView):
 
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
-
 
 class CommentDeleteView(DeleteView):
     model = Comment
@@ -51,15 +49,9 @@ class CommentDeleteView(DeleteView):
         return self.request.META['HTTP_REFERER']
 
 
-class CommentUpdateView(UpdateView):
+class CommentUpdateView(OpenCommentModalIfSuccess, UpdateView):
     model = Comment
     fields = ['message']
-
-    def get_success_url(self):
-        previous_url = self.request.META['HTTP_REFERER']
-        cleaned_url = remove_parameters_from_url(previous_url, 'modal_id')
-
-        return cleaned_url + '?modal_id=comments-' + str(self.object.uuid_key)
 
 
 
