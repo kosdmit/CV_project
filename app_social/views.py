@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 
+from app_resume.mixins import remove_parameters_from_url
 from app_social.forms import CommentForm
 from app_social.models import Like, Comment
 
@@ -55,7 +56,10 @@ class CommentUpdateView(UpdateView):
     fields = ['message']
 
     def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
+        previous_url = self.request.META['HTTP_REFERER']
+        cleaned_url = remove_parameters_from_url(previous_url, 'modal_id')
+
+        return cleaned_url + '?modal_id=comments-' + str(self.object.uuid_key)
 
 
 
