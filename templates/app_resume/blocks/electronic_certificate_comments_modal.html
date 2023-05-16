@@ -15,61 +15,7 @@
               <p>Комментариев пока нет, но вы можете оставить свой!</p>
             {% endif %}
             {% for comment in comments|get_value_from_dict:certificate.pk %}
-              <li class="list-group-item">
-                <div class="comment-item">
-                  <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
-                  <p class="comment-text">{{ comment.message }}</p>
-                  <form method="post" action="{% url 'comment_update' pk=comment.pk %}"
-                        style="display: none;" class="edit-form">
-                    {% csrf_token %}
-                    <div class="">
-                      {{ comment_edit_forms|get_value_from_dict:comment.pk }}
-                      <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary btn-sm mt-1">Сохранить</button>
-                      </div>
-                    </div>
-                  </form>
-                  <div class="item-footer d-flex justify-content-between">
-                    <div class="comment-info-block">
-                      <small class="align-self-center">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
-                      <br>
-                      {% if comment.updated_date %}
-                        <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
-                      {% endif %}
-                    </div>
-                    <div class="comment-buttons-block d-flex align-items-end">
-                      {% if comment.user == user %}
-                        <button type="button" class="btn ms-auto btn-sm edit-comment-button" onclick="toggleCommentEditForm(this)">
-                          <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
-                        <form action="{% url 'comment_delete' pk=comment.pk %}" method="post">
-                          {% csrf_token %}
-                          <button class="btn ms-auto btn-sm" type="submit">
-                            <i class="fa-regular fa-trash-can"></i>
-                          </button>
-                        </form>
-                      {% endif %}
-                      <button type="button" class="btn ms-auto btn-sm" id="like-{{ comment.pk }}"
-                              onclick="clickLike('{{ comment.pk }}')">
-                        <i class="fa-heart
-                          {% if comment.pk in users_likes_uuid %}
-                            fa-solid">
-                          {% else %}
-                            fa-regular">
-                          {% endif %}
-                        </i>
-                        <small>
-                          {% if like_counts|get_value_from_dict:comment.pk %}
-                            {{ like_counts|get_value_from_dict:comment.pk }}
-                          {% else %}
-                            0
-                          {% endif %}
-                        </small>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </li>
+              {% include 'app_resume/blocks/comment_item.html' %}
             {% endfor %}
           </ul>
           <form method="post" action="{% url 'comment_create' pk=certificate.pk %}">
