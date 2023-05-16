@@ -61,11 +61,11 @@ a {
     opacity: 1;
 }
 
-.close-skill-badge {
+.close-skill-badge, .like-skill-badge {
     opacity: 0;
     transition: opacity 0.3s ease 0.2s;
 }
-.skill-item:hover .close-skill-badge {
+.skill-item:hover .close-skill-badge, .skill-item:hover .like-skill-badge {
     opacity: 1;
 }
 

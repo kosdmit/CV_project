@@ -34,7 +34,7 @@ urlpatterns = [
 
     # Skill items
     path('<username>/<slug>/skill_create', SkillCreateView.as_view(), name='skill_create'),
-    path('<username>/<slug>/<pk>/skill_delete', SkillDeleteView.as_view(), name='skill_delete'),
+    path('skill_delete/<pk>', SkillDeleteView.as_view(), name='skill_delete'),
 
     # Job items
     path('<username>/<slug>/work_exp_section_create', WorkExpSectionCreateView.as_view(), name='work_exp_section_create'),

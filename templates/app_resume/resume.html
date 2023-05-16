@@ -413,17 +413,16 @@
           <div class="skills mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
             {% for skill in skills %}
-              <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="skill-{{ skill.pk }}">
+              <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="{{ skill.pk }}">
                 {{ skill.name }}
                 {% if owner == user %}
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
-                        onclick="skillDelete('{{ owner.username }}', '{{ resume.slug }}', '{{ skill.pk }}')">
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge">
                     <i class="fa-solid fa-xmark"></i>
                     <span class="visually-hidden">unread messages</span>
                   </span>
                 {% endif %}
-                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge"
-                        onclick="clickLike('{{ skill.pk }}')" id="like-{{ skill.pk }}">
+                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary like-skill-badge"
+                      id="like-{{ skill.pk }}">
 
                   <i class="fa-heart
                     {% if skill.pk in users_likes_uuid %}
@@ -442,6 +441,7 @@
 
                 </span>
               </button>
+              {% include 'app_resume/blocks/skill_comments_modal.html' %}
             {% endfor %}
             {% if owner == user %}
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">

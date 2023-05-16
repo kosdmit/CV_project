@@ -18,8 +18,8 @@ for (let i = 0; i < values.length; i++) {
 const csrftoken = getCookie('csrftoken');
 
 // Close function for badges of Skill items
-function skillDelete(username, slug, pk) {
-  fetch('/resume/' + username + '/' + slug + '/' + pk + '/skill_delete', {
+function skillDelete(pk) {
+  fetch('/resume/skill_delete/' + pk, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ function skillDelete(username, slug, pk) {
     console.error('Error:', error);
   });
 
-  let skill = document.querySelector("#skill-" + pk);
+  let skill = document.getElementById(pk);
   skill.classList.add("invisible")
 
 }
@@ -152,4 +152,36 @@ for (let i = 0 ; i < modals.length; i++) {
 function removeUrlParameters() {
   let urlWithoutParameters = window.location.origin + window.location.pathname;
   window.history.replaceState({}, document.title, urlWithoutParameters);
+}
+
+
+// Opens the modal if button clicked
+function openModal(modalId) {
+  var modal = new bootstrap.Modal(document.getElementById(modalId));
+  modal.show();
+};
+
+
+
+// Get the button element
+const buttons = document.querySelectorAll('.skill-item');
+for (let i = 0; i < buttons.length; i++) {
+// Attach click event listener to the button
+  buttons[i].addEventListener('click', function (event) {
+    // Handle button click event
+    openModal('comments-' + buttons[i].id);
+  });
+  let deleteSpan = buttons[i].querySelector('.close-skill-badge');
+  deleteSpan.addEventListener('click', function(event) {
+  // Handle delete span click event
+    event.stopPropagation();
+    skillDelete(buttons[i].id);
+  });
+
+  let likeSpan = buttons[i].querySelector('.like-skill-badge');
+  likeSpan.addEventListener('click', function(event) {
+  // Handle like span click event
+    event.stopPropagation();
+  clickLike(buttons[i].id);
+  });
 }
