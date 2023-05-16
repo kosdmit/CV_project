@@ -173,6 +173,14 @@ class ResumeView(TemplateView):
         context['comments'] = comments
         context['comment_edit_forms'] = comment_edit_forms
 
+        comment_counts_result = Comment.objects.values('uuid_key') \
+                                  .order_by('uuid_key') \
+                                  .annotate(count=Count('uuid_key'))
+        comment_counts = {}
+        for dict in comment_counts_result:
+            comment_counts[dict['uuid_key']] = dict['count']
+        context['comment_counts'] = comment_counts
+
         breadcrumbs = [
             ('Резюме', 'resume/'),
             (owner.username, '#'),

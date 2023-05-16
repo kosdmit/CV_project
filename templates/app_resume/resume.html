@@ -198,6 +198,13 @@
                               </button>
                               <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ institution.pk }}">
                                 <i class="fa-regular fa-comment"></i>
+                                <small>
+                                  {% if comment_counts|get_value_from_dict:institution.pk %}
+                                    {{ comment_counts|get_value_from_dict:institution.pk }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </small>
                               </button>
                             </div>
                           </div>
