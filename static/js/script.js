@@ -114,7 +114,13 @@ window.addEventListener('load', function() {
 
   if (modalId) {
     var modal = new bootstrap.Modal(document.getElementById(modalId));
+    var modalDom = document.getElementById(modalId)
+    modalDom.classList.remove('fade')
     modal.show();
+    setTimeout(function() {
+      modalDom.classList.add('fade')
+    }, 1000);
+
   }
 });
 
