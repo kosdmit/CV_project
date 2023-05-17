@@ -1,9 +1,12 @@
 from urllib.parse import urlparse, urlunparse
 
 from django.core.exceptions import ValidationError
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
+from CV_project.settings import RATING_SETTINGS
 from app_resume.models import Resume
+from app_social.mixins import get_resume_by_element_uuid
 
 
 class ResumeValidatorMixin:
@@ -56,3 +59,22 @@ class OpenModalIfSuccessMixin:
         cleaned_url = remove_parameters_from_url(previous_url, 'modal_id')
 
         return cleaned_url + '?modal_id=' + str(self.object.pk)
+
+
+class RatingUpdateForCreateViewMixin:
+    def form_valid(self, form):
+        self.object.save()
+        resume = get_resume_by_element_uuid(self.object.pk)
+        resume.rating += RATING_SETTINGS['content']
+        resume.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class RatingUpdateForDeleteViewMixin:
+    def form_valid(self, form):
+        resume = get_resume_by_element_uuid(self.object.pk)
+        resume.rating -= RATING_SETTINGS['content']
+        resume.save()
+
+        return super().form_valid(form)

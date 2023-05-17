@@ -1,7 +1,8 @@
 from urllib.parse import urlparse, urlunparse
 
-from django.db.models import Count
+from django.db.models import Count, Q
 
+from app_resume.models import Resume
 from app_social.forms import CommentForm, CommentUpdateForm
 from app_social.models import Like, Comment
 
@@ -51,3 +52,17 @@ class AddLikesIntoContextMixin:
         context['like_counts'] = like_counts
 
         return context
+
+
+def get_resume_by_element_uuid(uuid):
+    resume = Resume.objects.filter(
+        Q(maineducation__pk=uuid) |
+        Q(institution__pk=uuid) |
+        Q(additionaleducation__pk=uuid) |
+        Q(electroniccertificate__pk=uuid) |
+        Q(skill__pk=uuid) |
+        Q(workexpsection__job__pk=uuid) |
+        Q(pk=uuid)
+    ).distinct().first()
+
+    return resume

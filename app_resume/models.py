@@ -22,6 +22,7 @@ class Resume(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     is_primary = models.BooleanField(default=False)
+    rating = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.is_primary:
