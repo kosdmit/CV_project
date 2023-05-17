@@ -1,5 +1,10 @@
 from urllib.parse import urlparse, urlunparse
 
+from django.db.models import Count
+
+from app_social.forms import CommentForm, CommentUpdateForm
+from app_social.models import Like, Comment
+
 
 def remove_parameters_from_url(url, *args):
     parsed_url = urlparse(url)
@@ -24,3 +29,25 @@ class OpenCommentModalIfSuccess:
         cleaned_url = remove_parameters_from_url(previous_url, 'modal_id')
 
         return cleaned_url + '?modal_id=comments-' + str(self.object.uuid_key)
+
+
+class AddLikesIntoContextMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated:
+            user_likes = Like.objects.filter(user=self.request.user).all()
+            user_likes_uuid = []
+            for like in user_likes:
+                user_likes_uuid.append(like.uuid_key)
+            context['users_likes_uuid'] = user_likes_uuid
+
+        like_counts_result = Like.objects.values('uuid_key') \
+            .order_by('uuid_key') \
+            .annotate(count=Count('uuid_key'))
+        like_counts = {}
+        for dict in like_counts_result:
+            like_counts[dict['uuid_key']] = dict['count']
+        context['like_counts'] = like_counts
+
+        return context

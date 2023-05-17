@@ -14,6 +14,7 @@ from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin, \
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
 from app_social.forms import CommentForm, CommentUpdateForm
+from app_social.mixins import AddLikesIntoContextMixin
 from app_social.models import Like, Comment
 from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
@@ -33,7 +34,7 @@ class MainView(RedirectView):
     url = url_to_redirect
 
 
-class ResumeView(TemplateView):
+class ResumeView(AddLikesIntoContextMixin, TemplateView):
     template_name = 'app_resume/resume.html'
 
     def get_context_data(self, **kwargs):
@@ -143,25 +144,11 @@ class ResumeView(TemplateView):
         job_create_form = JobCreateForm()
         context['job_create_form'] = job_create_form
 
-        if self.request.user.is_authenticated:
-            user_likes = Like.objects.filter(user=self.request.user).all()
-            user_likes_uuid = []
-            for like in user_likes:
-                user_likes_uuid.append(like.uuid_key)
-            context['users_likes_uuid'] = user_likes_uuid
-
-        like_counts_result = Like.objects.values('uuid_key') \
-                                  .order_by('uuid_key') \
-                                  .annotate(count=Count('uuid_key'))
-        like_counts = {}
-        for dict in like_counts_result:
-            like_counts[dict['uuid_key']] = dict['count']
-        context['like_counts'] = like_counts
-
         comment_form = CommentForm()
         context['comment_form'] = comment_form
 
-        uuid_with_comments = Comment.objects.filter(user__resume__id=resume.pk)\
+        uuid_with_comments = Comment.objects.filter(
+            user__resume__id=resume.pk) \
             .values_list('uuid_key', flat=True).distinct()
 
         comments = {}
@@ -169,13 +156,14 @@ class ResumeView(TemplateView):
         for uuid_key in uuid_with_comments:
             comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key)
             for comment in comments[uuid_key]:
-                comment_edit_forms[comment.pk] = CommentUpdateForm(instance=comment)
+                comment_edit_forms[comment.pk] = CommentUpdateForm(
+                    instance=comment)
         context['comments'] = comments
         context['comment_edit_forms'] = comment_edit_forms
 
         comment_counts_result = Comment.objects.values('uuid_key') \
-                                  .order_by('uuid_key') \
-                                  .annotate(count=Count('uuid_key'))
+            .order_by('uuid_key') \
+            .annotate(count=Count('uuid_key'))
         comment_counts = {}
         for dict in comment_counts_result:
             comment_counts[dict['uuid_key']] = dict['count']

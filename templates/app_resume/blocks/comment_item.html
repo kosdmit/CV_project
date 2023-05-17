@@ -17,10 +17,10 @@
         </div>
       </form>
       <div class="item-footer d-flex justify-content-between">
-        <div class="comment-info-block">
-          <small class="align-self-center">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
+        <div class="comment-info-block align-self-center">
+          <small class="">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
           <br>
-          {% if comment.updated_date %}
+          {% if comment.updated_date != comment.created_date %}
             <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
           {% endif %}
         </div>
