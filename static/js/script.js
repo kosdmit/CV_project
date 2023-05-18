@@ -162,26 +162,58 @@ function openModal(modalId) {
 };
 
 
-
-// Get the button element
+// Skill button functionality
 const buttons = document.querySelectorAll('.skill-item');
 for (let i = 0; i < buttons.length; i++) {
-// Attach click event listener to the button
+  // Attach click event listener to the button
   buttons[i].addEventListener('click', function (event) {
     // Handle button click event
     openModal('comments-' + buttons[i].id);
   });
   let deleteSpan = buttons[i].querySelector('.close-skill-badge');
-  deleteSpan.addEventListener('click', function(event) {
-  // Handle delete span click event
-    event.stopPropagation();
-    skillDelete(buttons[i].id);
-  });
+  if (deleteSpan) {
+    deleteSpan.addEventListener('click', function (event) {
+      // Handle delete span click event
+      event.stopPropagation();
+      skillDelete(buttons[i].id);
+    });
+  }
 
   let likeSpan = buttons[i].querySelector('.like-skill-badge');
-  likeSpan.addEventListener('click', function(event) {
-  // Handle like span click event
+  if (likeSpan) {
+    likeSpan.addEventListener('click', function (event) {
+      // Handle like span click event
+      event.stopPropagation();
+      clickLike(buttons[i].id);
+    });
+  }
+}
+
+
+// Resume items clickable
+const resumes = document.querySelectorAll('.resume-item');
+for (let i = 0; i < resumes.length; i++) {
+  resumes[i].addEventListener('click', function (event) {
+    let linkElement = resumes[i].querySelector('.resume-hidden-link');
+    let linkUrl = linkElement.href;
+    window.location.href = linkUrl
+  });
+
+  let commentButton = resumes[i].querySelector('.comment-button');
+  commentButton.addEventListener('click', function(event) {
     event.stopPropagation();
-  clickLike(buttons[i].id);
+    openModal(commentButton.dataset.target)
+  });
+
+  let likeButton = resumes[i].querySelector('.like-button');
+  likeButton.addEventListener('click', function(event) {
+    event.stopPropagation();
+    clickLike(likeButton.dataset.target);
+  });
+
+  let ratingButton = resumes[i].querySelector('.rating-button');
+  ratingButton.addEventListener('click', function(event) {
+    event.stopPropagation();
+
   });
 }

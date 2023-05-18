@@ -14,14 +14,13 @@
           <p>
             Привет,
             {% if user.first_name %}
-              {{ user.first_name }}
+              {{ user.first_name }}!
             {% else %}
-              {{ user.username }}
+              {{ user.username }}!
             {% endif %}
-            !
             На этой странице вы можете посмотреть резюме других пользователей.
-            Они располагаются в порядке и рейтинга. Рейтинг можно увеличить
-            Добавив больше данных в ваше резюме, а также за лайки и комментарии.
+            Они располагаются в порядке их рейтинга. Рейтинг можно увеличить
+            добавив больше данных в ваше резюме, а также за лайки и комментарии.
           </p>
         </div>
       </div>
@@ -29,7 +28,7 @@
         <ul class="list-group list-group-flush">
           {% for resume in page_obj %}
             <li class="list-group-item">
-              <div class="comment-item">
+              <div class="resume-item">
                 <div class="container px-0">
                   <div class="row">
                     <div class="col-4">
@@ -55,8 +54,8 @@
                     {% endif %}
                   </div>
                   <div class="comment-buttons-block d-flex align-items-end">
-                    <button type="button" class="btn ms-auto btn-sm" id="like-{{ resume.pk }}"
-                            onclick="clickLike('{{ resume.pk }}')">
+                    <button type="button" class="btn ms-auto btn-sm like-button" id="like-{{ resume.pk }}"
+                            data-target="{{ resume.pk }}">
                       <i class="fa-heart
                         {% if resume.pk in users_likes_uuid %}
                           fa-solid">
@@ -72,7 +71,7 @@
                         {% endif %}
                       </small>
                     </button>
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ resume.pk }}">
+                    <button type="button" class="btn ms-auto btn-sm comment-button" data-target="comments-{{ resume.pk }}">
                       <i class="fa-regular fa-comment"></i>
                       <small>
                         {% if comment_counts|get_value_from_dict:resume.pk %}
@@ -82,7 +81,7 @@
                         {% endif %}
                       </small>
                     </button>
-                    <button type="button" class="btn ms-auto btn-sm"
+                    <button type="button" class="btn ms-auto btn-sm rating-button"
                             data-bs-toggle="tooltip"
                             data-bs-title="Рейтинг резюме определяется на основе количества
                             заполненных полей и активности других пользователей">
@@ -91,6 +90,8 @@
                     </button>
                   </div>
                 </div>
+                <!-- Hidden -->
+                <a class="resume-hidden-link" href="{% url 'resume' username=resume.user.username slug=resume.slug %}"></a>
               </div>
               <!-- Modal -->
               {% include 'app_social/blocks/resume_list_comments_modal.html' %}
