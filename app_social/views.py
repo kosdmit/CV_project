@@ -78,7 +78,7 @@ class CommentUpdateView(OpenCommentModalIfSuccess, UpdateView):
 class ResumeListView(AddLikesIntoContextMixin, ListView):
     template_name = 'app_social/resume_list.html'
     model = Resume
-    paginate_by = 20
+    paginate_by = 5
     ordering = '-rating'
 
     def get_context_data(self, **kwargs):

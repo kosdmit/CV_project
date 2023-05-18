@@ -25,13 +25,27 @@
           </p>
         </div>
       </div>
-      <div class="row">
+      <div class="row my-5">
         <ul class="list-group list-group-flush">
-          {% for resume in object_list %}
+          {% for resume in page_obj %}
             <li class="list-group-item">
               <div class="comment-item">
-                <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
-                <p class="comment-text">{{ resume.position }}</p>
+                <div class="container px-0">
+                  <div class="row">
+                    <div class="col-4">
+                      <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
+                      <p class="comment-text">{{ resume.position }}</p>
+                    </div>
+                    <div class="col-8">
+                      {% for skill in resume.skill_set.all %}
+                        <button class="btn btn-light position-relative mb-2 me-2 skill-item btn-sm" disabled type="button" id="{{ skill.pk }}">
+                          {{ skill.name }}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+
                 <div class="item-footer d-flex justify-content-between">
                   <div class="comment-info-block align-self-center">
                     <small class="">{{ resume.created_date  | date:'d.m.Y G:i' }}</small>
@@ -84,6 +98,35 @@
           {% endfor %}
         </ul>
       </div>
+    <div class="row my-2">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+            <a class="page-link" href="?page=1" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+            </li>
+          {% endif %}
+          <li class="page-item active">
+            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+          </li>
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+            </li>
+          {% endif %}
+          <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+            <a class="page-link" href="?page={{ page_obj.count }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
     </div>
 
   {% endblock %}
