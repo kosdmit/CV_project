@@ -22,6 +22,8 @@
                   <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебного учреждения.</div>
                 {% elif field.name == 'diploma' %}
                   <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом.</div>
+                {% elif field.name == 'is_primary' %}
+                  <div id="isPrimary" class="form-text">Если сделать элемент главным эта информация будет отображаться на странице поиска.</div>
                 {% endif %}
               </div>
             {% endfor %}

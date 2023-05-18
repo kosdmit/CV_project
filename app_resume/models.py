@@ -74,6 +74,18 @@ class Institution(models.Model):
     website_url = models.URLField(blank=True, null=True)
     diploma = models.FileField(upload_to='files/main_diplomas/', blank=True, null=True)
     completion_date = models.DateField(blank=True, null=True)
+    is_primary = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_primary:
+            try:
+                temp = Institution.objects.get(is_primary=True, resume=self.resume)
+                if self != temp:
+                    temp.is_primary = False
+                    temp.save()
+            except Institution.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
 
 
 class AdditionalEducation(models.Model):

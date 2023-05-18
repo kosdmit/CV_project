@@ -243,7 +243,8 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
 
 class InstitutionUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
     model = Institution
-    fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
+    fields = ['title', 'description', 'website_url', 'diploma', 'completion_date',
+              'is_primary']
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

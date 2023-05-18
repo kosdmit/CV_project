@@ -116,9 +116,16 @@ class InstitutionForm(forms.ModelForm):
                                       'type': 'date'}),
     )
 
+    is_primary = forms.BooleanField(
+        required=False,
+        label='Сделать главным',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input',
+                                          'type': 'checkbox'}),
+    )
+
     class Meta:
         model = Institution
-        fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
+        fields = ['title', 'description', 'website_url', 'diploma', 'completion_date', 'is_primary']
 
 
 class AdditionalEducationCreateForm(forms.Form):
