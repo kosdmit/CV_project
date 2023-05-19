@@ -108,6 +108,22 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
             comment_counts[dict['uuid_key']] = dict['count']
         context['comment_counts'] = comment_counts
 
+        if self.search_query:
+            title = 'Поиск по резюме'
+        else:
+            title = 'Обзор'
+        context['title'] = title
+
         return context
+
+    def get_queryset(self):
+        self.search_query = self.request.GET.get('search_query')
+        if self.search_query:
+            query_set = Resume.objects.filter(position__icontains=self.search_query)
+            return query_set
+        else:
+            return super().get_queryset()
+
+
 
 

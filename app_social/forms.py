@@ -26,3 +26,11 @@ class CommentUpdateForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['message']
+
+
+class ResumeSearchForm(forms.Form):
+    search_query = forms.CharField(
+        widget=forms.TextInput(attrs={'class': "form-control",
+                                      'placeholder': "Найти...",
+                                      'aria-label': "Search"})
+    )

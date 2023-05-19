@@ -72,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app_job_hunt.context_processors.add_raw_contact_employer_form',
+                'app_social.context_processors.add_resume_search_form',
             ],
         },
     },
