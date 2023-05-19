@@ -328,7 +328,10 @@ class SkillDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
         return self.request.META['HTTP_REFERER']
 
 
-class WorkExpSectionCreateView(ResumeBounderMixin, ResumeValidatorMixin, CreateView):
+class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
+                               ResumeBounderMixin,
+                               ResumeValidatorMixin,
+                               CreateView):
     form_class = WorkExpSectionForm
 
 

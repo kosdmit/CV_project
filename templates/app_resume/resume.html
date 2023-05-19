@@ -10,143 +10,147 @@
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
     <div class="container resume">
-      <div class="row g-5">
-        <div class="col-md-5 bg-light rounded-5 mb-5">
-          <div class="hero my-5">
-            {% if profile.avatar %}
-              <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
-                     style="object-fit: cover; aspect-ratio: 1 / 1;">
+      <div class="row gx-5">
+        <div class="col-lg-5 mb-5">
+          <div class="rounded-5 bg-light pt-5 pb-1 px-3">
+            <div class="hero mb-5">
+              {% if profile.avatar %}
+                <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
+                  <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+                       style="object-fit: cover; aspect-ratio: 1 / 1;">
+                </div>
+              {% else %}
+                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3">
+                  <p class="mx-auto text-light">Здесь будет ваше фото</p>
+                </div>
+              {% endif %}
+              {% if owner.first_name and owner.last_name %}
+                <h1 class="text-uppercase text-center">
+                  {{ owner.first_name }}
+                  <br>
+                  <strong>{{ owner.last_name }}</strong>
+                </h1>
+              {% elif owner == user %}
+                <p class="text-center">
+                  Вы не указали ваше имя или фамилию
+                  <br>
+                  <a href="{% url 'user_update' %}">Редактировать</a>
+                </p>
+              {% else %}
+                <p class="text-center">
+                  Пользователь {{ owner.username }} еще не указал имя или фамилию
+                </p>
+              {% endif %}
+              <div class="resume-position-item d-flex justify-content-center">
+                <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
+                {% if owner == user %}
+                  <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                {% endif %}
               </div>
-            {% else %}
-              <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3">
-                <p class="mx-auto text-light">Здесь будет ваше фото</p>
-              </div>
-            {% endif %}
-            {% if owner.first_name and owner.last_name %}
-              <h1 class="text-uppercase text-center">
-                {{ owner.first_name }}
-                <br>
-                <strong>{{ owner.last_name }}</strong>
-              </h1>
-            {% elif owner == user %}
-              <p class="text-center">
-                Вы не указали ваше имя или фамилию
-                <br>
-                <a href="{% url 'user_update' %}">Редактировать</a>
-              </p>
-            {% else %}
-              <p class="text-center">
-                Пользователь {{ owner.username }} еще не указал имя или фамилию
-              </p>
-            {% endif %}
-            <div class="resume-position-item d-flex justify-content-center">
-              <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
+              <!-- Modal -->
               {% if owner == user %}
-                <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </button>
+                {% include 'app_resume/blocks/resume_position_update_modal.html' %}
               {% endif %}
             </div>
-            <!-- Modal -->
-            {% if owner == user %}
-              {% include 'app_resume/blocks/resume_position_update_modal.html' %}
-            {% endif %}
-          </div>
-          <div class="about-me mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
-            {% if resume.about_me %}
-              <div class="resume-about-me-item">
-                <p>{{ resume.about_me }}</p>
-                <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
-                  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
+            <div class="about-me mb-5">
+              <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
+              {% if resume.about_me %}
+                <div class="resume-about-me-item">
+                  <p>{{ resume.about_me }}</p>
+                  <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
+                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <!-- Modal -->
-              {% if owner == user %}
-                  {% include 'app_resume/blocks/resume_about_me_update_modal.html' %}
-              {% endif %}
-            {% else %}
-              {% if owner == user %}
-                <div class="mb-3">
-                  <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
-                    {% csrf_token %}
-                    <label for="id_about_me" class="form-label">Расскажите о себе:</label>
-                    <div class="input-group">
-                      {{ resume_about_me_form.about_me }}
-                      <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                    </div>
-                  </form>
-                </div>
+                <!-- Modal -->
+                {% if owner == user %}
+                    {% include 'app_resume/blocks/resume_about_me_update_modal.html' %}
+                {% endif %}
               {% else %}
-                <p>Пользователь еще не добавил информацию в этот раздел</p>
+                {% if owner == user %}
+                  <div class="mb-3">
+                    <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
+                      {% csrf_token %}
+                      <label for="id_about_me" class="form-label">Расскажите о себе:</label>
+                      <div class="input-group">
+                        {{ resume_about_me_form.about_me }}
+                        <button type="submit" class="btn btn-secondary fw-bold">+</button>
+                      </div>
+                    </form>
+                  </div>
+                {% else %}
+                  <p>Пользователь еще не добавил информацию в этот раздел</p>
+                {% endif %}
               {% endif %}
-            {% endif %}
-          </div>
-          <div class="my-contacts mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-address-book title-icon fs-1 me-3 mb-1"></i>Контакты</h2>
-            <ul class="list-unstyled">
-              <li class="list-group-item mb-3">
-                <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
-              </li>
-              <li class="list-group-item mb-3">
-                <h3 class="text-uppercase fs-5 me-3">Телефон:</h3><a href="tel:{{ profile.phone_number }}">{{ profile.phone_number }}</a>
-              </li>
-              <li class="list-group-item mb-3">
-                {% include 'app_users/blocks/social_links_block.html' %}
-              </li>
-            </ul>
-          </div>
-          <div class="personal-qualities mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
-            {% if resume.soft_skills %}
-              <div class="resume-soft-skills-item">
-                <p>{{ resume.soft_skills }}</p>
-                <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
-                  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
+            </div>
+            <div class="my-contacts mb-5">
+              <h2 class="text-uppercase"><i class="fa-solid fa-address-book title-icon fs-1 me-3 mb-1"></i>Контакты</h2>
+              <ul class="list-unstyled">
+                <li class="list-group-item mb-3">
+                  <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
+                </li>
+                <li class="list-group-item mb-3">
+                  <h3 class="text-uppercase fs-5 me-3">Телефон:</h3><a href="tel:{{ profile.phone_number }}">{{ profile.phone_number }}</a>
+                </li>
+                <li class="list-group-item mb-3">
+                  {% include 'app_users/blocks/social_links_block.html' %}
+                </li>
+              </ul>
+            </div>
+            <div class="personal-qualities mb-5">
+              <h2 class="text-uppercase text-sm"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
+              {% if resume.soft_skills %}
+                <div class="resume-soft-skills-item">
+                  <p>{{ resume.soft_skills }}</p>
+                  <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
+                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
+                      <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <!-- Modal -->
-              {% if owner == user %}
-                  {% include 'app_resume/blocks/resume_soft_skills_update_modal.html' %}
-              {% endif %}
-            {% else %}
-              {% if owner == user %}
-                <div class="mb-3">
-                  <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
-                    {% csrf_token %}
-                    <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
-                    <div class="input-group">
-                      {{ resume_soft_skills_form.soft_skills }}
-                      <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                    </div>
-                  </form>
-                </div>
+                <!-- Modal -->
+                {% if owner == user %}
+                    {% include 'app_resume/blocks/resume_soft_skills_update_modal.html' %}
+                {% endif %}
               {% else %}
-                <p>Пользователь еще не добавил информацию в этот раздел</p>
+                {% if owner == user %}
+                  <div class="mb-3">
+                    <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
+                      {% csrf_token %}
+                      <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
+                      <div class="input-group">
+                        {{ resume_soft_skills_form.soft_skills }}
+                        <button type="submit" class="btn btn-secondary fw-bold">+</button>
+                      </div>
+                    </form>
+                  </div>
+                {% else %}
+                  <p>Пользователь еще не добавил информацию в этот раздел</p>
+                {% endif %}
               {% endif %}
-            {% endif %}
+            </div>
           </div>
         </div>
-        <div class="col-md-7 ps-5">
+        <div class="col-lg-7">
           <div class="education mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-medal title-icon fs-1 me-3 mb-1"></i>Образование</h2>
             <ul class="list-unstyled">
               <li>
                 {% if main_education %}
-                  <div class="d-flex mb-2 main-education-item">
+                  <div class="d-sm-flex mb-2 main-education-item">
                     <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ main_education.get_level }}</h3>
-                    <p class="text-uppercase mb-0 py-1">// {{ main_education.get_degree.upper }}</p>
-                    <div class="main-education-buttons-block ms-auto">
-                      {% if owner == user %}
-                        <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
-                          <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
-                      {% endif %}
+                    <div class="d-flex flex-grow-1">
+                      <p class="text-uppercase mb-0 py-1">// {{ main_education.get_degree.upper }}</p>
+                      <div class="main-education-buttons-block ms-auto">
+                        {% if owner == user %}
+                          <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </button>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
                   <!-- Modal -->
@@ -221,7 +225,7 @@
                     <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
                       {% csrf_token %}
                       <div class="input-group mb-5">
-                        <span class="input-group-text">Учебное учреждение</span>
+                        <!-- <span class="input-group-text">Учебное учреждение</span> -->
                         {{ institution_create_form.title }}
                         <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                       </div>
@@ -312,7 +316,7 @@
                   <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
                     <div class="input-group mb-5">
-                      <span class="input-group-text">Дополнительное образование</span>
+                      <!-- <span class="input-group-text">Дополнительное образование</span> -->
                       {{ additional_education_create_form.title }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                     </div>
@@ -401,7 +405,7 @@
                   <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
                     <div class="input-group my-3">
-                      <span class="input-group-text">Электронный сертификат</span>
+                      <!-- <span class="input-group-text">Электронный сертификат</span> -->
                       {{ electronic_certificate_create_form.title }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                     </div>
@@ -447,7 +451,7 @@
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
                 {% csrf_token %}
                 <div class="input-group mb-5">
-                  <span class="input-group-text">Добавить навык</span>
+                  <!-- <span class="input-group-text">Добавить навык</span> -->
                   {{ skill_create_form.name }}
                   <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                 </div>
@@ -459,23 +463,25 @@
             <ul class="list-unstyled">
               <li>
                 {% for section in work_exp_sections %}
-                  <div class="d-flex mb-2 align-items-center work-exp-section-item">
+                  <div class="d-sm-flex mb-2 align-items-center work-exp-section-item">
                     <h3 class="text-uppercase fs-5 me-3 mb-0">{{ section.title }}</h3>
-                    {% if section.start_date %}
-                      <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
-                    {% endif %}
-                    <div class="work-exp-section-buttons-block d-flex ms-auto">
-                      {% if owner == user %}
-                        <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
-                          <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
-                        <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
-                          {% csrf_token %}
-                          <button class="btn ms-auto btn-sm" type="submit">
-                            <i class="fa-regular fa-trash-can"></i>
-                          </button>
-                        </form>
+                    <div class="d-flex flex-grow-1">
+                      {% if section.start_date %}
+                        <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                       {% endif %}
+                      <div class="work-exp-section-buttons-block d-flex ms-auto">
+                        {% if owner == user %}
+                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                          </button>
+                          <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn ms-auto btn-sm" type="submit">
+                              <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                          </form>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
                   <!-- Modal -->
@@ -559,7 +565,7 @@
                     <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
                       {% csrf_token %}
                       <div class="input-group mb-5">
-                        <span class="input-group-text">Проект или место работы</span>
+                        <!-- <span class="input-group-text">Проект или место работы</span> -->
                         {{ job_create_form.title }}
                         <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                       </div>
@@ -569,11 +575,10 @@
                 {% if owner == user %}
                   <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
+                    <!-- <label class="">Добавить отрасль или период работы:</label> -->
+                    <hr>
                     <div class="input-group my-3">
-                      <span class="input-group-text">Отрасль или период работы</span>
                       {{ work_exp_section_form.title }}
-                      {{ work_exp_section_form.start_date }}
-                      {{ work_exp_section_form.finish_date }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                     </div>
                   </form>

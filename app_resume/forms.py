@@ -79,7 +79,7 @@ class MainEducationForm(forms.ModelForm):
 
 class InstitutionCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование"}))
+                                                          'placeholder': "Добавить учебное учреждение"}))
 
 
 class InstitutionForm(forms.ModelForm):
@@ -130,7 +130,7 @@ class InstitutionForm(forms.ModelForm):
 
 class AdditionalEducationCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование пройденного курса"}))
+                                                          'placeholder': "Добавить дополнительное образование"}))
 
 
 class AdditionalEducationForm(forms.ModelForm):
@@ -174,7 +174,7 @@ class AdditionalEducationForm(forms.ModelForm):
 
 class ElectronicCertificateCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование пройденного курса"}))
+                                                          'placeholder': "Добавить сертификат"}))
 
 
 class ElectronicCertificateForm(forms.ModelForm):
@@ -220,14 +220,14 @@ class ElectronicCertificateForm(forms.ModelForm):
 
 class SkillCreateForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование навыка"}))
+                                                          'placeholder': "Добавить навык"}))
 
 
 class WorkExpSectionForm(forms.ModelForm):
     title = forms.CharField(
         label='Заголовок:',
         widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': "Наименование/Заголовок"})
+                                      'placeholder': "Добавить отрасль или период работы"})
     )
 
     start_date = forms.DateField(
@@ -251,7 +251,7 @@ class WorkExpSectionForm(forms.ModelForm):
 
 class JobCreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Наименование должности"}))
+                                                          'placeholder': "Добавить место работы"}))
 
 
 class JobForm(forms.ModelForm):

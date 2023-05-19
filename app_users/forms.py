@@ -118,7 +118,7 @@ class PrimaryResumeSelectForm(forms.Form):
 
     is_primary = forms.ModelChoiceField(
         queryset=None,
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input',
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input ms-auto',
                                         'value': '',
                                         'onclick': 'javascript: submit()'}),
     )

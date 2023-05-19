@@ -3,7 +3,6 @@ h2 {
 }
 
 h3:not(.popover-header) {
-    display: inline;
     color: #146bb0;
 }
 

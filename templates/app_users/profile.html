@@ -9,7 +9,7 @@
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
     <div class="container">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-12">
           <h1>Профиль</h1>
           <p>
@@ -23,53 +23,54 @@
           </p>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-5 bg-light rounded-5 pt-5 px-5 mb-5">
-          <div class="hero mb-5">
-            {% if profile.avatar %}
-              <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
-                     style="object-fit: cover; aspect-ratio: 1 / 1;">
-              </div>
-            {% else %}
-              <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
-                <p class="mx-auto text-light">Здесь будет ваше фото</p>
-              </div>
-            {% endif %}
-            {% if user.first_name and user.last_name %}
-              <h1 class="text-uppercase text-center">
-                {{ user.first_name }}
-                <br>
-                <strong>{{ user.last_name }}</strong>
-              </h1>
-            {% else %}
-              <p class="text-center">
-                Вы не указали ваше имя или фамилию
-                <br>
-                <a href="{% url 'user_update' %}">Редактировать</a>
-              </p>
-            {% endif %}
+      <div class="row gx-5">
+        <div class="col-lg-5 mb-5">
+          <div class="rounded-5 bg-light pt-5 pb-1 px-3">
+            <div class="hero mb-5">
+              {% if profile.avatar %}
+                <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
+                  <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+                       style="object-fit: cover; aspect-ratio: 1 / 1;">
+                </div>
+              {% else %}
+                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
+                  <p class="mx-auto text-light">Здесь будет ваше фото</p>
+                </div>
+              {% endif %}
+              {% if user.first_name and user.last_name %}
+                <h1 class="text-uppercase text-center">
+                  {{ user.first_name }}
+                  <br>
+                  <strong>{{ user.last_name }}</strong>
+                </h1>
+              {% else %}
+                <p class="text-center">
+                  Вы не указали ваше имя или фамилию
+                  <br>
+                  <a href="{% url 'user_update' %}">Редактировать</a>
+                </p>
+              {% endif %}
+            </div>
+            <div class="user-info">
+              <ul class="list-unstyled">
+                <li class="list-group-item mb-3">
+                  <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
+                </li>
+                <li class="list-group-item mb-3">
+                  <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </li>
+                <li class="list-group-item mb-3">
+                  {% include 'app_users/blocks/social_links_block.html' %}
+                </li>
+              </ul>
+            </div>
+            <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
           </div>
-
-          <div class="user-info mb-4">
-            <ul class="list-unstyled">
-              <li class="list-group-item mb-3">
-                <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
-              </li>
-              <li class="list-group-item mb-3">
-                <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
-              </li>
-              <li class="list-group-item mb-3">
-                {% include 'app_users/blocks/social_links_block.html' %}
-              </li>
-            </ul>
-          </div>
-          <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
         </div>
 
-        <div class="col-md-7 ps-5">
+        <div class="col-md-7">
           <div class="profile-info mb-5">
-            <h3 class="text-uppercase fs-5 mb-5">Данные профиля</h3>
+            <h3 class="text-uppercase fs-5">Данные профиля</h3>
             <ul class="list-group list-group-flush">
               <li class="list-group-item mb-3">
                 <label for="id_birth_date" class="form-label">Дата рождения:</label>
@@ -88,7 +89,7 @@
             </form>
           </div>
           <div class="resume-list mb-5">
-            <h3 class="text-uppercase fs-5 mb-5">Ваши резюме</h3>
+            <h3 class="text-uppercase fs-5">Ваши резюме</h3>
             {% if resume_list %}
               <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
                 {% csrf_token %}
@@ -97,9 +98,9 @@
                     <a href="{% url 'resume' username=user.username slug=resume.slug %}"
                        class="list-group-item list-group-item-action
                        {% if resume.is_primary %} active{% endif %}" aria-current="true">
-                      <div class="d-flex w-100 justify-content-between">
+                      <div class="d-sm-flex flex-grow-1 justify-content-between">
                         <h5 class="mb-1">{{ resume.position }}</h5>
-                        <div>
+                        <div class="d-flex ms-auto">
                           <small class="me-3">updated {{ resume.updated_date | timesince }} ago</small>
                           {{ radio.tag }}
                         </div>
@@ -116,10 +117,10 @@
               </ul>
             {% endif %}
             <form method="post">
-            {% csrf_token %}
-              <div class="input-group mb-3">
+              {% csrf_token %}
+              <div class="d-flex flex-column flex-sm-row w-100 gap-2">
                 {{ form.position }}
-                <button class="btn btn-primary" type="submit" id="button-addon2">Создать новое резюме</button>
+                <button class="btn btn-primary flex-shrink-0" type="submit" id="button-addon2">Создать новое резюме</button>
               </div>
             </form>
           </div>
