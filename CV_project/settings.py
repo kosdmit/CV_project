@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'app_users',
     'app_resume',
     'app_social',
+    'app_job_hunt',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app_job_hunt.context_processors.add_raw_contact_employer_form',
             ],
         },
     },
