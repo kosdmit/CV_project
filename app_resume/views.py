@@ -174,9 +174,8 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         context['comment_counts'] = comment_counts
 
         breadcrumbs = [
-            ('Резюме', 'resume/'),
-            (owner.username, '#'),
-            (resume.position, ''.join(['resume/', kwargs['username'], '-', slug, '/'])),
+            (owner.username, '/users/profile/'),
+            (resume.position, ''),
         ]
         context['breadcrumbs'] = breadcrumbs
 

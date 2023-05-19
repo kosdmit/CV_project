@@ -29,8 +29,7 @@ class SignUpView(CreateView):
         context = super().get_context_data(**kwargs)
 
         breadcrumbs = [
-            ('Пользователь', 'users/'),
-            ('Регистрация', 'users/signup/'),
+            ('Регистрация', reverse_lazy('signup')),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -68,8 +67,8 @@ class UserUpdateView(UpdateView):
         context['page_description'] = 'Вы можете изменить имя пользователя, адрес электронной почты или личные данные.'
 
         breadcrumbs = [
-            ('Пользователь', '/users/'),
-            ('Редактирование учетной записи', '/users/user_update/'),
+            (self.request.user.username, reverse_lazy('profile')),
+            ('Редактирование учетной записи', reverse_lazy('user_update')),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -88,8 +87,8 @@ class CreateProfileView(CreateView):
         context['page_description'] = 'Перед тем как перейти к созданию резюме, расскажите немного о себе.'
 
         breadcrumbs = [
-            ('Пользователь', '/users/'),
-            ('Создание профиля', '/users/create_profile/'),
+            (self.request.user.username, reverse_lazy('profile')),
+            ('Создание профиля', reverse_lazy('create_profile')),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -136,8 +135,8 @@ class ProfileUpdateView(UpdateView):
         context['page_description'] = 'Добавьте недостающие данные профиля.'
 
         breadcrumbs = [
-            ('Пользователь', '/users/'),
-            ('Редактирование профиля', '/users/profile_update/'),
+            (self.request.user.username, reverse_lazy('profile')),
+            ('Редактирование профиля', reverse_lazy('profile_update')),
         ]
         context['breadcrumbs'] = breadcrumbs
 
@@ -160,12 +159,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        breadcrumbs = [
-            ('Пользователь', 'users/'),
-            ('Профиль', 'users/profile/'),
-        ]
-        context['breadcrumbs'] = breadcrumbs
 
         if self.request.user.is_authenticated:
             username = self.request.user.username
@@ -194,6 +187,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             create_resume_form = CreateResumeForm()
             context['form'] = create_resume_form
 
+            breadcrumbs = [
+                (username, '/users/profile/'),
+            ]
+            context['breadcrumbs'] = breadcrumbs
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -221,8 +219,7 @@ class Login(LoginView):
         context = super().get_context_data(**kwargs)
 
         breadcrumbs = [
-            ('Пользователь', 'users/'),
-            ('Вход', 'users/login/'),
+            ('Авторизация', reverse_lazy('login')),
         ]
         context['breadcrumbs'] = breadcrumbs
 

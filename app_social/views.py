@@ -3,6 +3,7 @@ import json
 from django.db.models import Count, F
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
@@ -113,6 +114,11 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
         else:
             title = 'Обзор'
         context['title'] = title
+
+        breadcrumbs = [
+            ('Обзор', reverse_lazy('resume_list'))
+        ]
+        context['breadcrumbs'] = breadcrumbs
 
         return context
 

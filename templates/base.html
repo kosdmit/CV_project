@@ -20,14 +20,29 @@
       <a class="navbar-brand fs-3 me-5" href="{% url 'main' %}">CV Project</a>
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-dark">Обзор</a></li>
-        <li><a href="{% url 'primary_resume' username=user.username %}" class="nav-link px-2 text-dark">Ваше резюме</a></li>
-        <li><a href="{% url 'profile' %}" class="nav-link px-2 text-dark">Ваш профиль</a></li>
+        <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body">Обзор</a></li>
+        <li>
+          <a class="nav-link px-2 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+              text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
+            Ваше резюме
+          </a>
+        </li>
+        <li>
+          <a class="nav-link px-2 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+              text-body" href="{% url 'profile' %}"{% endif %}>
+            Ваш профиль
+          </a>
+        </li>
       </ul>
 
       <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
             method="get" action="{% url 'resume_list' %}">
-        {{ resume_search_form.search_query }}
+        <div class="input-group">
+          {{ resume_search_form.search_query }}
+          <button type="submit" class="btn btn-secondary">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
       </form>
 
       <div class="text-end">
@@ -56,7 +71,29 @@
 <div class="container-fluid bg-light">
   <div class="container">
     <footer class="py-5">
-      <div class="row">
+      <div class="row d-flex justify-content-around">
+
+        <div class="col-6 col-md-2 mb-3">
+          <h5>CV Project</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="{% url 'main' %}" class="nav-link p-0 text-body">Главная</a></li>
+            <li class="nav-item mb-2"><a href="{% url 'resume_list' %}" class="nav-link p-0 text-body">Обзор</a></li>
+            <li class="nav-item mb-2">
+              <a class="nav-link p-0 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+                  text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
+                Ваше резюме
+              </a>
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link p-0 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+                  text-body" href="{% url 'profile' %}"{% endif %}>
+                Ваш профиль
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!--
         <div class="col-6 col-md-2 mb-3">
           <h5>Section</h5>
           <ul class="nav flex-column">
@@ -78,17 +115,7 @@
             <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
           </ul>
         </div>
-
-        <div class="col-6 col-md-2 mb-3">
-          <h5>Section</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Pricing</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
-          </ul>
-        </div>
+        -->
 
         <div class="col-md-5 offset-md-1 mb-3">
           <form method="post" action="{% url 'add_raw_contact' %}">
