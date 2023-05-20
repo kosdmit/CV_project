@@ -207,7 +207,8 @@ class ResumeIsPrimaryUpdateView(UpdateView):
         return obj
 
 
-class MainEducationCreateView(ResumeBounderMixin,
+class MainEducationCreateView(OpenModalIfSuccessMixin,
+                              ResumeBounderMixin,
                               ResumeValidatorMixin,
                               RatingUpdateForCreateViewMixin,
                               CreateView):

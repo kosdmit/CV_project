@@ -161,7 +161,11 @@
                     {% for institution in institutions %}
                       <li class="list-group-item">
                         <div class="institution-item">
-                          <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
+                          {% if institution.website_url %}
+                            <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
+                          {% else %}
+                            <p class="text-uppercase mb-1">{{ institution.title }}</p>
+                          {% endif %}
                           {% if institution.description %}
                             <p>{{ institution.description }}</p>
                           {% endif %}
@@ -236,21 +240,29 @@
                     <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
                       {% csrf_token %}
                       <div class="input-group my-3">
-                        <span class="input-group-text">Образование и квалификация</span>
+                        <span class="input-group-text flex-grow-1">Указать уровень образования</span>
+                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+                      </div>
+                      <div class="visually-hidden">
                         {{ main_education_form.level }}
                         {{ main_education_form.degree }}
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                       </div>
                     </form>
                   {% endif %}
                 {% endif %}
-                {% if additional_educations %}
+                {% if additional_educations or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>
+                {% endif %}
+                {% if additional_educations %}
                   <ul class="list-group list-group-flush">
                     {% for education in additional_educations %}
                       <li class="list-group-item">
                         <div class="additional-education-item">
-                          <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
+                          {% if education.website_url %}
+                            <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
+                          {% else %}
+                            <p class="text-uppercase mb-1">{{ education.title }}</p>
+                          {% endif %}
                           {% if education.description %}
                             <p>{{ education.description }}</p>
                           {% endif %}
@@ -322,15 +334,23 @@
                     </div>
                   </form>
                 {% endif %}
-                {% if electronic_certificates %}
+                {% if electronic_certificates or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
+                {% endif %}
+                {% if electronic_certificates %}
                   <ul class="list-group list-group mt-3">
                     {% for certificate in electronic_certificates %}
                       <li class="list-group-item">
                         <div class="electronic-certificate-item">
                           <div class="item-header">
                             <div class="ms-2 w-100 me-3">
-                              <div class="mb-2"><a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a></div>
+                              <div class="mb-2">
+                                {% if certificate.certificate_url %}
+                                  <a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a>
+                                {% else %}
+                                  <p class="">{{ certificate.title }}</p>
+                                {% endif %}
+                              </div>
                             </div>
                           </div>
                           <div class="item-body d-flex justify-content-between align-items-start">
@@ -576,7 +596,9 @@
                   <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
                     <!-- <label class="">Добавить отрасль или период работы:</label> -->
-                    <hr>
+                    {% if work_exp_sections %}
+                      <hr>
+                    {% endif %}
                     <div class="input-group my-3">
                       {{ work_exp_section_form.title }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
