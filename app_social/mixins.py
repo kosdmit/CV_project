@@ -37,11 +37,18 @@ class AddLikesIntoContextMixin:
         context = super().get_context_data(**kwargs)
 
         if self.request.user.is_authenticated:
-            user_likes = Like.objects.filter(user=self.request.user).all()
-            user_likes_uuid = []
-            for like in user_likes:
-                user_likes_uuid.append(like.uuid_key)
-            context['users_likes_uuid'] = user_likes_uuid
+            user_likes = Like.objects.filter(owner_id=self.request.user.id).all()
+        else:
+            session_id = self.request.session.session_key
+            if not session_id:
+                self.request.session.save()
+                session_id = self.request.session.session_key
+            user_likes = Like.objects.filter(owner_id=session_id).all()
+
+        user_likes_uuid = []
+        for like in user_likes:
+            user_likes_uuid.append(like.uuid_key)
+        context['users_likes_uuid'] = user_likes_uuid
 
         like_counts_result = Like.objects.values('uuid_key') \
             .order_by('uuid_key') \

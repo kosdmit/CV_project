@@ -6,7 +6,7 @@ from django.db import models
 
 # Create your models here.
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner_id = models.CharField(max_length=40)
     uuid_key = models.UUIDField()
 
     def __str__(self):

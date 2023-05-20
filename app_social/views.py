@@ -21,22 +21,40 @@ class ClickLike(View):
     def post(self, form):
         request_body_data = json.loads(self.request.body.decode('utf-8'))
 
-        existing_like = Like.objects.filter(user=self.request.user, uuid_key=request_body_data['pk']).first()
+        if self.request.user.is_authenticated:
+            existing_like = Like.objects.filter(owner_id=self.request.user.id,
+                                                uuid_key=request_body_data['pk']).first()
+        else:
+            session_id = self.request.session.session_key
+            if not session_id:
+                self.request.session.save()
+                session_id = self.request.session.session_key
+            existing_like = Like.objects.filter(owner_id=session_id,
+                                                uuid_key=request_body_data['pk']).first()
+
         likes_count = Like.objects.filter(uuid_key=request_body_data['pk']).count()
 
         resume = get_resume_by_element_uuid(request_body_data['pk'])
 
         if existing_like:
             existing_like.delete()
-            resume.rating -= RATING_SETTINGS['like']
-            resume.save()
+            if resume:
+                resume.rating -= RATING_SETTINGS['like']
+                resume.save()
             return JsonResponse({'is_liked': False,
                                  'likes_count': likes_count-1})
         else:
-            like = Like(user=self.request.user, uuid_key=request_body_data['pk'])
+            if self.request.user.is_authenticated:
+                like = Like(owner_id=self.request.user.id,
+                            uuid_key=request_body_data['pk'])
+            else:
+                like = Like(owner_id=self.request.session.session_key,
+                            uuid_key=request_body_data['pk'])
+
             like.save()
-            resume.rating += RATING_SETTINGS['like']
-            resume.save()
+            if resume:
+                resume.rating += RATING_SETTINGS['like']
+                resume.save()
             return JsonResponse({'is_liked': True,
                                  'likes_count': likes_count+1})
 
