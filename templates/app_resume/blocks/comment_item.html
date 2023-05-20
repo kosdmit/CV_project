@@ -3,7 +3,7 @@
 {% block comment_item %}
 
   <li class="list-group-item">
-    <div class="comment-item">
+    <div class="comment-item mt-2">
       <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
       <p class="comment-text">{{ comment.message }}</p>
       <form method="post" action="{% url 'comment_update' pk=comment.pk %}"
@@ -16,43 +16,45 @@
           </div>
         </div>
       </form>
-      <div class="item-footer d-flex justify-content-between">
-        <div class="comment-info-block align-self-center">
-          <small class="">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
-          <br>
-          {% if comment.updated_date != comment.created_date %}
-            <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
-          {% endif %}
-        </div>
-        <div class="comment-buttons-block d-flex align-items-end">
-          {% if comment.user == user %}
-            <button type="button" class="btn ms-auto btn-sm edit-comment-button" onclick="toggleCommentEditForm(this)">
-              <i class="fa-regular fa-pen-to-square"></i>
-            </button>
-            <form action="{% url 'comment_delete' pk=comment.pk %}" method="post">
-              {% csrf_token %}
-              <button class="btn ms-auto btn-sm" type="submit">
-                <i class="fa-regular fa-trash-can"></i>
+      <div class="item-footer container p-0">
+        <div class="row">
+          <div class="comment-info-block col-sm-8 mt-2">
+            <small class="">{{ comment.created_date  | date:'d.m.Y G:i' }}</small>
+            <br>
+            {% if comment.updated_date != comment.created_date %}
+              <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
+            {% endif %}
+          </div>
+          <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
+            {% if comment.user == user %}
+              <button type="button" class="btn btn-sm edit-comment-button" onclick="toggleCommentEditForm(this)">
+                <i class="fa-regular fa-pen-to-square"></i>
               </button>
-            </form>
-          {% endif %}
-          <button type="button" class="btn ms-auto btn-sm" id="like-{{ comment.pk }}"
-                  onclick="clickLike('{{ comment.pk }}')">
-            <i class="fa-heart
-              {% if comment.pk in users_likes_uuid %}
-                fa-solid">
-              {% else %}
-                fa-regular">
-              {% endif %}
-            </i>
-            <small>
-              {% if like_counts|get_value_from_dict:comment.pk %}
-                {{ like_counts|get_value_from_dict:comment.pk }}
-              {% else %}
-                0
-              {% endif %}
-            </small>
-          </button>
+              <form action="{% url 'comment_delete' pk=comment.pk %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-sm" type="submit">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </form>
+            {% endif %}
+            <button type="button" class="btn btn-sm" id="like-{{ comment.pk }}"
+                    onclick="clickLike('{{ comment.pk }}')">
+              <i class="fa-heart
+                {% if comment.pk in users_likes_uuid %}
+                  fa-solid">
+                {% else %}
+                  fa-regular">
+                {% endif %}
+              </i>
+              <small>
+                {% if like_counts|get_value_from_dict:comment.pk %}
+                  {{ like_counts|get_value_from_dict:comment.pk }}
+                {% else %}
+                  0
+                {% endif %}
+              </small>
+            </button>
+          </div>
         </div>
       </div>
     </div>

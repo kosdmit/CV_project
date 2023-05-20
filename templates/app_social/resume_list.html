@@ -28,14 +28,14 @@
         <ul class="list-group list-group-flush">
           {% for resume in page_obj %}
             <li class="list-group-item">
-              <div class="resume-item">
+              <div class="resume-item mt-2">
                 <div class="container px-0">
                   <div class="row">
-                    <div class="col-4">
+                    <div class="col-md-4">
                       <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
                       <p class="comment-text">{{ resume.position }}</p>
                     </div>
-                    <div class="col-8">
+                    <div class="col-md-8">
                       {% for skill in resume.skill_set.all %}
                         <button class="btn btn-light position-relative mb-2 me-2 skill-item btn-sm" disabled type="button" id="{{ skill.pk }}">
                           {{ skill.name }}
@@ -45,49 +45,51 @@
                   </div>
                 </div>
 
-                <div class="item-footer d-flex justify-content-between">
-                  <div class="comment-info-block align-self-center">
-                    <small class="">{{ resume.created_date  | date:'d.m.Y G:i' }}</small>
-                    <br>
-                    {% if resume.updated_date != resume.created_date %}
-                      <small class="align-self-center">Отредактировано: {{ resume.updated_date | date:'d.m.Y G:i' }}</small>
-                    {% endif %}
-                  </div>
-                  <div class="comment-buttons-block d-flex align-items-end">
-                    <button type="button" class="btn ms-auto btn-sm like-button" id="like-{{ resume.pk }}"
-                            data-target="{{ resume.pk }}">
-                      <i class="fa-heart
-                        {% if resume.pk in users_likes_uuid %}
-                          fa-solid">
-                        {% else %}
-                          fa-regular">
-                        {% endif %}
-                      </i>
-                      <small>
-                        {% if like_counts|get_value_from_dict:resume.pk %}
-                          {{ like_counts|get_value_from_dict:resume.pk }}
-                        {% else %}
-                          0
-                        {% endif %}
-                      </small>
-                    </button>
-                    <button type="button" class="btn ms-auto btn-sm comment-button" data-target="comments-{{ resume.pk }}">
-                      <i class="fa-regular fa-comment"></i>
-                      <small>
-                        {% if comment_counts|get_value_from_dict:resume.pk %}
-                          {{ comment_counts|get_value_from_dict:resume.pk }}
-                        {% else %}
-                          0
-                        {% endif %}
-                      </small>
-                    </button>
-                    <button type="button" class="btn ms-auto btn-sm rating-button"
-                            data-bs-toggle="tooltip"
-                            data-bs-title="Рейтинг резюме определяется на основе количества
-                            заполненных полей и активности других пользователей">
-                      <i class="fa-regular fa-star"></i>
-                      <small>{{ resume.rating }}</small>
-                    </button>
+                <div class="item-footer container p-0">
+                  <div class="row">
+                    <div class="comment-info-block col-sm-8 mt-2">
+                      <small class="">{{ resume.created_date  | date:'d.m.Y G:i' }}</small>
+                      <br>
+                      {% if resume.updated_date != resume.created_date %}
+                        <small class="align-self-center">Отредактировано: {{ resume.updated_date | date:'d.m.Y G:i' }}</small>
+                      {% endif %}
+                    </div>
+                    <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
+                      <button type="button" class="btn btn-sm like-button" id="like-{{ resume.pk }}"
+                              data-target="{{ resume.pk }}">
+                        <i class="fa-heart
+                          {% if resume.pk in users_likes_uuid %}
+                            fa-solid">
+                          {% else %}
+                            fa-regular">
+                          {% endif %}
+                        </i>
+                        <small>
+                          {% if like_counts|get_value_from_dict:resume.pk %}
+                            {{ like_counts|get_value_from_dict:resume.pk }}
+                          {% else %}
+                            0
+                          {% endif %}
+                        </small>
+                      </button>
+                      <button type="button" class="btn btn-sm comment-button" data-target="comments-{{ resume.pk }}">
+                        <i class="fa-regular fa-comment"></i>
+                        <small>
+                          {% if comment_counts|get_value_from_dict:resume.pk %}
+                            {{ comment_counts|get_value_from_dict:resume.pk }}
+                          {% else %}
+                            0
+                          {% endif %}
+                        </small>
+                      </button>
+                      <button type="button" class="btn btn-sm rating-button"
+                              data-bs-toggle="tooltip"
+                              data-bs-title="Рейтинг резюме определяется на основе количества
+                              заполненных полей и активности других пользователей">
+                        <i class="fa-regular fa-star"></i>
+                        <small>{{ resume.rating }}</small>
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <!-- Hidden -->
@@ -121,7 +123,7 @@
             </li>
           {% endif %}
           <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-            <a class="page-link" href="?page={{ page_obj.count }}" aria-label="Next">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>

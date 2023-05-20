@@ -14,30 +14,42 @@
         </div>
       </div>
       <div class="row mb-5">
-        <div class="col-12">
+        <div class="">
 
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-              <div class="mb-3">
-                <label for="id_birth_date" class="form-label">День вашего рождения:</label>
-                {{ form.birthday_date }}
-                <div id="birthday_dateHelp" class="form-text">Дата рождения используется для расчета вашего возраста в резюме и при восстановлении пароля учетной записи.</div>
+            <div class="container p-0">
+              <div class="row">
+                <div class="mb-3">
+                  <label for="id_birth_date" class="form-label">День вашего рождения:</label>
+                  <div class="col-md-6 col-lg-5">
+                    {{ form.birthday_date }}
+                  </div>
+                  <div id="birthday_dateHelp" class="form-text">Дата рождения используется для расчета вашего возраста в резюме и при восстановлении пароля учетной записи.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="id_gender" class="form-label">Пол:</label>
+                  <div class="col-md-6 col-lg-5">
+                    {{ form.gender }}
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="id_phone_number" class="form-label">Телефон:</label>
+                  <div class="col-md-6 col-lg-5">
+                    {{ form.phone_number }}
+                  </div>
+                  <div id="phone_numberHelp" class="form-text">Укажите действующим номер телефона, чтобы ваш будущий работодатель смог до вас дозвониться.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="id_avatar" class="form-label">Фото профиля:</label>
+                  <div class="col-md-6 col-lg-5">
+                    {{ form.avatar }}
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="id_gender" class="form-label">Пол:</label>
-                {{ form.gender }}
-              </div>
-              <div class="mb-3">
-                <label for="id_phone_number" class="form-label">Телефон:</label>
-                {{ form.phone_number }}
-                <div id="phone_numberHelp" class="form-text">Укажите действующим номер телефона, чтобы ваш будущий работодатель смог до вас дозвониться.</div>
-              </div>
-              <div class="mb-3">
-                <label for="id_avatar" class="form-label">Фото профиля:</label>
-                {{ form.avatar }}
-              </div>
+            </div>
 
-              <button type="submit" class="btn btn-primary">Отправить</button>
+            <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
 
         </div>
