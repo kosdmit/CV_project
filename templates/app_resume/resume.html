@@ -14,14 +14,18 @@
         <div class="col-lg-5 mb-5">
           <div class="rounded-5 bg-light pt-5 pb-1 px-3">
             <div class="hero mb-5">
-              {% if profile.avatar %}
+              {% if owner.profile.avatar %}
                 <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                  <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+                  <img src="{{ owner.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
                        style="object-fit: cover; aspect-ratio: 1 / 1;">
                 </div>
               {% else %}
-                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3">
-                  <p class="mx-auto text-light">Здесь будет ваше фото</p>
+                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
+                  {% if owner == user %}
+                    <p class="mx-auto text-light">Здесь будет ваше фото</p>
+                  {% else %}
+                    <p class="mx-auto text-light">{{ owner.username }}</p>
+                  {% endif %}
                 </div>
               {% endif %}
               {% if owner.first_name and owner.last_name %}
@@ -92,9 +96,12 @@
                 <li class="list-group-item mb-3">
                   <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
                 </li>
-                <li class="list-group-item mb-3">
-                  <h3 class="text-uppercase fs-5 me-3">Телефон:</h3><a href="tel:{{ profile.phone_number }}">{{ profile.phone_number }}</a>
-                </li>
+                {% if owner.profile.phone_number %}
+                  <li class="list-group-item mb-3">
+                    <h3 class="text-uppercase fs-5 me-3">Телефон:</h3>
+                    <a href="tel:{{ owner.profile.phone_number }}">{{ owner.profile.phone_number }}</a>
+                  </li>
+                {% endif %}
                 <li class="list-group-item mb-3">
                   {% include 'app_users/blocks/social_links_block.html' %}
                 </li>
@@ -248,6 +255,8 @@
                         {{ main_education_form.degree }}
                       </div>
                     </form>
+                  {% else %}
+                    <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
                   {% endif %}
                 {% endif %}
                 {% if additional_educations or owner == user %}
@@ -436,6 +445,9 @@
           </div>
           <div class="skills mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
+            {% if not resume.skill_set.count and owner != user %}
+              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+            {% endif %}
             {% for skill in skills %}
               <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="{{ skill.pk }}">
                 {{ skill.name }}
@@ -480,6 +492,9 @@
           </div>
           <div class="work-experience mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
+            {% if not resume.workexpsection_set.count and owner != user %}
+              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+            {% endif %}
             <ul class="list-unstyled">
               <li>
                 {% for section in work_exp_sections %}

@@ -17,12 +17,17 @@ class SignUpUserForm(UserCreationForm):
                                                             }))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                               'area-describedby': 'first_nameHelp',
-                                                               }))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                               'area-describedby': 'last_nameHelp',
-                                                               }))
+    first_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'area-describedby': 'first_nameHelp',
+                                      }))
+
+    last_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'area-describedby': 'last_nameHelp',
+                                      }))
 
     class Meta:
         model = User

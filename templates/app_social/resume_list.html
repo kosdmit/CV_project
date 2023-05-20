@@ -32,7 +32,11 @@
                 <div class="container px-0">
                   <div class="row">
                     <div class="col-md-4">
-                      <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
+                      {% if resume.user.first_name or resume.user.last_name %}
+                        <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
+                      {% else %}
+                        <p class="text-uppercase mb-1">{{ resume.user.username }}</p>
+                      {% endif %}
                       <p class="comment-text">{{ resume.position }}</p>
                     </div>
                     <div class="col-md-8">

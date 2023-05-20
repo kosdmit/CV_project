@@ -1,29 +1,22 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
-from CV_project.settings import RATING_SETTINGS
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
-    ElectronicCertificateForm, ResumeForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
+    ElectronicCertificateForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
     InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm, \
     ResumePositionForm
 from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin, \
-    remove_parameters_from_url, OpenModalIfSuccessMixin, \
+    OpenModalIfSuccessMixin, \
     RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
     WorkExpSection, Job
 from app_social.forms import CommentForm, CommentUpdateForm
-from app_social.mixins import AddLikesIntoContextMixin, \
-    get_resume_by_element_uuid
-from app_social.models import Like, Comment
+from app_social.mixins import AddLikesIntoContextMixin
+from app_social.models import Comment
 from app_users.forms import SocialLinksForm
 from app_users.models import Profile, SocialLinks
-
-from urllib.parse import urlparse, urlunparse
 
 
 # Create your views here.
@@ -48,7 +41,6 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         context['owner'] = owner
 
         profile = Profile.objects.get(user=owner)
-        context['profile'] = profile
 
         try:
             slug = kwargs['slug']
