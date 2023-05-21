@@ -150,7 +150,9 @@
                   <div class="d-sm-flex mb-2 main-education-item">
                     <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ resume.maineducation.get_level }}</h3>
                     <div class="d-flex flex-grow-1">
-                      <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
+                      {% if resume.maineducation.degree != 'Other' %}
+                        <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
+                      {% endif %}
                       <div class="main-education-buttons-block ms-auto">
                         {% if owner == user %}
                           <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ resume.maineducation.pk }}">

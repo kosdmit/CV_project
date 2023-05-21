@@ -1,23 +1,22 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
-from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, AdditionalEducationForm, \
-    ElectronicCertificateForm, AdditionalEducationCreateForm, ElectronicCertificateCreateForm, \
-    InstitutionCreateForm, InstitutionForm, SkillCreateForm, WorkExpSectionForm, JobCreateForm, JobForm, \
-    ResumePositionForm
-from app_resume.mixins import ResumeValidatorMixin, ResumeBounderMixin, \
-    OpenModalIfSuccessMixin, \
-    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, Skill, \
-    WorkExpSection, Job
+from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, \
+    AdditionalEducationForm, ElectronicCertificateForm, AdditionalEducationCreateForm, \
+    ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, SkillCreateForm, \
+    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm
+from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, RatingUpdateForCreateViewMixin,\
+    RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, ResumeValidatorMixin, \
+    WorkExpSectionValidatorMixin
+from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, \
+    ElectronicCertificate, Skill, WorkExpSection, Job
+
 from app_social.forms import CommentForm, CommentUpdateForm
 from app_social.mixins import AddLikesIntoContextMixin
 from app_social.models import Comment
 from app_users.forms import SocialLinksForm
-from app_users.models import Profile, SocialLinks
 
 
 # Create your views here.
@@ -116,7 +115,6 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'skill_create_form': SkillCreateForm(),
             'work_exp_section_form': WorkExpSectionForm(),
             'job_create_form': JobCreateForm(),
-
         }
 
         context.update(owners_forms)
@@ -157,50 +155,47 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         return context
 
 
-class ResumePositionUpdateView(ResumeValidatorMixin, UpdateView):
+class ResumePositionUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     model = Resume
     fields = ['position']
 
 
-class ResumeAboutMeUpdateView(ResumeValidatorMixin, UpdateView):
+class ResumeAboutMeUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     model = Resume
     fields = ['about_me']
 
 
-class ResumeSoftSkillsUpdateView(ResumeValidatorMixin, UpdateView):
+class ResumeSoftSkillsUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     model = Resume
     fields = ['soft_skills']
 
 
-class ResumeIsPrimaryUpdateView(UpdateView):
+class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     model = Resume
     fields = ['is_primary']
-    success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         obj = Resume.objects.get(pk=self.request.POST['is_primary'])
         return obj
 
 
-class MainEducationCreateView(OpenModalIfSuccessMixin,
-                              ResumeBounderMixin,
+class MainEducationCreateView(ResumeBounderMixin,
                               ResumeValidatorMixin,
+                              RefreshIfSuccessMixin,
                               RatingUpdateForCreateViewMixin,
                               CreateView):
     form_class = MainEducationForm
 
 
-class MainEducationUpdateView(UpdateView):
+class MainEducationUpdateView(ResumeValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     form_class = MainEducationForm
     model = MainEducation
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 
 class InstitutionCreateView(OpenModalIfSuccessMixin,
                             ResumeBounderMixin,
                             ResumeValidatorMixin,
+                            RefreshIfSuccessMixin,
                             RatingUpdateForCreateViewMixin,
                             CreateView):
     model = Institution
@@ -209,149 +204,131 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
     def form_valid(self, form):
         self.object = form.save(commit=False)
         resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
-        main_education = MainEducation.objects.get(resume=resume)
-        self.object.main_education = main_education
+        self.object.main_education = resume.maineducation
 
-        super()
         return super().form_valid(form)
 
 
-class InstitutionUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+class InstitutionUpdateView(ResumeValidatorMixin,
+                            RefreshIfSuccessMixin,
+                            UpdateView):
     model = Institution
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date',
               'is_primary']
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
-        main_education = MainEducation.objects.get(resume=resume)
-        self.object.main_education = main_education
 
-        super()
-        return super().form_valid(form)
-
-
-class InstitutionDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
+class InstitutionDeleteView(ResumeValidatorMixin,
+                            RefreshIfSuccessMixin,
+                            RatingUpdateForDeleteViewMixin,
+                            DeleteView):
     model = Institution
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 
 class AdditionalEducationCreateView(OpenModalIfSuccessMixin,
                                     ResumeBounderMixin,
                                     ResumeValidatorMixin,
+                                    RefreshIfSuccessMixin,
                                     RatingUpdateForCreateViewMixin,
                                     CreateView):
     model = AdditionalEducation
     fields = ['title']
 
 
-class AdditionalEducationDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
+class AdditionalEducationDeleteView(ResumeValidatorMixin,
+                                    RatingUpdateForDeleteViewMixin,
+                                    RefreshIfSuccessMixin,
+                                    DeleteView):
     model = AdditionalEducation
 
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
-
-class AdditionalEducationUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+class AdditionalEducationUpdateView(ResumeValidatorMixin,
+                                    RefreshIfSuccessMixin,
+                                    UpdateView):
     model = AdditionalEducation
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
-        main_education = MainEducation.objects.get(resume=resume)
-        self.object.main_education = main_education
-
-        super()
-        return super().form_valid(form)
 
 
 class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
                                       ResumeBounderMixin,
                                       ResumeValidatorMixin,
+                                      RefreshIfSuccessMixin,
                                       RatingUpdateForCreateViewMixin,
                                       CreateView):
     model = ElectronicCertificate
     fields = ['title']
 
 
-class ElectronicCertificateUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+class ElectronicCertificateUpdateView(ResumeValidatorMixin,
+                                      RefreshIfSuccessMixin,
+                                      UpdateView):
     model = ElectronicCertificate
     fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
 
 
-class ElectronicCertificateDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
+class ElectronicCertificateDeleteView(ResumeValidatorMixin,
+                                      RatingUpdateForDeleteViewMixin,
+                                      RefreshIfSuccessMixin,
+                                      DeleteView):
     model = ElectronicCertificate
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 
 class SkillCreateView(ResumeBounderMixin,
                       ResumeValidatorMixin,
+                      RefreshIfSuccessMixin,
                       RatingUpdateForCreateViewMixin,
                       CreateView):
     model = Skill
     fields = ['name']
 
 
-class SkillDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
+class SkillDeleteView(ResumeValidatorMixin,
+                      RefreshIfSuccessMixin,
+                      RatingUpdateForDeleteViewMixin,
+                      DeleteView):
     model = Skill
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 
 class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
                                ResumeBounderMixin,
                                ResumeValidatorMixin,
+                               RefreshIfSuccessMixin,
                                CreateView):
     form_class = WorkExpSectionForm
 
 
-class WorkExpSectionUpdateView(UpdateView):
+class WorkExpSectionUpdateView(ResumeValidatorMixin,
+                               RefreshIfSuccessMixin,
+                               UpdateView):
     form_class = WorkExpSectionForm
     model = WorkExpSection
 
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
-
-class WorkExpSectionDeleteView(DeleteView):
+class WorkExpSectionDeleteView(ResumeValidatorMixin,
+                               RefreshIfSuccessMixin,
+                               DeleteView):
     model = WorkExpSection
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 
 class JobCreateView(OpenModalIfSuccessMixin,
-                    ResumeBounderMixin,
-                    ResumeValidatorMixin,
+                    WorkExpSectionValidatorMixin,
+                    RefreshIfSuccessMixin,
                     RatingUpdateForCreateViewMixin,
                     CreateView):
     model = Job
     fields = ['title']
 
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        work_exp_section = WorkExpSection.objects.get(pk=self.kwargs['section'])
-        self.object.work_exp_section = work_exp_section
 
-        super()
-        return super().form_valid(form)
-
-
-class JobUpdateView(ResumeBounderMixin, ResumeValidatorMixin, UpdateView):
+class JobUpdateView(WorkExpSectionValidatorMixin,
+                    RefreshIfSuccessMixin,
+                    UpdateView):
     form_class = JobForm
     model = Job
 
 
-class JobDeleteView(RatingUpdateForDeleteViewMixin, DeleteView):
+class JobDeleteView(WorkExpSectionValidatorMixin,
+                    RatingUpdateForDeleteViewMixin,
+                    RefreshIfSuccessMixin,
+                    DeleteView):
     model = Job
-
-    def get_success_url(self):
-        return self.request.META['HTTP_REFERER']
 
 

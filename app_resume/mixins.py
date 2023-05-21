@@ -1,29 +1,51 @@
 from urllib.parse import urlparse, urlunparse
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
 
 from CV_project.settings import RATING_SETTINGS
-from app_resume.models import Resume
+from app_resume.models import Resume, WorkExpSection
 from app_social.mixins import get_resume_by_element_uuid
+
+
+class UserValidatorMixin:
+    def form_valid(self, form):
+        if self.request.user != self.object.user:
+            raise PermissionDenied()
+
+        return super().form_valid(form)
 
 
 class ResumeValidatorMixin:
     def form_valid(self, form):
-        if not self.request.user.username == self.kwargs['username']:
-            raise ValidationError(
-                message='Username in URL is not correct',
-                params={'your username': self.request.user.username,
-                        'received username': self.kwargs['username'],
-                        }
-            )
+        users_resumes = self.request.user.resume_set.all()
+        for resume in users_resumes:
+            if resume == self.object.resume:
+                return super().form_valid(form)
+        raise PermissionDenied()
 
-        self.success_url = reverse_lazy('resume', kwargs={'username': self.kwargs['username'],
-                                                          'slug': self.kwargs['slug'],
-                                                          })
-        super()
+
+class WorkExpSectionValidatorMixin:
+    def form_valid(self, form):
+        try:
+            self.object = form.save(commit=False)
+        except AttributeError:
+            pass
+
+        try:
+            work_exp_section = WorkExpSection.objects.get(resume__user=self.request.user,
+                                                          pk=self.kwargs['section'])
+            self.object.work_exp_section = work_exp_section
+        except ObjectDoesNotExist:
+            raise PermissionDenied
+
         return super().form_valid(form)
+
+
+class RefreshIfSuccessMixin:
+    def get_success_url(self):
+        url = self.request.META['HTTP_REFERER']
+        return remove_parameters_from_url(url, 'modal_id')
 
 
 class ResumeBounderMixin:
@@ -32,7 +54,6 @@ class ResumeBounderMixin:
         resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
         self.object.resume = resume
 
-        super()
         return super().form_valid(form)
 
 
