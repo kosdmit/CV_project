@@ -1,12 +1,10 @@
-import re
 import uuid
 
 from autoslug import AutoSlugField
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db import models
 
-from app_resume.validators import percentage_validator, years_interval_validator
+from app_resume.validators import percentage_validator
 
 
 # Create your models here.
@@ -15,7 +13,7 @@ class Resume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    slug = AutoSlugField(populate_from='position')
+    slug = AutoSlugField(populate_from='position', unique_with='user')
     position = models.CharField(max_length=150)
     about_me = models.TextField(blank=True, null=True)
     soft_skills = models.TextField(blank=True, null=True)

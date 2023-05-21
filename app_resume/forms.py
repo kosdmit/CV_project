@@ -1,7 +1,7 @@
 from django import forms
 
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, \
-    WorkExpSection, Job
+from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation,\
+    ElectronicCertificate, WorkExpSection, Job
 
 
 class ResumeForm(forms.ModelForm):

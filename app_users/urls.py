@@ -1,8 +1,7 @@
-from django.contrib import admin
 from django.urls import path
 
-from .views import ProfileView, SignUpView, CreateProfileView, Login, Logout, ProfileUpdateView, UserUpdateView, \
-    SocialLinksUpdateView
+from .views import ProfileView, SignUpView, CreateProfileView, Login, Logout, \
+    ProfileUpdateView, UserUpdateView, SocialLinksUpdateView
 
 urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
