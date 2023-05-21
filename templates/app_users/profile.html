@@ -27,9 +27,9 @@
         <div class="col-lg-5 mb-5">
           <div class="rounded-5 bg-light pt-5 pb-1 px-3">
             <div class="hero mb-5">
-              {% if profile.avatar %}
+              {% if user.profile.avatar %}
                 <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                  <img src="{{ profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+                  <img src="{{ user.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
                        style="object-fit: cover; aspect-ratio: 1 / 1;">
                 </div>
               {% else %}
@@ -74,15 +74,23 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item mb-3">
                 <label for="id_birth_date" class="form-label">Дата рождения:</label>
-                {{ profile.birthday_date }}
+                {% if user.profile.birthday_date %}
+                  {{ user.profile.birthday_date }}
+                {% else %}
+                  <p class="text-body-secondary d-inline">Не указано</p>
+                {% endif %}
               </li>
               <li class="list-group-item mb-3">
                 <label for="id_gender" class="form-label">Пол:</label>
-                {{ profile.get_gender }}
+                {{ user.profile.get_gender }}
               </li>
               <li class="list-group-item mb-3">
                 <label for="id_phone_number" class="form-label">Телефон:</label>
-                {{ profile.phone_number }}
+                {% if user.profile.phone_number %}
+                  {{ user.profile.phone_number }}
+                {% else %}
+                  <p class="text-body-secondary d-inline">Не указан</p>
+                {% endif %}
               </li>
             </ul>
             <a href="{% url 'profile_update' %}" class="btn btn-secondary">Редактировать профиль</a>
@@ -90,11 +98,11 @@
           </div>
           <div class="resume-list mb-5">
             <h3 class="text-uppercase fs-5">Ваши резюме</h3>
-            {% if resume_list %}
+            {% if user.resume_set.all %}
               <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
                 {% csrf_token %}
                 <div class="list-group my-3">
-                  {% for resume, radio in resume_list|zip:primary_resume_select_form.is_primary %}
+                  {% for resume, radio in user.resume_set.all|zip:primary_resume_select_form.is_primary %}
                     <a href="{% url 'resume' username=user.username slug=resume.slug %}"
                        class="list-group-item list-group-item-action
                        {% if resume.is_primary %} active{% endif %}" aria-current="true">

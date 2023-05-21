@@ -1,21 +1,16 @@
-import uuid
-
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView
+from django.views.generic import TemplateView, CreateView, UpdateView
 
-import app_users
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
 from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm, \
     PrimaryResumeSelectForm, UserUpdateForm, SocialLinksForm
 from django.contrib.auth.models import User
-
 from django.shortcuts import render, redirect
 
 
@@ -49,11 +44,11 @@ class UserUpdateView(UpdateView):
     template_name = 'app_users/user_update.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = User.objects.get(pk=self.request.user.pk)
+        self.object = self.request.user
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
-        self.object = User.objects.get(pk=self.request.user.pk)
+        self.object = self.request.user
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
@@ -117,11 +112,11 @@ class ProfileUpdateView(UpdateView):
     template_name = 'app_users/create_profile.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = Profile.objects.get(user=self.request.user)
+        self.object = self.request.user.profile
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
-        self.object = Profile.objects.get(user=self.request.user)
+        self.object = self.request.user.profile
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
@@ -166,17 +161,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             context['user'] = user
             context['owner'] = user
 
-            profile = Profile.objects.filter(user=self.request.user).first()
-            context['profile'] = profile
-
-            social_links = SocialLinks.objects.filter(profile=profile).first()
-            context['social_links'] = social_links
-
-            social_links_form = SocialLinksForm(instance=social_links)
+            social_links_form = SocialLinksForm(instance=user.profile.sociallinks)
             context['social_links_form'] = social_links_form
-
-            resume_list = Resume.objects.filter(profile=profile)
-            context['resume_list'] = resume_list
 
             primary_resume_instance = Resume.objects.filter(user=self.request.user, is_primary=True).first()
             primary_resume_select_form = PrimaryResumeSelectForm(
@@ -185,8 +171,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             )
             context['primary_resume_select_form'] = primary_resume_select_form
 
-            create_resume_form = CreateResumeForm()
-            context['form'] = create_resume_form
+            context['form'] = CreateResumeForm()
 
             breadcrumbs = [
                 (username, '/users/profile/'),

@@ -6,9 +6,9 @@ from django.db import models
 # Create your models here.
 class Profile(models.Model):
     GENDERS = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Other'),
+        ('M', 'Муж'),
+        ('F', 'Жен'),
+        ('O', 'Другой'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
