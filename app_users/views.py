@@ -164,6 +164,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             username = self.request.user.username
             user = User.objects.get(username=username)
             context['user'] = user
+            context['owner'] = user
 
             profile = Profile.objects.filter(user=self.request.user).first()
             context['profile'] = profile

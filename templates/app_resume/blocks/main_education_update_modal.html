@@ -2,10 +2,10 @@
 
 {% block main_education_update_modal %}
 
-  <div class="modal fade" id="{{ main_education.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="{{ resume.maineducation.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form method="post" action="{% url 'main_education_update' username=user.username slug=resume.slug pk=main_education.pk %}">
+        <form method="post" action="{% url 'main_education_update' username=user.username slug=resume.slug pk=resume.maineducation.pk %}">
           {% csrf_token %}
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>

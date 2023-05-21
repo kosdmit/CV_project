@@ -3,8 +3,8 @@
 
     <div class="sharebuttons btn-group btn-group-lg btn-group-justified">
       <!-- Twitter -->
-      {% if social_links.twitter %}
-        <a class="btn text-white" style="background-color: #55acee;" href="{{ social_links.twitter }}"
+      {% if owner.profile.sociallinks.twitter %}
+        <a class="btn text-white" style="background-color: #55acee;" href="{{ owner.profile.sociallinks.twitter }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-twitter"></i>
         </a>
@@ -28,8 +28,8 @@
         </button>
       {% endif %}
       <!-- Facebook -->
-      {% if social_links.facebook %}
-        <a class="btn text-white" id="fb-link" style="background-color: #3b5998;" href="{{ social_links.facebook }}"
+      {% if owner.profile.sociallinks.facebook %}
+        <a class="btn text-white" id="fb-link" style="background-color: #3b5998;" href="{{ owner.profile.sociallinks.facebook }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-facebook-f social-logo"></i>
         </a>
@@ -53,8 +53,8 @@
         </button>
       {% endif %}
       <!-- Instagram -->
-      {% if social_links.instagram %}
-        <a class="btn text-white" id="instagram-link" style="background-color: #ac2bac;" href="{{ social_links.instagram }}"
+      {% if owner.profile.sociallinks.instagram %}
+        <a class="btn text-white" id="instagram-link" style="background-color: #ac2bac;" href="{{ owner.profile.sociallinks.instagram }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-instagram social-logo"></i>
         </a>
@@ -78,8 +78,8 @@
         </button>
       {% endif %}
       <!-- Linkedin -->
-      {% if social_links.linked_in %}
-        <a class="btn text-white" id="linkedin-link" style="background-color: #0082ca;" href="{{ social_links.linked_in }}"
+      {% if owner.profile.sociallinks.linked_in %}
+        <a class="btn text-white" id="linkedin-link" style="background-color: #0082ca;" href="{{ owner.profile.sociallinks.linked_in }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-linkedin-in social-logo"></i>
         </a>
@@ -103,8 +103,8 @@
         </button>
       {% endif %}
       <!-- Vkontakte -->
-      {% if social_links.vk %}
-        <a class="btn text-white" id="vk-link" style="background-color: #4c75a3;" href="{{ social_links.vk }}"
+      {% if owner.profile.sociallinks.vk %}
+        <a class="btn text-white" id="vk-link" style="background-color: #4c75a3;" href="{{ owner.profile.sociallinks.vk }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-vk social-logo"></i>
         </a>
@@ -128,8 +128,8 @@
         </button>
       {% endif %}
       <!-- Github -->
-      {% if social_links.git_hub %}
-        <a class="btn text-white" id="github-link" style="background-color: #333333;" href="{{ social_links.git_hub }}"
+      {% if owner.profile.sociallinks.git_hub %}
+        <a class="btn text-white" id="github-link" style="background-color: #333333;" href="{{ owner.profile.sociallinks.git_hub }}"
            role="button" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-github social-logo"></i>
         </a>

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
@@ -40,108 +41,34 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         owner = User.objects.get(username=kwargs['username'])
         context['owner'] = owner
 
-        profile = Profile.objects.get(user=owner)
-
         try:
             slug = kwargs['slug']
-            resume = Resume.objects.get(slug=slug, profile=profile)
+            resume = Resume.objects.get(slug=slug, profile=owner.profile)
         except KeyError:
-            slug = ''
-            resume = Resume.objects.get(profile=profile, is_primary=True)
+            resume = Resume.objects.get(profile=owner.profile, is_primary=True)
         context['resume'] = resume
 
-        resume_position_form = ResumePositionForm(instance=resume)
-        context['resume_position_form'] = resume_position_form
+        try:
+            main_education = resume.maineducation
+        except MainEducation.DoesNotExist:
+            main_education = None
 
-        resume_about_me_form = ResumeAboutMeForm(instance=resume)
-        context['resume_about_me_form'] = resume_about_me_form
-
-        resume_soft_skills_form = ResumeSoftSkillsForm(instance=resume)
-        context['resume_soft_skills_form'] = resume_soft_skills_form
-
-        social_links = SocialLinks.objects.filter(profile=profile).first()
-        context['social_links'] = social_links
-
-        social_links_form = SocialLinksForm(instance=social_links)
-        context['social_links_form'] = social_links_form
-
-        main_education = MainEducation.objects.filter(resume=resume).first()
-        context['main_education'] = main_education
-
-        main_education_form = MainEducationForm(instance=main_education)
-        context['main_education_form'] = main_education_form
-
-        institutions = Institution.objects.filter(main_education=main_education)
-        context['institutions'] = institutions
-
-        context['institution_forms'] = {}
-        for institution in institutions:
-            institution_form = InstitutionForm(instance=institution)
-            context['institution_forms'][institution] = institution_form
-
-        institution_create_form = InstitutionCreateForm()
-        context['institution_create_form'] = institution_create_form
-
-        additional_educations = AdditionalEducation.objects.filter(resume=resume)
-        context['additional_educations'] = additional_educations
-
-        context['additional_education_forms'] = {}
-        for education in additional_educations:
-            additional_education_form = AdditionalEducationForm(instance=education)
-            context['additional_education_forms'][education] = additional_education_form
-
-        additional_education_create_form = AdditionalEducationCreateForm()
-        context['additional_education_create_form'] = additional_education_create_form
-
-        electronic_certificates = ElectronicCertificate.objects.filter(resume=resume)
-        context['electronic_certificates'] = electronic_certificates
-
-        context['electronic_certificate_forms'] = {}
-        for certificate in electronic_certificates:
-            electronic_certificate_form = ElectronicCertificateForm(
-                instance=certificate,
-                auto_id=f"id_%s_{certificate.pk}"
-            )
-            context['electronic_certificate_forms'][certificate] = electronic_certificate_form
-
-        electronic_certificate_create_form = ElectronicCertificateCreateForm()
-        context['electronic_certificate_create_form'] = electronic_certificate_create_form
-
-        skills = Skill.objects.filter(resume=resume)
-        context['skills'] = skills
-
-        skill_create_form = SkillCreateForm()
-        context['skill_create_form'] = skill_create_form
-
-        work_exp_sections = WorkExpSection.objects.filter(resume=resume)
-        context['work_exp_sections'] = work_exp_sections
-
-        work_exp_section_form = WorkExpSectionForm()
-        context['work_exp_section_form'] = work_exp_section_form
-
-        context['work_exp_section_update_forms'] = {}
-        for section in work_exp_sections:
-            work_exp_section_update_form = WorkExpSectionForm(
-                instance=section,
-                auto_id=f"id_%s_{section.pk}"
-            )
-            context['work_exp_section_update_forms'][section] = work_exp_section_update_form
+        if self.request.user.is_authenticated and self.request.user == owner:
+            context = self.add_owners_forms(context, owner, resume, main_education)
 
         context['jobs_in_sections'] = {}
-        for section in work_exp_sections:
+        for section in resume.workexpsection_set.all():
             jobs = Job.objects.filter(work_exp_section=section)
             job_form_dicts = []
             for job in jobs:
-                job_update_form = JobForm(instance=job)
-                job_form_dicts.append({'job': job,
-                                       'job_update_form': job_update_form})
+                if self.request.user == owner:
+                    job_update_form = JobForm(instance=job)
+                    job_form_dicts.append({'job': job,
+                                           'job_update_form': job_update_form})
+                else:
+                    job_form_dicts.append({'job': job})
+
             context['jobs_in_sections'][section] = job_form_dicts
-
-        job_create_form = JobCreateForm()
-        context['job_create_form'] = job_create_form
-
-        comment_form = CommentForm()
-        context['comment_form'] = comment_form
 
         uuid_with_comments = Comment.objects.filter(
             user__resume__id=resume.pk) \
@@ -152,10 +79,13 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         for uuid_key in uuid_with_comments:
             comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key)
             for comment in comments[uuid_key]:
-                comment_edit_forms[comment.pk] = CommentUpdateForm(
-                    instance=comment)
+                if comment.user == self.request.user:
+                    comment_edit_forms[comment.pk] = CommentUpdateForm(
+                        instance=comment)
         context['comments'] = comments
         context['comment_edit_forms'] = comment_edit_forms
+
+        context['comment_form'] = CommentForm()
 
         comment_counts_result = Comment.objects.values('uuid_key') \
             .order_by('uuid_key') \
@@ -170,6 +100,59 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             (resume.position, ''),
         ]
         context['breadcrumbs'] = breadcrumbs
+
+        return context
+
+    @staticmethod
+    def add_owners_forms(context, owner, resume, main_education):
+        owners_forms = {
+            'resume_position_form': ResumePositionForm(instance=resume),
+            'resume_about_me_form': ResumeAboutMeForm(instance=resume),
+            'resume_soft_skills_form': ResumeSoftSkillsForm(instance=resume),
+            'social_links_form': SocialLinksForm(instance=owner.profile.sociallinks),
+            'main_education_form': MainEducationForm(instance=main_education),
+            'additional_education_create_form': AdditionalEducationCreateForm(),
+            'electronic_certificate_create_form': ElectronicCertificateCreateForm(),
+            'skill_create_form': SkillCreateForm(),
+            'work_exp_section_form': WorkExpSectionForm(),
+            'job_create_form': JobCreateForm(),
+
+        }
+
+        context.update(owners_forms)
+
+        if main_education:
+            context['institution_forms'] = {}
+            for institution in resume.maineducation.institution_set.all():
+                institution_form = InstitutionForm(instance=institution)
+                context['institution_forms'][institution] = institution_form
+
+            context['institution_create_form'] = InstitutionCreateForm()
+
+        context['additional_education_forms'] = {}
+        for education in resume.additionaleducation_set.all():
+            additional_education_form = AdditionalEducationForm(
+                instance=education)
+            context['additional_education_forms'][
+                education] = additional_education_form
+
+        context['electronic_certificate_forms'] = {}
+        for certificate in resume.electroniccertificate_set.all():
+            electronic_certificate_form = ElectronicCertificateForm(
+                instance=certificate,
+                auto_id=f"id_%s_{certificate.pk}"
+            )
+            context['electronic_certificate_forms'][
+                certificate] = electronic_certificate_form
+
+        context['work_exp_section_update_forms'] = {}
+        for section in resume.workexpsection_set.all():
+            work_exp_section_update_form = WorkExpSectionForm(
+                instance=section,
+                auto_id=f"id_%s_{section.pk}"
+            )
+            context['work_exp_section_update_forms'][
+                section] = work_exp_section_update_form
 
         return context
 

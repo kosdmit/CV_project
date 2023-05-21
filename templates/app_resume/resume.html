@@ -146,14 +146,14 @@
             <h2 class="text-uppercase"><i class="fa-solid fa-medal title-icon fs-1 me-3 mb-1"></i>Образование</h2>
             <ul class="list-unstyled">
               <li>
-                {% if main_education %}
+                {% if resume.maineducation %}
                   <div class="d-sm-flex mb-2 main-education-item">
-                    <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ main_education.get_level }}</h3>
+                    <h3 class="text-uppercase fs-5 me-3 mb-0 py-1">{{ resume.maineducation.get_level }}</h3>
                     <div class="d-flex flex-grow-1">
-                      <p class="text-uppercase mb-0 py-1">// {{ main_education.get_degree.upper }}</p>
+                      <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
                       <div class="main-education-buttons-block ms-auto">
                         {% if owner == user %}
-                          <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ main_education.pk }}">
+                          <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ resume.maineducation.pk }}">
                             <i class="fa-regular fa-pen-to-square"></i>
                           </button>
                         {% endif %}
@@ -165,7 +165,7 @@
                     {% include 'app_resume/blocks/main_education_update_modal.html' %}
                   {% endif %}
                   <ul class="list-group list-group-flush">
-                    {% for institution in institutions %}
+                    {% for institution in resume.maineducation.institution_set.all %}
                       <li class="list-group-item">
                         <div class="institution-item">
                           {% if institution.website_url %}
@@ -259,12 +259,12 @@
                     <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
                   {% endif %}
                 {% endif %}
-                {% if additional_educations or owner == user %}
+                {% if resume.additionaleducation_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>
                 {% endif %}
-                {% if additional_educations %}
+                {% if resume.additionaleducation_set.all%}
                   <ul class="list-group list-group-flush">
-                    {% for education in additional_educations %}
+                    {% for education in resume.additionaleducation_set.all %}
                       <li class="list-group-item">
                         <div class="additional-education-item">
                           {% if education.website_url %}
@@ -343,12 +343,12 @@
                     </div>
                   </form>
                 {% endif %}
-                {% if electronic_certificates or owner == user %}
+                {% if resume.electroniccertificate_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
                 {% endif %}
-                {% if electronic_certificates %}
+                {% if resume.electroniccertificate_set.all %}
                   <ul class="list-group list-group mt-3">
-                    {% for certificate in electronic_certificates %}
+                    {% for certificate in resume.electroniccertificate_set.all %}
                       <li class="list-group-item">
                         <div class="electronic-certificate-item">
                           <div class="item-header">
@@ -448,7 +448,7 @@
             {% if not resume.skill_set.count and owner != user %}
               <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
             {% endif %}
-            {% for skill in skills %}
+            {% for skill in resume.skill_set.all %}
               <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="{{ skill.pk }}">
                 {{ skill.name }}
                 {% if owner == user %}
@@ -497,7 +497,7 @@
             {% endif %}
             <ul class="list-unstyled">
               <li>
-                {% for section in work_exp_sections %}
+                {% for section in resume.workexpsection_set.all %}
                   <div class="d-sm-flex mb-2 align-items-center work-exp-section-item">
                     <h3 class="text-uppercase fs-5 me-3 mb-0">{{ section.title }}</h3>
                     <div class="d-flex flex-grow-1">
@@ -611,7 +611,7 @@
                   <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
                     <!-- <label class="">Добавить отрасль или период работы:</label> -->
-                    {% if work_exp_sections %}
+                    {% if resume.workexpsection_set.all %}
                       <hr>
                     {% endif %}
                     <div class="input-group my-3">
