@@ -1,10 +1,10 @@
 from urllib.parse import urlparse, urlunparse
 
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
 
 from app_resume.models import Resume
-from app_social.forms import CommentForm, CommentUpdateForm
-from app_social.models import Like, Comment
+from app_social.models import Like
 
 
 def remove_parameters_from_url(url, *args):
@@ -73,3 +73,12 @@ def get_resume_by_element_uuid(uuid):
     ).distinct().first()
 
     return resume
+
+
+class OwnerValidatorMixin:
+    def form_valid(self, form):
+        if self.request.user.is_authenticated and self.object.user == self.request.user \
+                or self.object.owner_id == self.request.session.session_key:
+            return super().form_valid(form)
+        else:
+            raise PermissionDenied

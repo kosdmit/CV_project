@@ -78,7 +78,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         for uuid_key in uuid_with_comments:
             comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
             for comment in comments[uuid_key]:
-                if comment.user == self.request.user:
+                if comment.owner_id == self.request.user or self.request.session.session_key:
                     comment_edit_forms[comment.pk] = CommentUpdateForm(
                         instance=comment)
         context['comments'] = comments

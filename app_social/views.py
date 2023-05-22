@@ -1,18 +1,16 @@
 import json
 
-from django.db.models import Count, F
+from django.db.models import Count
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
 from CV_project.settings import RATING_SETTINGS
-from app_resume.mixins import remove_parameters_from_url
 from app_resume.models import Resume
 from app_social.forms import CommentForm, CommentUpdateForm
-from app_social.mixins import OpenCommentModalIfSuccess, \
-    AddLikesIntoContextMixin, get_resume_by_element_uuid
+from app_social.mixins import OpenCommentModalIfSuccess, AddLikesIntoContextMixin,\
+    get_resume_by_element_uuid, OwnerValidatorMixin
 from app_social.models import Like, Comment
 
 
@@ -23,16 +21,19 @@ class ClickLike(View):
 
         if self.request.user.is_authenticated:
             existing_like = Like.objects.filter(owner_id=self.request.user.id,
-                                                uuid_key=request_body_data['pk']).first()
+                                                uuid_key=request_body_data[
+                                                    'pk']).first()
         else:
             session_id = self.request.session.session_key
             if not session_id:
                 self.request.session.save()
                 session_id = self.request.session.session_key
             existing_like = Like.objects.filter(owner_id=session_id,
-                                                uuid_key=request_body_data['pk']).first()
+                                                uuid_key=request_body_data[
+                                                    'pk']).first()
 
-        likes_count = Like.objects.filter(uuid_key=request_body_data['pk']).count()
+        likes_count = Like.objects.filter(
+            uuid_key=request_body_data['pk']).count()
 
         resume = get_resume_by_element_uuid(request_body_data['pk'])
 
@@ -42,7 +43,7 @@ class ClickLike(View):
                 resume.rating -= RATING_SETTINGS['like']
                 resume.save()
             return JsonResponse({'is_liked': False,
-                                 'likes_count': likes_count-1})
+                                 'likes_count': likes_count - 1})
         else:
             if self.request.user.is_authenticated:
                 like = Like(owner_id=self.request.user.id,
@@ -56,7 +57,7 @@ class ClickLike(View):
                 resume.rating += RATING_SETTINGS['like']
                 resume.save()
             return JsonResponse({'is_liked': True,
-                                 'likes_count': likes_count+1})
+                                 'likes_count': likes_count + 1})
 
 
 class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
@@ -80,7 +81,7 @@ class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
         return super().form_valid(form)
 
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(OpenCommentModalIfSuccess, OwnerValidatorMixin, DeleteView):
     model = Comment
 
     def get_success_url(self):
@@ -94,7 +95,7 @@ class CommentDeleteView(DeleteView):
         return super().form_valid(form)
 
 
-class CommentUpdateView(OpenCommentModalIfSuccess, UpdateView):
+class CommentUpdateView(OwnerValidatorMixin, OpenCommentModalIfSuccess, UpdateView):
     model = Comment
     fields = ['message']
 
@@ -108,19 +109,21 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
 
-        comment_form = CommentForm()
-        context['comment_form'] = comment_form
+        context['comment_form'] = CommentForm()
 
-        uuid_with_comments = Comment.objects.filter(uuid_key__in=Resume.objects.values('pk'))\
+        uuid_with_comments = Comment.objects.filter(
+            uuid_key__in=Resume.objects.values('pk')) \
             .values_list('uuid_key', flat=True).distinct()
 
         comments = {}
         comment_edit_forms = {}
         for uuid_key in uuid_with_comments:
-            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
+            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key,
+                                                        is_approved=True)
             for comment in comments[uuid_key]:
-                comment_edit_forms[comment.pk] = CommentUpdateForm(
-                    instance=comment)
+                if comment.owner_id == self.request.user.pk or self.request.session.session_key
+                    comment_edit_forms[comment.pk] = CommentUpdateForm(
+                        instance=comment)
         context['comments'] = comments
         context['comment_edit_forms'] = comment_edit_forms
 
@@ -149,11 +152,8 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
     def get_queryset(self):
         self.search_query = self.request.GET.get('search_query')
         if self.search_query:
-            query_set = Resume.objects.filter(position__icontains=self.search_query)
+            query_set = Resume.objects.filter(
+                position__icontains=self.search_query)
             return query_set
         else:
             return super().get_queryset()
-
-
-
-
