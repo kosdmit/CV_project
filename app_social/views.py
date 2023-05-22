@@ -64,9 +64,14 @@ class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.user = self.request.user
         self.object.uuid_key = self.kwargs['pk']
-        self.object.is_approved = True
+        if self.request.user.is_authenticated:
+            self.object.is_approved = True
+            self.object.owner_id = self.request.user.pk
+            self.object.user = self.request.user
+        else:
+            self.object.is_approved = False
+            self.object.owner_id = self.request.session.session_key
 
         resume = get_resume_by_element_uuid(self.kwargs['pk'])
         resume.rating += RATING_SETTINGS['comment']
@@ -112,14 +117,15 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
         comments = {}
         comment_edit_forms = {}
         for uuid_key in uuid_with_comments:
-            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key)
+            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
             for comment in comments[uuid_key]:
                 comment_edit_forms[comment.pk] = CommentUpdateForm(
                     instance=comment)
         context['comments'] = comments
         context['comment_edit_forms'] = comment_edit_forms
 
-        comment_counts_result = Comment.objects.values('uuid_key') \
+        comment_counts_result = Comment.objects.filter(is_approved=True) \
+            .values('uuid_key') \
             .order_by('uuid_key') \
             .annotate(count=Count('uuid_key'))
         comment_counts = {}

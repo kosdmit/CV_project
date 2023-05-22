@@ -14,7 +14,8 @@ class Like(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    owner_id = models.CharField(max_length=40)
     uuid_key = models.UUIDField()
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)

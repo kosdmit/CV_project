@@ -76,7 +76,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         comments = {}
         comment_edit_forms = {}
         for uuid_key in uuid_with_comments:
-            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key)
+            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
             for comment in comments[uuid_key]:
                 if comment.user == self.request.user:
                     comment_edit_forms[comment.pk] = CommentUpdateForm(
@@ -86,7 +86,8 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
         context['comment_form'] = CommentForm()
 
-        comment_counts_result = Comment.objects.values('uuid_key') \
+        comment_counts_result = Comment.objects.filter(is_approved=True) \
+            .values('uuid_key') \
             .order_by('uuid_key') \
             .annotate(count=Count('uuid_key'))
         comment_counts = {}
