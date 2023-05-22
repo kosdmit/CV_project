@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from django.forms.renderers import TemplatesSetting
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -143,4 +144,12 @@ RATING_SETTINGS = {
     'like': 1,
     'comment': 2,
     'content': 3,
+}
+
+MESSAGE_TAGS = {
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-primary",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
 }

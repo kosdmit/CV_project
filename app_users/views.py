@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -210,6 +211,10 @@ class Login(LoginView):
         context['breadcrumbs'] = breadcrumbs
 
         return context
+
+    def form_invalid(self, form):
+        messages.warning(self.request, 'Неверное имя пользователя или пароль.')
+        return super().form_invalid(form)
 
 
 class Logout(LogoutView):
