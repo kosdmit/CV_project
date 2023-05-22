@@ -87,12 +87,13 @@ WSGI_APPLICATION = 'CV_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if os.environ.get('DJANGO_DATABASE') == 'postgres':
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "OPTIONS": {
-                "service": "my_service",
-                "passfile": ".my_pgpass",
-            },
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'cvproject_db',
+            'USER': 'cvproject_user',
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
 else:
