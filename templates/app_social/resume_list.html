@@ -12,11 +12,10 @@
         <div class="col-12">
           <h1>{{ title }}</h1>
           <p>
-            Привет,
-            {% if user.first_name %}
-              {{ user.first_name }}!
-            {% else %}
-              {{ user.username }}!
+            {% if user.is_authenticated and user.first_name %}
+              Привет, {{ user.first_name }}!
+            {% elif user.is_authenticated %}
+              Привет, {{ user.username }}!
             {% endif %}
             На этой странице вы можете посмотреть резюме других пользователей.
             Они располагаются в порядке их рейтинга. Рейтинг можно увеличить

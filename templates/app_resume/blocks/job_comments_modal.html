@@ -17,6 +17,7 @@
             {% for comment in comments|get_value_from_dict:job_form_dict.job.pk %}
               {% include 'app_resume/blocks/comment_item.html' %}
             {% endfor %}
+            {% include 'app_social/blocks/comment_info_messages_block.html' %}
           </ul>
           <form method="post" action="{% url 'comment_create' pk=job_form_dict.job.pk %}">
             {% csrf_token %}

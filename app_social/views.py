@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.db.models import Count
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -73,6 +74,8 @@ class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
         else:
             self.object.is_approved = False
             self.object.owner_id = self.request.session.session_key
+            messages.info(self.request, f'Ваше сообщение появится после проверки администратором.'
+                                        f' <a href="{reverse_lazy("signup")}">Зарегистрируйтесь</a>, чтобы сообщения появлялись сразу.')
 
         resume = get_resume_by_element_uuid(self.kwargs['pk'])
         resume.rating += RATING_SETTINGS['comment']
