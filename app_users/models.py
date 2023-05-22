@@ -10,7 +10,7 @@ class Profile(models.Model):
         ('O', 'Другой'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, editable=False)
 
     birthday_date = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=6, blank=True, null=True, choices=GENDERS)
@@ -20,10 +20,13 @@ class Profile(models.Model):
     def get_gender(self):
         return dict(self.GENDERS).get(self.gender)
 
+    def __str__(self):
+        return f'{self.user.username}`s Profile object'
+
 
 class SocialLinks(models.Model):
-    profile = models.OneToOneField('Profile', on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile = models.OneToOneField('Profile', on_delete=models.CASCADE, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, editable=False)
 
     twitter = models.URLField(blank=True, null=True)
     facebook = models.URLField(blank=True, null=True)
@@ -36,3 +39,6 @@ class SocialLinks(models.Model):
     class Meta:
         verbose_name = "Social Links"
         verbose_name_plural = "Social Links"
+
+    def __str__(self):
+        return f'{self.user.username}`s SocialLinks object'

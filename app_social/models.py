@@ -14,9 +14,9 @@ class Like(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    owner_id = models.CharField(max_length=40)
-    uuid_key = models.UUIDField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, editable=False)
+    owner_id = models.CharField(max_length=40, editable=False)
+    uuid_key = models.UUIDField(editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     message = models.TextField()
@@ -24,4 +24,10 @@ class Comment(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     is_approved = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.user:
+            return f"Comment by {self.user.username}"
+        else:
+            return f"Comment by unknown user"
 

@@ -7,10 +7,16 @@ from django.db import models
 from app_resume.validators import percentage_validator
 
 
+class RepresentationForResumesObjectMixin:
+    def __str__(self):
+        return f'{type(self).__name__} object for {self.resume.position}' \
+               f' resume by {self.resume.user.username}'
+
+
 # Create your models here.
 class Resume(models.Model):
-    profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey('app_users.Profile', on_delete=models.CASCADE, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     slug = AutoSlugField(populate_from='position', unique_with='user')
@@ -33,8 +39,11 @@ class Resume(models.Model):
                 pass
         super(Resume, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return f'Resume object for {self.position} position by {self.user.username}'
 
-class MainEducation(models.Model):
+
+class MainEducation(RepresentationForResumesObjectMixin, models.Model):
     EDUCATION_LEVELS = [
         ('Basic General', 'Основное общее образование'),
         ('Secondary General', 'Cреднее (полное) общее образование'),
@@ -49,7 +58,7 @@ class MainEducation(models.Model):
         ('Master', 'Магистр'),
     ]
 
-    resume = models.OneToOneField('Resume', on_delete=models.CASCADE)
+    resume = models.OneToOneField('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     level = models.CharField(max_length=25, choices=EDUCATION_LEVELS)
@@ -62,9 +71,9 @@ class MainEducation(models.Model):
         return dict(self.DEGREES).get(self.degree)
 
 
-class Institution(models.Model):
-    main_education = models.ForeignKey('MainEducation', on_delete=models.CASCADE)
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
+class Institution(RepresentationForResumesObjectMixin, models.Model):
+    main_education = models.ForeignKey('MainEducation', on_delete=models.CASCADE, editable=False)
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
@@ -86,8 +95,8 @@ class Institution(models.Model):
         super().save(*args, **kwargs)
 
 
-class AdditionalEducation(models.Model):
-    resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
+class AdditionalEducation(RepresentationForResumesObjectMixin, models.Model):
+    resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
@@ -97,11 +106,11 @@ class AdditionalEducation(models.Model):
     completion_date = models.DateField(blank=True, null=True)
 
 
-class ElectronicCertificate(models.Model):
-    resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
+class ElectronicCertificate(RepresentationForResumesObjectMixin, models.Model):
+    resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    slug = AutoSlugField(populate_from='title')
+    slug = AutoSlugField(populate_from='title', unique_with='resume')
     title = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True, null=True)
     certificate = models.FileField(upload_to='files/certificates/', blank=True, null=True)
@@ -109,8 +118,8 @@ class ElectronicCertificate(models.Model):
     completion_date = models.DateField(blank=True, null=True)
 
 
-class Skill(models.Model):
-    resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
+class Skill(RepresentationForResumesObjectMixin, models.Model):
+    resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=45)
@@ -118,8 +127,8 @@ class Skill(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
 
-class WorkExpSection(models.Model):
-    resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
+class WorkExpSection(RepresentationForResumesObjectMixin, models.Model):
+    resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
@@ -128,7 +137,7 @@ class WorkExpSection(models.Model):
 
 
 class Job(models.Model):
-    work_exp_section = models.ForeignKey('WorkExpSection', on_delete=models.CASCADE)
+    work_exp_section = models.ForeignKey('WorkExpSection', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
@@ -142,3 +151,7 @@ class Job(models.Model):
     position = models.CharField(max_length=150, blank=True, null=True)
     company = models.CharField(max_length=150, blank=True, null=True)
     company_url = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{type(self).__name__} object for {self.work_exp_section.resume.position}' \
+               f' resume by {self.work_exp_section.resume.user.username}'
