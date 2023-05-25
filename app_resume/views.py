@@ -23,9 +23,12 @@ from app_users.forms import SocialLinksForm
 class MainView(RedirectView):
     USER_TO_REDIRECT = 'kosdmit'
 
-    if Resume.objects.filter(user__username=USER_TO_REDIRECT, is_primary=True).first():
+    try:
+        Resume.objects.get(user__username=USER_TO_REDIRECT, is_primary=True)
         url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
-    else:
+    except Resume.MultipleObjectsReturned:
+        url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
+    except Resume.DoesNotExist:
         url_to_redirect = reverse_lazy('login')
 
     url = url_to_redirect
