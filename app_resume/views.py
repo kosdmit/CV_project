@@ -58,11 +58,14 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         if self.request.user.is_authenticated and self.request.user == owner:
             context = self.add_owners_forms(context, owner, resume, main_education)
 
+        uuid_list = []
+
         context['jobs_in_sections'] = {}
         for section in resume.workexpsection_set.all():
             jobs = Job.objects.filter(work_exp_section=section)
             job_form_dicts = []
             for job in jobs:
+                uuid_list.append(job.pk)
                 if self.request.user == owner:
                     job_update_form = JobForm(instance=job)
                     job_form_dicts.append({'job': job,
@@ -72,13 +75,25 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
             context['jobs_in_sections'][section] = job_form_dicts
 
-        uuid_with_comments = Comment.objects.filter(
-            user__resume__id=resume.pk) \
-            .values_list('uuid_key', flat=True).distinct()
+        for institution in resume.institution_set.all():
+            uuid_list.append(institution.pk)
+
+        for additional_education in resume.additionaleducation_set.all():
+            uuid_list.append(additional_education.pk)
+
+        for electronic_certificate in resume.electroniccertificate_set.all():
+            uuid_list.append(electronic_certificate.pk)
+
+        for skill in resume.skill_set.all():
+            uuid_list.append(skill.pk)
+
+        for work_exp_section in resume.workexpsection_set.all():
+            for job in work_exp_section.job_set.all():
+                uuid_list.append(job.pk)
 
         comments = {}
         comment_edit_forms = {}
-        for uuid_key in uuid_with_comments:
+        for uuid_key in uuid_list:
             comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
             for comment in comments[uuid_key]:
                 if comment.owner_id == self.request.user or self.request.session.session_key:
