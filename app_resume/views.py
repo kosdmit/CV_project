@@ -198,7 +198,8 @@ class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, Updat
         return obj
 
 
-class MainEducationCreateView(ResumeBounderMixin,
+class MainEducationCreateView(OpenModalIfSuccessMixin,
+                              ResumeBounderMixin,
                               ResumeValidatorMixin,
                               RefreshIfSuccessMixin,
                               RatingUpdateForCreateViewMixin,
