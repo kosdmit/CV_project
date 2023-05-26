@@ -171,7 +171,7 @@
                       <li class="list-group-item">
                         <div class="institution-item">
                           {% if institution.website_url %}
-                            <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
+                            <a href="{{ institution.website_url }}" class="text-uppercase mb-1" target="_blank">{{ institution.title }}</a>
                           {% else %}
                             <p class="text-uppercase mb-1">{{ institution.title }}</p>
                           {% endif %}
@@ -270,7 +270,7 @@
                       <li class="list-group-item">
                         <div class="additional-education-item">
                           {% if education.website_url %}
-                            <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
+                            <a href="{{ education.website_url }}" class="text-uppercase mb-1" target="_blank">{{ education.title }}</a>
                           {% else %}
                             <p class="text-uppercase mb-1">{{ education.title }}</p>
                           {% endif %}
@@ -357,7 +357,7 @@
                             <div class="ms-2 w-100 me-3">
                               <div class="mb-2">
                                 {% if certificate.certificate_url %}
-                                  <a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a>
+                                  <a href="{{ certificate.certificate_url }}" class="" target="_blank">{{ certificate.title }}</a>
                                 {% else %}
                                   <p class="">{{ certificate.title }}</p>
                                 {% endif %}
@@ -530,7 +530,7 @@
                       <li class="list-group-item">
                         <div class="job-item">
                           {% if job_form_dict.job.company %}
-                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1">
+                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1" target="_blank">
                               {{ job_form_dict.job.company }}
                             </a>
                           {% endif %}
@@ -543,10 +543,14 @@
                           {% endif %}
                           <div class="item-footer d-flex justify-content-between">
                             {% if job_form_dict.job.project_url %}
-                              <a href="{{ job_form_dict.job.project_url }}"><small class="align-self-center">Сайт проекта</small></a>
+                              <a href="{{ job_form_dict.job.project_url }}" target="_blank">
+                                <small class="align-self-center">Сайт проекта</small>
+                              </a>
                             {% endif %}
                             {% if job_form_dict.job.git_url %}
-                              <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
+                              <a href="{{ job_form_dict.job.git_url }}" class="ms-2" target="_blank">
+                                <small class="align-self-center">Проект на GitHub</small>
+                              </a>
                             {% endif %}
                             <div class="job-buttons-block d-flex ms-auto">
                               {% if owner == user %}
