@@ -186,9 +186,7 @@
                               {% if owner == user %}
                                 <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
                                   {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
+                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
                                 </form>
                               {% endif %}
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ institution.pk }}"
@@ -283,9 +281,7 @@
                               {% if owner == user %}
                                 <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
                                   {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
+                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
                                 </form>
                               {% endif %}
 
@@ -378,9 +374,7 @@
                               {% if owner == user %}
                                 <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
                                   {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
+                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
                                 </form>
                               {% endif %}
 
@@ -502,9 +496,7 @@
                         {% if owner == user %}
                           <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
                             {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
+                            {% include 'app_resume/blocks/buttons/delete_button.html' %}
                           </form>
                         {% endif %}
                       </div>
@@ -548,9 +540,7 @@
                               {% if owner == user %}
                                 <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
                                   {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
+                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
                                 </form>
                               {% endif %}
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ job_form_dict.job.pk }}"
