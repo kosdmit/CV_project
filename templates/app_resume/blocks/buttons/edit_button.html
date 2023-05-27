@@ -1,0 +1,9 @@
+{% block edit_button %}
+
+  {% if owner == user %}
+    <button type="button" class="btn {% if prefix != 'position-update-' %}ms-auto{% endif %} btn-sm" data-bs-toggle="modal" data-bs-target="#{{ prefix }}{{ id }}">
+      <i class="fa-regular fa-pen-to-square"></i>
+    </button>
+  {% endif %}
+
+{% endblock %}

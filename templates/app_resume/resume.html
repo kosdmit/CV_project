@@ -56,11 +56,7 @@
               {% endif %}
               <div class="resume-position-item d-flex justify-content-center">
                 <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
-                {% if owner == user %}
-                  <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
-                {% endif %}
+                {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
               </div>
               <!-- Modal -->
               {% if owner == user %}
@@ -73,9 +69,7 @@
                 <div class="resume-about-me-item">
                   <p class="my-0">{{ resume.about_me }}</p>
                   <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
+                    {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
                   </div>
                 </div>
                 <!-- Modal -->
@@ -122,9 +116,7 @@
                 <div class="resume-soft-skills-item">
                   <p class="my-0">{{ resume.soft_skills }}</p>
                   <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
+                    {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
                   </div>
                 </div>
                 <!-- Modal -->
@@ -163,11 +155,7 @@
                         <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
                       {% endif %}
                       <div class="main-education-buttons-block ms-auto">
-                        {% if owner == user %}
-                          <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ resume.maineducation.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                        {% endif %}
+                        {% include 'app_resume/blocks/buttons/edit_button.html' with id=resume.maineducation.pk %}
                       </div>
                     </div>
                   </div>
@@ -194,10 +182,8 @@
                               {% endif %}
                             </div>
                             <div class="institution-buttons-block d-flex">
+                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=institution.pk %}
                               {% if owner == user %}
-                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
                                 <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
                                   {% csrf_token %}
                                   <button class="btn ms-auto btn-sm" type="submit">
@@ -293,16 +279,14 @@
                               {% endif %}
                             </div>
                             <div class="additional-education-buttons-block d-flex">
+                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=education.pk %}
                               {% if owner == user %}
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                              </form>
+                                <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
+                                  {% csrf_token %}
+                                  <button class="btn ms-auto btn-sm" type="submit">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                  </button>
+                                </form>
                               {% endif %}
 
                               <button type="button" class="btn ms-auto btn-sm" id="like-{{ education.pk }}"
@@ -390,10 +374,8 @@
                               {% endif %}
                             </div>
                             <div class="electronic-certificate-buttons-block d-flex">
+                              {% include 'app_resume/blocks/buttons/edit_button.html'  with id=certificate.pk %}
                               {% if owner == user %}
-                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
                                 <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
                                   {% csrf_token %}
                                   <button class="btn ms-auto btn-sm" type="submit">
@@ -516,10 +498,8 @@
                         <p class="text-uppercase align-self-center d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                       {% endif %}
                       <div class="work-exp-section-buttons-block d-flex ms-auto">
+                        {% include 'app_resume/blocks/buttons/edit_button.html' with id=section.pk %}
                         {% if owner == user %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
                           <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
                             {% csrf_token %}
                             <button class="btn ms-auto btn-sm" type="submit">
@@ -564,10 +544,8 @@
                               </a>
                             {% endif %}
                             <div class="job-buttons-block d-flex ms-auto">
+                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
                               {% if owner == user %}
-                                <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
                                 <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
                                   {% csrf_token %}
                                   <button class="btn ms-auto btn-sm" type="submit">
