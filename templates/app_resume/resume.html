@@ -4,7 +4,16 @@
 {% load static %}
 
 
-{% block title %}Ваш профиль{% endblock %}
+{% block title %}
+  {% if owner == user %}
+    Ваше резюме - {{ resume.position }} - CV Project
+  {% else %}
+    Резюме пользователя -
+    {% if owner.first_name %}{{ owner.first_name }}{% else %}{{ owner.username }}{% endif %}
+    - CV Project
+  {% endif %}
+
+{% endblock %}
 
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
@@ -28,7 +37,7 @@
                   {% endif %}
                 </div>
               {% endif %}
-              {% if owner.first_name and owner.last_name %}
+              {% if owner.first_name or owner.last_name %}
                 <h1 class="text-uppercase text-center">
                   {{ owner.first_name }}
                   <br>
@@ -41,9 +50,9 @@
                   <a href="{% url 'user_update' %}">Редактировать</a>
                 </p>
               {% else %}
-                <p class="text-center">
-                  Пользователь {{ owner.username }} еще не указал имя или фамилию
-                </p>
+                <h1 class="text-uppercase text-center">
+                  {{ owner.username }}
+                </h1>
               {% endif %}
               <div class="resume-position-item d-flex justify-content-center">
                 <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
@@ -62,7 +71,7 @@
               <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
               {% if resume.about_me %}
                 <div class="resume-about-me-item">
-                  <p>{{ resume.about_me }}</p>
+                  <p class="my-0">{{ resume.about_me }}</p>
                   <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
                     <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
                       <i class="fa-regular fa-pen-to-square"></i>
@@ -111,7 +120,7 @@
               <h2 class="text-uppercase text-sm"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
               {% if resume.soft_skills %}
                 <div class="resume-soft-skills-item">
-                  <p>{{ resume.soft_skills }}</p>
+                  <p class="my-0">{{ resume.soft_skills }}</p>
                   <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
                     <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
                       <i class="fa-regular fa-pen-to-square"></i>
@@ -237,7 +246,7 @@
                   {% if owner == user %}
                     <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
                       {% csrf_token %}
-                      <div class="input-group mb-5">
+                      <div class="input-group">
                         <!-- <span class="input-group-text">Учебное учреждение</span> -->
                         {{ institution_create_form.title }}
                         <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
@@ -262,7 +271,7 @@
                   {% endif %}
                 {% endif %}
                 {% if resume.additionaleducation_set.all or owner == user %}
-                  <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>
+                  <h3 class="text-uppercase fs-5 me-3 mt-4">Дополнительное образование</h3>
                 {% endif %}
                 {% if resume.additionaleducation_set.all%}
                   <ul class="list-group list-group-flush">
@@ -338,7 +347,7 @@
                 {% if owner == user %}
                   <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
-                    <div class="input-group mb-5">
+                    <div class="input-group">
                       <!-- <span class="input-group-text">Дополнительное образование</span> -->
                       {{ additional_education_create_form.title }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
@@ -346,7 +355,7 @@
                   </form>
                 {% endif %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
-                  <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
+                  <h3 class="text-uppercase fs-5 me-3 mt-4">Электронные сертификаты</h3>
                 {% endif %}
                 {% if resume.electroniccertificate_set.all %}
                   <ul class="list-group list-group mt-3">
@@ -530,7 +539,9 @@
                       <li class="list-group-item">
                         <div class="job-item">
                           {% if job_form_dict.job.company %}
-                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1" target="_blank">
+                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
+                                {% if not job_form_dict.job.company_url %}disabled{% endif %}
+                            >
                               {{ job_form_dict.job.company }}
                             </a>
                           {% endif %}
