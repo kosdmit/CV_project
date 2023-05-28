@@ -183,39 +183,9 @@
                             </div>
                             <div class="institution-buttons-block d-flex">
                               {% include 'app_resume/blocks/buttons/edit_button.html' with id=institution.pk %}
-                              {% if owner == user %}
-                                <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
-                                  {% csrf_token %}
-                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
-                                </form>
-                              {% endif %}
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ institution.pk }}"
-                                      onclick="clickLike('{{ institution.pk }}')">
-                                <i class="fa-heart
-                                  {% if institution.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:institution.pk %}
-                                    {{ like_counts|get_value_from_dict:institution.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ institution.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:institution.pk %}
-                                    {{ comment_counts|get_value_from_dict:institution.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
+                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='institution_delete' pk=institution.pk%}
+                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=institution.pk %}
+                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=institution.pk %}
                             </div>
                           </div>
                         </div>
@@ -278,40 +248,9 @@
                             </div>
                             <div class="additional-education-buttons-block d-flex">
                               {% include 'app_resume/blocks/buttons/edit_button.html' with id=education.pk %}
-                              {% if owner == user %}
-                                <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                                  {% csrf_token %}
-                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
-                                </form>
-                              {% endif %}
-
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ education.pk }}"
-                                    onclick="clickLike('{{ education.pk }}')">
-                              <i class="fa-heart
-                                {% if education.pk in users_likes_uuid %}
-                                  fa-solid">
-                                {% else %}
-                                  fa-regular">
-                                {% endif %}
-                              </i>
-                              <small>
-                                {% if like_counts|get_value_from_dict:education.pk %}
-                                  {{ like_counts|get_value_from_dict:education.pk }}
-                                {% else %}
-                                  0
-                                {% endif %}
-                              </small>
-                            </button>
-                            <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ education.pk }}">
-                              <i class="fa-regular fa-comment"></i>
-                              <small>
-                                {% if comment_counts|get_value_from_dict:education.pk %}
-                                  {{ comment_counts|get_value_from_dict:education.pk }}
-                                {% else %}
-                                  0
-                                {% endif %}
-                              </small>
-                            </button>
+                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='additional_education_delete' pk=education.pk%}
+                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=education.pk %}
+                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=education.pk %}
                             </div>
                           </div>
                         </div>
@@ -371,40 +310,9 @@
                             </div>
                             <div class="electronic-certificate-buttons-block d-flex">
                               {% include 'app_resume/blocks/buttons/edit_button.html'  with id=certificate.pk %}
-                              {% if owner == user %}
-                                <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
-                                  {% csrf_token %}
-                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
-                                </form>
-                              {% endif %}
-
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ certificate.pk }}"
-                                    onclick="clickLike('{{ certificate.pk }}')">
-                                <i class="fa-heart
-                                  {% if certificate.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:certificate.pk %}
-                                    {{ like_counts|get_value_from_dict:certificate.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ certificate.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:certificate.pk %}
-                                    {{ comment_counts|get_value_from_dict:certificate.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
+                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='electronic_certificate_delete' pk=certificate.pk %}
+                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=certificate.pk %}
+                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=certificate.pk %}
                             </div>
                           </div>
                         </div>
@@ -493,12 +401,7 @@
                       {% endif %}
                       <div class="work-exp-section-buttons-block d-flex ms-auto">
                         {% include 'app_resume/blocks/buttons/edit_button.html' with id=section.pk %}
-                        {% if owner == user %}
-                          <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
-                            {% csrf_token %}
-                            {% include 'app_resume/blocks/buttons/delete_button.html' %}
-                          </form>
-                        {% endif %}
+                        {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='work_exp_section_delete' pk=section.pk %}
                       </div>
                     </div>
                   </div>
@@ -537,39 +440,9 @@
                             {% endif %}
                             <div class="job-buttons-block d-flex ms-auto">
                               {% include 'app_resume/blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
-                              {% if owner == user %}
-                                <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
-                                  {% csrf_token %}
-                                  {% include 'app_resume/blocks/buttons/delete_button.html' %}
-                                </form>
-                              {% endif %}
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ job_form_dict.job.pk }}"
-                                    onclick="clickLike('{{ job_form_dict.job.pk }}')">
-                                <i class="fa-heart
-                                  {% if job_form_dict.job.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:job_form_dict.job.pk %}
-                                    {{ like_counts|get_value_from_dict:job_form_dict.job.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ job_form_dict.job.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:job_form_dict.job.pk %}
-                                    {{ comment_counts|get_value_from_dict:job_form_dict.job.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
+                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
+                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}
+                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=job_form_dict.job.pk %}
                             </div>
                           </div>
                         </div>

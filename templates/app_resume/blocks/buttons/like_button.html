@@ -1,0 +1,23 @@
+{% load djutils %}
+
+{% block like_button %}
+
+  <button type="button" class="btn btn-sm" id="like-{{ uuid_key }}"
+          onclick="clickLike('{{ uuid_key }}')">
+    <i class="fa-heart
+      {% if uuid_key in users_likes_uuid %}
+        fa-solid">
+      {% else %}
+        fa-regular">
+      {% endif %}
+    </i>
+    <small>
+      {% if like_counts|get_value_from_dict:uuid_key %}
+        {{ like_counts|get_value_from_dict:uuid_key }}
+      {% else %}
+        0
+      {% endif %}
+    </small>
+  </button>
+
+{% endblock %}
