@@ -193,7 +193,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/institution_update_modal.html' %}
                         {% endif %}
-                        {% include 'app_resume/blocks/institution_comments_modal.html' %}
+                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=institution.pk %}
                       </li>
                     {% endfor %}
                   </ul>
@@ -258,7 +258,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/additional_education_update_modal.html' %}
                         {% endif %}
-                        {% include 'app_resume/blocks/additional_education_comments_modal.html' %}
+                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=education.pk %}
                       </li>
                     {% endfor %}
                   </ul>
@@ -320,7 +320,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/electronic_certificate_update_modal.html' %}
                         {% endif %}
-                        {% include 'app_resume/blocks/electronic_certificate_comments_modal.html' %}
+                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=certificate.pk %}
                       </li>
                     {% endfor %}
                   </ul>
@@ -329,7 +329,6 @@
                   <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
                     {% csrf_token %}
                     <div class="input-group my-3">
-                      <!-- <span class="input-group-text">Электронный сертификат</span> -->
                       {{ electronic_certificate_create_form.title }}
                       <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                     </div>
@@ -372,7 +371,7 @@
 
                 </span>
               </button>
-              {% include 'app_resume/blocks/skill_comments_modal.html' %}
+              {% include 'app_resume/blocks/comments_modal.html' with uuid_key=skill.pk %}
             {% endfor %}
             {% if owner == user %}
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
@@ -450,7 +449,7 @@
                         {% if owner == user %}
                           {% include 'app_resume/blocks/job_update_modal.html' %}
                         {% endif %}
-                        {% include 'app_resume/blocks/job_comments_modal.html' %}
+                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk %}
                       </li>
                     {% endfor %}
                   </ul>
