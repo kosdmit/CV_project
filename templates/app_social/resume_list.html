@@ -99,7 +99,7 @@
                 <a class="resume-hidden-link" href="{% url 'resume' username=resume.user.username slug=resume.slug %}"></a>
               </div>
               <!-- Modal -->
-              {% include 'app_social/blocks/resume_list_comments_modal.html' %}
+              {% include 'app_resume/blocks/comments_modal.html' with uuid_key=resume.pk %}
             </li>
           {% endfor %}
         </ul>
