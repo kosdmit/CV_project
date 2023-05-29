@@ -11,50 +11,7 @@
     <div class="container">
       {% include 'page_header.html' with path_name='resume_list' %}
       <div class="row gx-5">
-        <div class="col-lg-5 mb-5">
-          <div class="rounded-5 bg-light pt-5 pb-1 px-3">
-            <div class="hero mb-5">
-              {% if user.profile.avatar %}
-                <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                  <img src="{{ user.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
-                       style="object-fit: cover; aspect-ratio: 1 / 1;">
-                </div>
-              {% else %}
-                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
-                  <p class="mx-auto text-light">Здесь будет ваше фото</p>
-                </div>
-              {% endif %}
-              {% if user.first_name and user.last_name %}
-                <h1 class="text-uppercase text-center">
-                  {{ user.first_name }}
-                  <br>
-                  <strong>{{ user.last_name }}</strong>
-                </h1>
-              {% else %}
-                <p class="text-center">
-                  Вы не указали ваше имя или фамилию
-                  <br>
-                  <a href="{% url 'user_update' %}">Редактировать</a>
-                </p>
-              {% endif %}
-            </div>
-            <div class="user-info">
-              <ul class="list-unstyled">
-                <li class="list-group-item mb-3">
-                  <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
-                </li>
-                <li class="list-group-item mb-3">
-                  <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
-                </li>
-                <li class="list-group-item mb-3">
-                  {% include 'app_users/blocks/social_links_block.html' %}
-                </li>
-              </ul>
-            </div>
-            <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
-          </div>
-        </div>
-
+        {% include 'user_card.html' with path_name='profile' object=user %}
         <div class="col-md-7">
           <div class="profile-info mb-5">
             <h3 class="text-uppercase fs-5">Данные профиля</h3>
