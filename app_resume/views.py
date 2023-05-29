@@ -6,7 +6,7 @@ from django.views.generic import CreateView, TemplateView, UpdateView, RedirectV
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, \
     AdditionalEducationForm, ElectronicCertificateForm, AdditionalEducationCreateForm, \
     ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, SkillCreateForm, \
-    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm
+    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm, WorkExpSectionCreateForm
 from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, RatingUpdateForCreateViewMixin,\
     RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, ResumeValidatorMixin, \
     WorkExpSectionValidatorMixin
@@ -132,7 +132,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'additional_education_create_form': AdditionalEducationCreateForm(),
             'electronic_certificate_create_form': ElectronicCertificateCreateForm(),
             'skill_create_form': SkillCreateForm(),
-            'work_exp_section_form': WorkExpSectionForm(),
+            'work_exp_section_create_form': WorkExpSectionCreateForm(),
             'job_create_form': JobCreateForm(),
         }
 
@@ -313,7 +313,7 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
                                ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
                                CreateView):
-    form_class = WorkExpSectionForm
+    form_class = WorkExpSectionCreateForm
 
 
 class WorkExpSectionUpdateView(ResumeValidatorMixin,

@@ -187,29 +187,10 @@
                       </li>
                     {% endfor %}
                   </ul>
-                  {% if owner == user %}
-                    <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group">
-                        <!-- <span class="input-group-text">Учебное учреждение</span> -->
-                        {{ institution_create_form.title }}
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                    </form>
-                  {% endif %}
+                  {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
                 {% else %}
                   {% if owner == user %}
-                    <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group my-3">
-                        <span class="input-group-text flex-grow-1">Указать уровень образования</span>
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                      <div class="visually-hidden">
-                        {{ main_education_form.level }}
-                        {{ main_education_form.degree }}
-                      </div>
-                    </form>
+                    {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='main_education_create' %}
                   {% else %}
                     <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
                   {% endif %}
@@ -251,16 +232,7 @@
                     {% endfor %}
                   </ul>
                 {% endif %}
-                {% if owner == user %}
-                  <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group">
-                      <!-- <span class="input-group-text">Дополнительное образование</span> -->
-                      {{ additional_education_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+                {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3 mt-4">Электронные сертификаты</h3>
                 {% endif %}
@@ -311,15 +283,7 @@
                     {% endfor %}
                   </ul>
                 {% endif %}
-                {% if owner == user %}
-                  <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group my-3">
-                      {{ electronic_certificate_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+                {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
               </li>
             </ul>
           </div>
@@ -339,7 +303,6 @@
                 {% endif %}
                 <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary like-skill-badge"
                       id="like-{{ skill.pk }}">
-
                   <i class="fa-heart
                     {% if skill.pk in users_likes_uuid %}
                       fa-solid">
@@ -354,20 +317,11 @@
                       0
                     {% endif %}
                   </small>
-
                 </span>
               </button>
               {% include 'app_resume/blocks/comments_modal.html' with uuid_key=skill.pk %}
             {% endfor %}
-            {% if owner == user %}
-              <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
-                {% csrf_token %}
-                <div class="input-group mb-5">
-                  {{ skill_create_form.name }}
-                  <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                </div>
-              </form>
-            {% endif %}
+            {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
           </div>
           <div class="work-experience mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
@@ -434,29 +388,9 @@
                       </li>
                     {% endfor %}
                   </ul>
-                  {% if owner == user %}
-                    <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group mb-5">
-                        <!-- <span class="input-group-text">Проект или место работы</span> -->
-                        {{ job_create_form.title }}
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                    </form>
-                  {% endif %}
+                  {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}
                 {% endfor %}
-                {% if owner == user %}
-                  <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
-                    {% csrf_token %}
-                    {% if resume.workexpsection_set.all %}
-                      <hr>
-                    {% endif %}
-                    <div class="input-group my-3">
-                      {{ work_exp_section_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+              {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='work_exp_section_create' form=work_exp_section_create_form %}
             </ul>
           </div>
         </div>
