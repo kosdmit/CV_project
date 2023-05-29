@@ -1,0 +1,65 @@
+{% block help_fields %}
+
+  {% if path_name == 'additional_education_update' %}
+
+    {% if field.name == 'description' %}
+      <div id="descriptionHelp" class="form-text">Опишите учебную программу которую вы освоили.</div>
+    {% elif field.name == 'website_url' %}
+      <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебной программы.</div>
+    {% elif field.name == 'diploma' %}
+      <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом или сертификат.</div>
+    {% endif %}
+
+  {% elif path_name == 'institution_update' %}
+
+    {% if field.name == 'description' %}
+      <div id="descriptionHelp" class="form-text">Опишите факультет или специальность которую вы получили.</div>
+    {% elif field.name == 'website_url' %}
+      <div id="website-urlHelp" class="form-text">Вы можете добавить URL ссылку на сайт учебного учреждения.</div>
+    {% elif field.name == 'diploma' %}
+      <div id="diplomaHelp" class="form-text">Вы можете загрузить на сайт ваш диплом.</div>
+    {% elif field.name == 'is_primary' %}
+      <div id="isPrimary" class="form-text">Если сделать элемент главным эта информация будет отображаться на странице поиска.</div>
+    {% endif %}
+
+  {% elif path_name == 'electronic_certificate_update' %}
+
+      {% if field.name == 'certificate_url' %}
+        <div id="certificate_urlHelp" class="form-text">Прикрепите ссылку на ваш сертификат в интернете.</div>
+      {% elif field.name == 'certificate' %}
+        <div id="certificateHelp" class="form-text">Вы можете загрузить ваш сертификат на сайт.</div>
+      {% elif field.name == 'completion_percentage' %}
+        <div id="diplomaHelp" class="form-text">Оценка или процент выполнения курса по шкале от 0 до 100.</div>
+      {% endif %}
+
+  {% elif path_name == 'work_exp_section_update' %}
+
+    {% if field.name == 'title' %}
+      <div id="titleHelp" class="form-text">
+        Заголовок для периода работы. Это может быть название организации или отрасли.
+      </div>
+    {% endif %}
+
+  {% elif path_name == 'job_update' %}
+
+    {% if field.name == 'description' %}
+      <div id="descriptionHelp" class="form-text">Опишите проект или ваши обязанности на должности в компании.</div>
+    {% elif field.name == 'project_url' %}
+      <div id="project-urlHelp" class="form-text">Вы можете добавить URL ссылку на портфолио или проект над которым вы работали.</div>
+    {% elif field.name == 'git_url' %}
+      <div id="git-urlHelp" class="form-text">Вы можете добавить URL ссылку на ваш в проект на GitHub.</div>
+    {% endif %}
+
+  {% elif path_name == 'resume_about_me_update' or path_name == 'resume_position_update' or path_name == 'resume_soft_skills_update'%}
+
+    {% if field.name == 'about_me' %}
+      <div id="positionHelp" class="form-text">Расскажите немного о себе.</div>
+    {% elif field.name == 'position' %}
+      <div id="positionHelp" class="form-text">Укажите желаемую должность, данная строка служит в качестве заголовка вашего резюме.</div>
+    {% elif field.name == 'soft_skills' %}
+      <div id="positionHelp" class="form-text">Расскажите о ваших положительных качествах как кандидата на соответсвующую должность.</div>
+    {% endif %}
+
+  {% endif %}
+
+{% endblock %}

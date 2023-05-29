@@ -59,9 +59,7 @@
                 {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
               </div>
               <!-- Modal -->
-              {% if owner == user %}
-                {% include 'app_resume/blocks/resume_position_update_modal.html' %}
-              {% endif %}
+              {% include 'app_resume/blocks/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
             </div>
             <div class="about-me mb-5">
               <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
@@ -73,9 +71,7 @@
                   </div>
                 </div>
                 <!-- Modal -->
-                {% if owner == user %}
-                    {% include 'app_resume/blocks/resume_about_me_update_modal.html' %}
-                {% endif %}
+                {% include 'app_resume/blocks/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
               {% else %}
                 {% if owner == user %}
                   <div class="mb-3">
@@ -120,9 +116,7 @@
                   </div>
                 </div>
                 <!-- Modal -->
-                {% if owner == user %}
-                    {% include 'app_resume/blocks/resume_soft_skills_update_modal.html' %}
-                {% endif %}
+                {% include 'app_resume/blocks/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
               {% else %}
                 {% if owner == user %}
                   <div class="mb-3">
@@ -160,9 +154,7 @@
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% if owner == user %}
-                    {% include 'app_resume/blocks/main_education_update_modal.html' %}
-                  {% endif %}
+                  {% include 'app_resume/blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
                   <ul class="list-group list-group-flush">
                     {% for institution in resume.maineducation.institution_set.all %}
                       <li class="list-group-item">
@@ -190,9 +182,7 @@
                           </div>
                         </div>
                         <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/institution_update_modal.html' %}
-                        {% endif %}
+                        {% include 'app_resume/blocks/update_modal.html' with path_name='institution_update' object=institution form=institution_forms|get_value_from_dict:institution %}
                         {% include 'app_resume/blocks/comments_modal.html' with uuid_key=institution.pk %}
                       </li>
                     {% endfor %}
@@ -255,9 +245,7 @@
                           </div>
                         </div>
                         <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/additional_education_update_modal.html' %}
-                        {% endif %}
+                        {% include 'app_resume/blocks/update_modal.html' with path_name='additional_education_update' object=education form=additional_education_forms|get_value_from_dict:education %}
                         {% include 'app_resume/blocks/comments_modal.html' with uuid_key=education.pk %}
                       </li>
                     {% endfor %}
@@ -317,9 +305,7 @@
                           </div>
                         </div>
                         <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/electronic_certificate_update_modal.html' %}
-                        {% endif %}
+                        {% include 'app_resume/blocks/update_modal.html' with path_name='electronic_certificate_update' object=certificate form=electronic_certificate_forms|get_value_from_dict:certificate %}
                         {% include 'app_resume/blocks/comments_modal.html' with uuid_key=certificate.pk %}
                       </li>
                     {% endfor %}
@@ -377,7 +363,6 @@
               <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
                 {% csrf_token %}
                 <div class="input-group mb-5">
-                  <!-- <span class="input-group-text">Добавить навык</span> -->
                   {{ skill_create_form.name }}
                   <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
                 </div>
@@ -405,9 +390,7 @@
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% if owner == user %}
-                    {% include 'app_resume/blocks/work_exp_section_update_modal.html' %}
-                  {% endif %}
+                  {% include 'app_resume/blocks/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
                   <ul class="list-group list-group-flush">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
                       <li class="list-group-item">
@@ -446,9 +429,7 @@
                           </div>
                         </div>
                         <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/job_update_modal.html' %}
-                        {% endif %}
+                        {% include 'app_resume/blocks/update_modal.html' with path_name='job_update' object=job_form_dict.job form=job_form_dict.job_update_form %}
                         {% include 'app_resume/blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk %}
                       </li>
                     {% endfor %}
@@ -467,7 +448,6 @@
                 {% if owner == user %}
                   <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
                     {% csrf_token %}
-                    <!-- <label class="">Добавить отрасль или период работы:</label> -->
                     {% if resume.workexpsection_set.all %}
                       <hr>
                     {% endif %}
