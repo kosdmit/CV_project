@@ -29,6 +29,8 @@ class SignUpView(CreateView):
         ]
         context['breadcrumbs'] = breadcrumbs
 
+        context['title'] = 'Регистрация пользователя'
+
         return context
 
     def form_valid(self, form):
@@ -59,7 +61,7 @@ class UserUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['page_title'] = 'Редактирование учетной записи пользователя'
+        context['title'] = 'Редактирование учетной записи пользователя'
         context['page_description'] = 'Вы можете изменить имя пользователя, адрес электронной почты или личные данные.'
 
         breadcrumbs = [
@@ -79,8 +81,7 @@ class CreateProfileView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['page_title'] = 'Добавление профиля пользователя'
-        context['page_description'] = 'Перед тем как перейти к созданию резюме, расскажите немного о себе.'
+        context['title'] = 'Добавление профиля пользователя'
 
         breadcrumbs = [
             (self.request.user.username, reverse_lazy('profile')),
@@ -179,6 +180,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             ]
             context['breadcrumbs'] = breadcrumbs
 
+            context['title'] = 'Профиль'
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -209,6 +212,8 @@ class Login(LoginView):
             ('Авторизация', reverse_lazy('login')),
         ]
         context['breadcrumbs'] = breadcrumbs
+
+        context['title'] = 'Вход на сайт'
 
         return context
 

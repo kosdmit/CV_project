@@ -1,18 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Профиль пользователя{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
 
     <div class="container">
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1>{{ page_title }}</h1>
-          <p>{{ page_description }}</p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='user_update' %}
       <div class="row mb-5">
         <div class="col-md-6 col-lg-5">
 

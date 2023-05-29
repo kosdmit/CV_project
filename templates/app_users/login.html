@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Войти{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
   {% if breadcrumbs %}
@@ -9,12 +9,7 @@
   {% block main_content %}
 
     <div class="container">
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1>Вход на сайт</h1>
-          <p>Используйте свой логин и пароль чтобы авторизоваться на сайте.</p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='login' %}
       <div class="row mb-5">
         <div class="col-md-6 col-lg-5">
           {% for message in messages %}

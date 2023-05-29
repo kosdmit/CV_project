@@ -8,21 +8,7 @@
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h1>{{ title }}</h1>
-          <p>
-            {% if user.is_authenticated and user.first_name %}
-              Привет, {{ user.first_name }}!
-            {% elif user.is_authenticated %}
-              Привет, {{ user.username }}!
-            {% endif %}
-            На этой странице вы можете посмотреть резюме других пользователей.
-            Они располагаются в порядке их рейтинга. Рейтинг можно увеличить
-            добавив больше данных в ваше резюме, а также за лайки и комментарии.
-          </p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='resume_list' %}
       <div class="row my-5">
         <ul class="list-group list-group-flush">
           {% for resume in page_obj %}
