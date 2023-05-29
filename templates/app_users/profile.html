@@ -3,26 +3,13 @@
 {% load djutils %}
 {% load app_users_filters %}
 
-{% block title %}Ваш профиль{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
     <div class="container">
-      <div class="row mb-3">
-        <div class="col-12">
-          <h1>Профиль</h1>
-          <p>
-            Привет,
-            {% if user.first_name %}
-              {{ user.first_name }}!
-            {% else %}
-              {{ user.username }}!
-            {% endif %}
-            На этой странице вы можете посмотреть данные своего профиля. Они используются при формировании резюме и для связи с работодателем.
-          </p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='resume_list' %}
       <div class="row gx-5">
         <div class="col-lg-5 mb-5">
           <div class="rounded-5 bg-light pt-5 pb-1 px-3">

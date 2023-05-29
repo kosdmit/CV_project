@@ -223,6 +223,18 @@ class SkillCreateForm(forms.Form):
                                                           'placeholder': "Добавить навык"}))
 
 
+class WorkExpSectionCreateForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Заголовок:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Добавить отрасль или период работы"})
+    )
+
+    class Meta:
+        model = WorkExpSection
+        fields = ['title',]
+
+
 class WorkExpSectionForm(forms.ModelForm):
     title = forms.CharField(
         label='Заголовок:',

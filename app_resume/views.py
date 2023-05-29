@@ -6,7 +6,7 @@ from django.views.generic import CreateView, TemplateView, UpdateView, RedirectV
 from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, \
     AdditionalEducationForm, ElectronicCertificateForm, AdditionalEducationCreateForm, \
     ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, SkillCreateForm, \
-    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm
+    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm, WorkExpSectionCreateForm
 from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, RatingUpdateForCreateViewMixin,\
     RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, ResumeValidatorMixin, \
     WorkExpSectionValidatorMixin
@@ -23,9 +23,12 @@ from app_users.forms import SocialLinksForm
 class MainView(RedirectView):
     USER_TO_REDIRECT = 'kosdmit'
 
-    if Resume.objects.filter(user__username=USER_TO_REDIRECT, is_primary=True).first():
+    try:
+        Resume.objects.get(user__username=USER_TO_REDIRECT, is_primary=True)
         url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
-    else:
+    except Resume.MultipleObjectsReturned:
+        url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
+    except Resume.DoesNotExist:
         url_to_redirect = reverse_lazy('login')
 
     url = url_to_redirect
@@ -55,11 +58,14 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         if self.request.user.is_authenticated and self.request.user == owner:
             context = self.add_owners_forms(context, owner, resume, main_education)
 
+        uuid_list = []
+
         context['jobs_in_sections'] = {}
         for section in resume.workexpsection_set.all():
             jobs = Job.objects.filter(work_exp_section=section)
             job_form_dicts = []
             for job in jobs:
+                uuid_list.append(job.pk)
                 if self.request.user == owner:
                     job_update_form = JobForm(instance=job)
                     job_form_dicts.append({'job': job,
@@ -69,13 +75,25 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
             context['jobs_in_sections'][section] = job_form_dicts
 
-        uuid_with_comments = Comment.objects.filter(
-            user__resume__id=resume.pk) \
-            .values_list('uuid_key', flat=True).distinct()
+        for institution in resume.institution_set.all():
+            uuid_list.append(institution.pk)
+
+        for additional_education in resume.additionaleducation_set.all():
+            uuid_list.append(additional_education.pk)
+
+        for electronic_certificate in resume.electroniccertificate_set.all():
+            uuid_list.append(electronic_certificate.pk)
+
+        for skill in resume.skill_set.all():
+            uuid_list.append(skill.pk)
+
+        for work_exp_section in resume.workexpsection_set.all():
+            for job in work_exp_section.job_set.all():
+                uuid_list.append(job.pk)
 
         comments = {}
         comment_edit_forms = {}
-        for uuid_key in uuid_with_comments:
+        for uuid_key in uuid_list:
             comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key, is_approved=True)
             for comment in comments[uuid_key]:
                 if comment.owner_id == self.request.user or self.request.session.session_key:
@@ -114,7 +132,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'additional_education_create_form': AdditionalEducationCreateForm(),
             'electronic_certificate_create_form': ElectronicCertificateCreateForm(),
             'skill_create_form': SkillCreateForm(),
-            'work_exp_section_form': WorkExpSectionForm(),
+            'work_exp_section_create_form': WorkExpSectionCreateForm(),
             'job_create_form': JobCreateForm(),
         }
 
@@ -180,7 +198,8 @@ class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, Updat
         return obj
 
 
-class MainEducationCreateView(ResumeBounderMixin,
+class MainEducationCreateView(OpenModalIfSuccessMixin,
+                              ResumeBounderMixin,
                               ResumeValidatorMixin,
                               RefreshIfSuccessMixin,
                               RatingUpdateForCreateViewMixin,
@@ -294,7 +313,7 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
                                ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
                                CreateView):
-    form_class = WorkExpSectionForm
+    form_class = WorkExpSectionCreateForm
 
 
 class WorkExpSectionUpdateView(ResumeValidatorMixin,

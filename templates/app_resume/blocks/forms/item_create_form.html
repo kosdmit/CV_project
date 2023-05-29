@@ -1,0 +1,33 @@
+{% block item_create_form %}
+
+  {% if owner == user %}
+    <form method="post" action="
+        {% if path_name == 'job_create' %}
+          {% url path_name username=user.username slug=resume.slug section=section.pk %}
+        {% else %}
+          {% url path_name username=user.username slug=resume.slug %}
+        {% endif %}
+    ">
+      {% csrf_token %}
+      {% if path_name == 'work_exp_section_create' and resume.workexpsection_set.all %}
+        <hr>
+      {% endif %}
+      <div class="input-group mb-5">
+        {% for field in form %}
+          {{ field }}
+        {% endfor %}
+        {% if path_name == 'main_education_create' %}
+          <span class="input-group-text flex-grow-1">Указать уровень образования</span>
+        {% endif %}
+        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
+      </div>
+      {% if path_name == 'main_education_create' %}
+        <div class="visually-hidden">
+          {{ main_education_form.level }}
+          {{ main_education_form.degree }}
+        </div>
+      {% endif %}
+    </form>
+  {% endif %}
+
+{% endblock %}

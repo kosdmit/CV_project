@@ -1,0 +1,16 @@
+{% load djutils %}
+
+{% block comment_button %}
+
+  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ uuid_key }}">
+    <i class="fa-regular fa-comment"></i>
+    <small>
+      {% if comment_counts|get_value_from_dict:uuid_key %}
+        {{ comment_counts|get_value_from_dict:uuid_key }}
+      {% else %}
+        0
+      {% endif %}
+    </small>
+  </button>
+
+{% endblock %}

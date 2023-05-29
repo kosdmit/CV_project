@@ -1,21 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Регистрация пользователя{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
 
     <div class="container">
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1>Регистрация пользователя</h1>
-          <p>Зарегистрируйтесь, чтобы иметь возможность составить свое резюме и оставлять комментарии.</p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='signup' %}
       <div class="row mb-5">
         <div class="col-md-6 col-lg-5">
-
           <form method="post">
             {% csrf_token %}
               <div class="mb-3">
@@ -48,13 +42,9 @@
               </div>
               <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
           </form>
-
         </div>
       </div>
     </div>
-
-
-
 
   {% endblock %}
 

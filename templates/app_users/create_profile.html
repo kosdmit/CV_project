@@ -1,21 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Профиль пользователя{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
   {% include 'breadcrumbs_base.html' %}
   {% block main_content %}
 
     <div class="container">
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1>{{ page_title }}</h1>
-          <p>{{ page_description }}</p>
-        </div>
-      </div>
+      {% include 'page_header.html' with path_name='create_profile' %}
       <div class="row mb-5">
         <div class="">
-
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="container p-0">
