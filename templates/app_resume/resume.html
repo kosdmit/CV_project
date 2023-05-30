@@ -12,7 +12,6 @@
     {% if owner.first_name %}{{ owner.first_name }}{% else %}{{ owner.username }}{% endif %}
     - CV Project
   {% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -40,38 +39,7 @@
                   </div>
                   <!-- Modal -->
                   {% include 'app_resume/blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
-                  <ul class="list-group list-group-flush">
-                    {% for institution in resume.maineducation.institution_set.all %}
-                      <li class="list-group-item">
-                        <div class="institution-item">
-                          {% if institution.website_url %}
-                            <a href="{{ institution.website_url }}" class="text-uppercase mb-1" target="_blank">{{ institution.title }}</a>
-                          {% else %}
-                            <p class="text-uppercase mb-1">{{ institution.title }}</p>
-                          {% endif %}
-                          {% if institution.description %}
-                            <p>{{ institution.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            <div class="institution-info-block">
-                              {% if institution.completion_date %}
-                                <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="institution-buttons-block d-flex">
-                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=institution.pk %}
-                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='institution_delete' pk=institution.pk%}
-                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=institution.pk %}
-                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=institution.pk %}
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% include 'app_resume/blocks/update_modal.html' with path_name='institution_update' object=institution form=institution_forms|get_value_from_dict:institution %}
-                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=institution.pk %}
-                      </li>
-                    {% endfor %}
-                  </ul>
+                  {% include 'app_resume/blocks/item_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
                   {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
                 {% else %}
                   {% if owner == user %}
@@ -83,91 +51,12 @@
                 {% if resume.additionaleducation_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3 mt-4">Дополнительное образование</h3>
                 {% endif %}
-                {% if resume.additionaleducation_set.all%}
-                  <ul class="list-group list-group-flush">
-                    {% for education in resume.additionaleducation_set.all %}
-                      <li class="list-group-item">
-                        <div class="additional-education-item">
-                          {% if education.website_url %}
-                            <a href="{{ education.website_url }}" class="text-uppercase mb-1" target="_blank">{{ education.title }}</a>
-                          {% else %}
-                            <p class="text-uppercase mb-1">{{ education.title }}</p>
-                          {% endif %}
-                          {% if education.description %}
-                            <p>{{ education.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            <div class="additional-education-info-block">
-                              {% if education.completion_date %}
-                                <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="additional-education-buttons-block d-flex">
-                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=education.pk %}
-                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='additional_education_delete' pk=education.pk%}
-                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=education.pk %}
-                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=education.pk %}
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% include 'app_resume/blocks/update_modal.html' with path_name='additional_education_update' object=education form=additional_education_forms|get_value_from_dict:education %}
-                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=education.pk %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
+                {% include 'app_resume/blocks/item_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
                 {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3 mt-4">Электронные сертификаты</h3>
                 {% endif %}
-                {% if resume.electroniccertificate_set.all %}
-                  <ul class="list-group list-group mt-3">
-                    {% for certificate in resume.electroniccertificate_set.all %}
-                      <li class="list-group-item">
-                        <div class="electronic-certificate-item">
-                          <div class="item-header">
-                            <div class="ms-2 w-100 me-3">
-                              <div class="mb-2">
-                                {% if certificate.certificate_url %}
-                                  <a href="{{ certificate.certificate_url }}" class="" target="_blank">{{ certificate.title }}</a>
-                                {% else %}
-                                  <p class="">{{ certificate.title }}</p>
-                                {% endif %}
-                              </div>
-                            </div>
-                          </div>
-                          <div class="item-body d-flex justify-content-between align-items-start">
-                            {% if certificate.completion_percentage %}
-                              <div class="ms-2" style="width: 90%">
-                                <div class="progress me-2" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                  <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
-                                </div>
-                              </div>
-                              <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ certificate.completion_percentage }}%</span>
-                            {% endif %}
-                          </div>
-                          <div class="item-footer d-flex justify-content-between ms-2">
-                            <div class="electronic-certificate-info-block">
-                              {% if certificate.completion_date %}
-                                <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="electronic-certificate-buttons-block d-flex">
-                              {% include 'app_resume/blocks/buttons/edit_button.html'  with id=certificate.pk %}
-                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='electronic_certificate_delete' pk=certificate.pk %}
-                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=certificate.pk %}
-                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=certificate.pk %}
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% include 'app_resume/blocks/update_modal.html' with path_name='electronic_certificate_update' object=certificate form=electronic_certificate_forms|get_value_from_dict:certificate %}
-                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=certificate.pk %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
+                {% include 'app_resume/blocks/item_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
                 {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
               </li>
             </ul>

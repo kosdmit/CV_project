@@ -1,0 +1,64 @@
+{% load app_resume_filters %}
+
+{% block items_list %}
+
+  {% if object_set %}
+    <ul class="list-group list-group-flush">
+      {% for object in object_set %}
+        <li class="list-group-item">
+          <div class="item">
+            {% if update_path_name == 'electronic_certificate_update' %}
+              <div class="item-header">
+                <div class="ms-2 w-100 me-3">
+                  <div class="mb-2">
+                    {% if object.certificate_url %}
+                      <a href="{{ object.certificate_url }}" class="" target="_blank">{{ object.title }}</a>
+                    {% else %}
+                      <p class="">{{ object.title }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="item-body d-flex justify-content-between align-items-start">
+                {% if object.completion_percentage %}
+                  <div class="ms-2" style="width: 90%">
+                    <div class="progress me-2" role="progressbar" aria-label="Basic example" aria-valuenow="{{ object.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: {{ object.completion_percentage }}%"></div>
+                    </div>
+                  </div>
+                  <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ object.completion_percentage }}%</span>
+                {% endif %}
+              </div>
+            {% else %}
+              {% if object.website_url %}
+                <a href="{{ object.website_url }}" class="text-uppercase mb-1" target="_blank">{{ object.title }}</a>
+              {% else %}
+                <p class="text-uppercase mb-1">{{ object.title }}</p>
+              {% endif %}
+              {% if object.description %}
+                <p>{{ object.description }}</p>
+              {% endif %}
+            {% endif %}
+            <div class="item-footer d-flex justify-content-between">
+              <div class="info-block">
+                {% if object.completion_date %}
+                  <small class="align-self-center">{{ object.completion_date | date:'Y' }}г.</small>
+                {% endif %}
+              </div>
+              <div class="buttons-block d-flex">
+                {% include 'app_resume/blocks/buttons/edit_button.html' with id=object.pk %}
+                {% include 'app_resume/blocks/buttons/delete_button.html' with path_name=delete_path_name pk=object.pk%}
+                {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=object.pk %}
+                {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=object.pk %}
+              </div>
+            </div>
+          </div>
+          <!-- Modal -->
+          {% include 'app_resume/blocks/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
+          {% include 'app_resume/blocks/comments_modal.html' with uuid_key=object.pk %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endblock %}
