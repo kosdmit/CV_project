@@ -25,11 +25,7 @@
                       <p class="comment-text">{{ resume.position }}</p>
                     </div>
                     <div class="col-md-8">
-                      {% for skill in resume.skill_set.all %}
-                        <button class="btn btn-light position-relative mb-2 me-2 skill-item btn-sm" disabled type="button" id="{{ skill.pk }}">
-                          {{ skill.name }}
-                        </button>
-                      {% endfor %}
+                      {% include 'app_resume/blocks/skill_list.html' with object_set=resume.skill_set.all path_name='resume_list' %}
                     </div>
                   </div>
                 </div>
@@ -44,40 +40,9 @@
                       {% endif %}
                     </div>
                     <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-                      <button type="button" class="btn btn-sm like-button" id="like-{{ resume.pk }}"
-                              data-target="{{ resume.pk }}">
-                        <i class="fa-heart
-                          {% if resume.pk in users_likes_uuid %}
-                            fa-solid">
-                          {% else %}
-                            fa-regular">
-                          {% endif %}
-                        </i>
-                        <small>
-                          {% if like_counts|get_value_from_dict:resume.pk %}
-                            {{ like_counts|get_value_from_dict:resume.pk }}
-                          {% else %}
-                            0
-                          {% endif %}
-                        </small>
-                      </button>
-                      <button type="button" class="btn btn-sm comment-button" data-target="comments-{{ resume.pk }}">
-                        <i class="fa-regular fa-comment"></i>
-                        <small>
-                          {% if comment_counts|get_value_from_dict:resume.pk %}
-                            {{ comment_counts|get_value_from_dict:resume.pk }}
-                          {% else %}
-                            0
-                          {% endif %}
-                        </small>
-                      </button>
-                      <button type="button" class="btn btn-sm rating-button"
-                              data-bs-toggle="tooltip"
-                              data-bs-title="Рейтинг резюме определяется на основе количества
-                              заполненных полей и активности других пользователей">
-                        <i class="fa-regular fa-star"></i>
-                        <small>{{ resume.rating }}</small>
-                      </button>
+                      {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=resume.pk %}
+                      {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=resume.pk %}
+                      {% include 'app_resume/blocks/buttons/rating_button.html' with resume=resume%}
                     </div>
                   </div>
                 </div>

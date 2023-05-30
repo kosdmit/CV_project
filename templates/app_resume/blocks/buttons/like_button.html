@@ -2,7 +2,7 @@
 
 {% block like_button %}
 
-  <button type="button" class="btn btn-sm" id="like-{{ uuid_key }}"
+  <button type="button" class="btn btn-sm like-button" id="like-{{ uuid_key }}"
           onclick="clickLike('{{ uuid_key }}')">
     <i class="fa-heart
       {% if uuid_key in users_likes_uuid %}

@@ -2,7 +2,13 @@
 
 {% block comment_button %}
 
-  <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ uuid_key }}">
+  <button type="button" class="btn btn-sm comment-button"
+          {% if uuid_key == resume.pk %}
+            data-target="comments-{{ uuid_key }}"
+          {% else %}
+            data-bs-toggle="modal" data-bs-target="#comments-{{ uuid_key }}"
+          {% endif %}
+  >
     <i class="fa-regular fa-comment"></i>
     <small>
       {% if comment_counts|get_value_from_dict:uuid_key %}
