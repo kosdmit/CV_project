@@ -9,21 +9,35 @@ from django.utils.translation import gettext_lazy as _
 
 
 class SignUpUserForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                             'aria-describedby': "usernameHelp",
-                                                             }))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control',
-                                                            'aria-describedby': "emailHelp",
-                                                            }))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(
+        label='Имя пользователя:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'aria-describedby': "usernameHelp",
+                                      }))
+
+    email = forms.EmailField(
+        label='Email:',
+        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                       'aria-describedby': "emailHelp",
+                                       }))
+
+    password1 = forms.CharField(
+        label='Пароль:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    password2 = forms.CharField(
+        label='Повторите пароль:',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
     first_name = forms.CharField(
+        label='Имя:',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'area-describedby': 'first_nameHelp',
                                       }))
 
     last_name = forms.CharField(
+        label='Фамилия:',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'area-describedby': 'last_nameHelp',
@@ -35,18 +49,29 @@ class SignUpUserForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                             'area-describedby': 'usernameHelp',
-                                                             }))
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                               'area-describedby': 'first_nameHelp',
-                                                               }))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                              'area-describedby': 'last_nameHelp',
-                                                              }))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control',
-                                                            'area-describedby': 'last_nameHelp',
-                                                            }))
+    username = forms.CharField(
+        label='Имя пользователя:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'area-describedby': 'usernameHelp',
+                                      }))
+
+    first_name = forms.CharField(
+        label='Имя:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'area-describedby': 'first_nameHelp',
+                                      }))
+
+    last_name = forms.CharField(
+        label='Фамилия:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'area-describedby': 'last_nameHelp',
+                                      }))
+
+    email = forms.EmailField(
+        label='Адрес электронной почты:',
+        widget=forms.EmailInput(attrs={'class': 'form-control',
+                                       'area-describedby': 'last_nameHelp',
+                                       }))
 
     class Meta:
         model = User
@@ -61,23 +86,27 @@ class CreateProfileForm(forms.ModelForm):
     )
 
     birthday_date = forms.DateField(
+        label='День вашего рождения:',
         widget=forms.DateInput(attrs={'class': 'form-control',
                                       'type': 'date'}),
         required=False
     )
 
     gender = forms.CharField(
+        label='Пол:',
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=GENDER_CHOICES),
         required=False
     )
 
     phone_number = forms.CharField(
+        label='Телефон:',
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
     )
 
     avatar = forms.FileField(
+        label='Фото профиля:',
         widget=forms.FileInput(attrs={'class': 'form-control'}),
         required=False
     )
@@ -88,11 +117,13 @@ class CreateProfileForm(forms.ModelForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = UsernameField(widget=forms.TextInput(attrs={"autofocus": True,
-                                                           'class': 'form-control',
-                                                           }))
+    username = UsernameField(
+        label='Имя пользователя:',
+        widget=forms.TextInput(attrs={"autofocus": True,
+                                      'class': 'form-control',
+                                      }))
     password = forms.CharField(
-        label=_("Password"),
+        label='Пароль:',
         strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password",
                                           'class': 'form-control',

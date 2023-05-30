@@ -8,42 +8,7 @@
 
     <div class="container">
       {% include 'page_header.html' with path_name='signup' %}
-      <div class="row mb-5">
-        <div class="col-md-6 col-lg-5">
-          <form method="post">
-            {% csrf_token %}
-              <div class="mb-3">
-                <label for="id_username" class="form-label">Имя пользователя:</label>
-                {{ form.username }}
-                <div id="usernameHelp" class="form-text">Имя пользователя служит для входа на сайт.</div>
-              </div>
-              <div class="mb-3">
-                <label for="id_email" class="form-label">Email:</label>
-                {{ form.email }}
-                <div id="emailHelp" class="form-text">Введите действующий адрес электронной почты.</div>
-              </div>
-              <div class="mb-3">
-                <label for="id_password1" class="form-label">Пароль:</label>
-                {{ form.password1 }}
-              </div>
-              <div class="mb-3">
-                <label for="id_password2" class="form-label">Повторите пароль</label>
-                {{ form.password2 }}
-              </div>
-              <div class="mb-3">
-                <label for="id_first_name" class="form-label">Имя:</label>
-                {{ form.first_name }}
-                <div id="first_nameHelp" class="form-text">Необязательное поле.</div>
-              </div>
-              <div class="mb-3">
-                <label for="id_last_name" class="form-label">Фамилия:</label>
-                {{ form.last_name }}
-                <div id="last_nameHelp" class="form-text">Необязательное поле.</div>
-              </div>
-              <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-          </form>
-        </div>
-      </div>
+      {% include 'app_resume/blocks/forms/form.html' with path_name='signup' submit_text='Зарегистрироваться' %}
     </div>
 
   {% endblock %}

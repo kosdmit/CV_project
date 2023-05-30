@@ -7,9 +7,11 @@ from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducat
     AdditionalEducationForm, ElectronicCertificateForm, AdditionalEducationCreateForm, \
     ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, SkillCreateForm, \
     WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm, WorkExpSectionCreateForm
-from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, RatingUpdateForCreateViewMixin,\
-    RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, ResumeValidatorMixin, \
-    WorkExpSectionValidatorMixin
+from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
+    RatingUpdateForCreateViewMixin, \
+    RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, \
+    ResumeValidatorMixin, \
+    WorkExpSectionValidatorMixin, GetResumeObjMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, \
     ElectronicCertificate, Skill, WorkExpSection, Job
 
@@ -179,12 +181,18 @@ class ResumePositionUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, Update
     fields = ['position']
 
 
-class ResumeAboutMeUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
+class ResumeAboutMeUpdateView(UserValidatorMixin,
+                              GetResumeObjMixin,
+                              RefreshIfSuccessMixin,
+                              UpdateView):
     model = Resume
     fields = ['about_me']
 
 
-class ResumeSoftSkillsUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
+class ResumeSoftSkillsUpdateView(UserValidatorMixin,
+                                 GetResumeObjMixin,
+                                 RefreshIfSuccessMixin,
+                                 UpdateView):
     model = Resume
     fields = ['soft_skills']
 

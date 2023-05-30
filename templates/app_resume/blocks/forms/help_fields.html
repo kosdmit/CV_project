@@ -60,6 +60,24 @@
       <div id="positionHelp" class="form-text">Расскажите о ваших положительных качествах как кандидата на соответсвующую должность.</div>
     {% endif %}
 
+  {% elif path_name == 'create_profile' %}
+
+    {% if field.name == 'birthday_date' %}
+      <div id="birthday_dateHelp" class="form-text">Дата рождения используется для расчета вашего возраста в резюме и при восстановлении пароля учетной записи.</div>
+    {% elif field.name == 'phone_number' %}
+      <div id="phone_numberHelp" class="form-text">Укажите действующим номер телефона, чтобы ваш будущий работодатель смог до вас дозвониться.</div>
+    {% endif %}
+
+  {% elif path_name == 'signup' %}
+
+    {% if field.name == 'username' %}
+      <div id="usernameHelp" class="form-text">Имя пользователя служит для входа на сайт.</div>
+    {% elif field.name == 'email' %}
+      <div id="emailHelp" class="form-text">Введите действующий адрес электронной почты.</div>
+    {% elif field.name == 'first_name' or field.name == 'last_name'%}
+      <div class="form-text">Необязательное поле.</div>
+    {% endif %}
+
   {% endif %}
 
 {% endblock %}

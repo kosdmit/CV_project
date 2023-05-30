@@ -56,20 +56,7 @@
             <!-- Modal -->
             {% include 'app_resume/blocks/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
           {% else %}
-            {% if object == user %}
-              <div class="mb-3">
-                <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
-                  {% csrf_token %}
-                  <label for="id_about_me" class="form-label">Расскажите о себе:</label>
-                  <div class="input-group">
-                    {{ resume_about_me_form.about_me }}
-                    <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                  </div>
-                </form>
-              </div>
-            {% else %}
-              <p>Пользователь еще не добавил информацию в этот раздел</p>
-            {% endif %}
+            {% include 'app_resume/blocks/forms/field_update_form.html' with path_name='resume_about_me_update' form=resume_about_me_form %}
           {% endif %}
         </div>
       {% endif %}
@@ -91,7 +78,7 @@
             {% if object.profile.phone_number %}
               <a href="tel:{{ object.profile.phone_number }}">{{ object.profile.phone_number }}</a>
             {% else %}
-              <p>Не указан</p>
+              <p class="d-inline">Не указан</p>
             {% endif %}
           </li>
           <li class="list-group-item mb-3">
@@ -112,20 +99,7 @@
             <!-- Modal -->
             {% include 'app_resume/blocks/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
           {% else %}
-            {% if owner == user %}
-              <div class="mb-3">
-                <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
-                  {% csrf_token %}
-                  <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
-                  <div class="input-group">
-                    {{ resume_soft_skills_form.soft_skills }}
-                    <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                  </div>
-                </form>
-              </div>
-            {% else %}
-              <p>Пользователь еще не добавил информацию в этот раздел</p>
-            {% endif %}
+            {% include 'app_resume/blocks/forms/field_update_form.html' with path_name='resume_soft_skills_update' form=resume_soft_skills_form %}
           {% endif %}
         </div>
       {% endif %}

@@ -1,0 +1,20 @@
+{% block field_update_form %}
+
+  {% if object == user %}
+    <div class="mb-3">
+      <form method="post" action="{% url path_name username=user.username slug=resume.slug %}">
+        {% csrf_token %}
+        {% for field in form %}
+          <label class="form-label">{{ field.label }}</label>
+          <div class="input-group">
+            {{ field }}
+            <button type="submit" class="btn btn-secondary fw-bold">+</button>
+          </div>
+        {% endfor %}
+      </form>
+    </div>
+  {% else %}
+    <p>Пользователь еще не добавил информацию в этот раздел</p>
+  {% endif %}
+
+{% endblock %}
