@@ -78,13 +78,13 @@
             {% include 'blocks/nav_item.html' with path_name='main' link_text='Главная' %}
             {% include 'blocks/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
             <li class="nav-item mb-2">
-              <a class="nav-link p-0 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+              <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
                   text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
                 Ваше резюме
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a class="nav-link p-0 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
+              <a class="nav-link p-0 {% if not user.profile %}text-body-tertiary disabled"{% else %}
                   text-body" href="{% url 'profile' %}"{% endif %}>
                 Ваш профиль
               </a>
