@@ -10,14 +10,14 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <ul class="list-group list-group-flush mb-5">
+          <ul class="list-group list-group-flush mb-4">
             {% if not comments|get_value_from_dict:uuid_key %}
               <p>Комментариев пока нет, но вы можете оставить свой!</p>
             {% endif %}
             {% for comment in comments|get_value_from_dict:uuid_key %}
               {% include 'blocks/comment_item.html' %}
             {% endfor %}
-            {% include 'blocks/messages.html' %}
+            {% include 'blocks/messages.html' with path_name='comment_create' %}
           </ul>
           <form method="post" action="{% url 'comment_create' pk=uuid_key %}">
             {% csrf_token %}

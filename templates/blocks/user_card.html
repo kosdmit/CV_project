@@ -47,7 +47,7 @@
         <div class="about-me item">
           {% include 'blocks/second_title.html' with icon='fa-circle-user' title='Обо мне' %}
           {% if resume.about_me %}
-            <div class="resume-about-me-item">
+            <div class="resume-about-me-item mb-4">
               <p class="my-0">{{ resume.about_me }}</p>
               <div class="item-footer d-flex justify-content-end hidden-buttons-block">
                 {% include 'blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}

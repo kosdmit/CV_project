@@ -29,9 +29,9 @@
               <small class="align-self-center">Отредактировано: {{ comment.updated_date | date:'d.m.Y G:i' }}</small>
             {% endif %}
           </div>
-          <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
+          <div class="comment-buttons-block d-flex align-items-end justify-content-end col-sm-4 mt-2">
             {% include 'blocks/buttons/edit_button.html' with owner=comment.user prefix='edit-comment-' id=comment.pk %}
-            {% include 'blocks/buttons/delete_button.html' with path_name='comment_delete' pk=comment.pk %}
+            {% include 'blocks/buttons/delete_button.html' with path_name='comment_delete' pk=comment.pk owner=comment.user %}
             {% include 'blocks/buttons/like_button.html' with uuid_key=comment.pk %}
           </div>
         </div>
