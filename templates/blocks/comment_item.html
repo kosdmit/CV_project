@@ -30,9 +30,9 @@
             {% endif %}
           </div>
           <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-            {% include 'app_resume/blocks/buttons/edit_button.html' with owner=comment.user prefix='edit-comment-' id=comment.pk %}
-            {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='comment_delete' pk=comment.pk %}
-            {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=comment.pk %}
+            {% include 'blocks/buttons/edit_button.html' with owner=comment.user prefix='edit-comment-' id=comment.pk %}
+            {% include 'blocks/buttons/delete_button.html' with path_name='comment_delete' pk=comment.pk %}
+            {% include 'blocks/buttons/like_button.html' with uuid_key=comment.pk %}
           </div>
         </div>
       </div>

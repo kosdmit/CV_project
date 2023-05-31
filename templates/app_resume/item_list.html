@@ -46,16 +46,16 @@
                 {% endif %}
               </div>
               <div class="buttons-block d-flex">
-                {% include 'app_resume/blocks/buttons/edit_button.html' with id=object.pk %}
-                {% include 'app_resume/blocks/buttons/delete_button.html' with path_name=delete_path_name pk=object.pk%}
-                {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=object.pk %}
-                {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=object.pk %}
+                {% include 'blocks/buttons/edit_button.html' with id=object.pk %}
+                {% include 'blocks/buttons/delete_button.html' with path_name=delete_path_name pk=object.pk%}
+                {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
+                {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
               </div>
             </div>
           </div>
           <!-- Modal -->
-          {% include 'app_resume/blocks/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
-          {% include 'app_resume/blocks/comments_modal.html' with uuid_key=object.pk %}
+          {% include 'blocks/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
+          {% include 'blocks/comments_modal.html' with uuid_key=object.pk %}
         </li>
       {% endfor %}
     </ul>

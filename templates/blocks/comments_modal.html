@@ -15,9 +15,9 @@
               <p>Комментариев пока нет, но вы можете оставить свой!</p>
             {% endif %}
             {% for comment in comments|get_value_from_dict:uuid_key %}
-              {% include 'app_resume/blocks/comment_item.html' %}
+              {% include 'blocks/comment_item.html' %}
             {% endfor %}
-            {% include 'app_resume/blocks/messages.html' %}
+            {% include 'blocks/messages.html' %}
           </ul>
           <form method="post" action="{% url 'comment_create' pk=uuid_key %}">
             {% csrf_token %}

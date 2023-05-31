@@ -3,15 +3,15 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/breadcrumbs.html' %}
   {% block main_content %}
 
     <div class="container">
-      {% include 'page_header.html' with path_name='login' %}
+      {% include 'blocks/page_header.html' with path_name='login' %}
       <div class="row mb-5">
-        {% include 'app_resume/blocks/messages.html' %}
+        {% include 'blocks/messages.html' %}
       </div>
-      {% include 'app_resume/blocks/forms/form.html' with path_name='login' submit_text='Войти' %}
+      {% include 'blocks/forms/form.html' with path_name='login' submit_text='Войти' %}
     </div>
 
   {% endblock %}

@@ -37,10 +37,10 @@
         {% if path_name == 'resume' %}
           <div class="resume-position-item d-flex justify-content-center">
             <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
-            {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
+            {% include 'blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
           </div>
           <!-- Modal -->
-          {% include 'app_resume/blocks/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
+          {% include 'blocks/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
         {% endif %}
       </div>
       {% if path_name == 'resume' %}
@@ -50,13 +50,13 @@
             <div class="resume-about-me-item">
               <p class="my-0">{{ resume.about_me }}</p>
               <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
-                {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
+                {% include 'blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
               </div>
             </div>
             <!-- Modal -->
-            {% include 'app_resume/blocks/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
+            {% include 'blocks/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
           {% else %}
-            {% include 'app_resume/blocks/forms/field_update_form.html' with path_name='resume_about_me_update' form=resume_about_me_form %}
+            {% include 'blocks/forms/field_update_form.html' with path_name='resume_about_me_update' form=resume_about_me_form %}
           {% endif %}
         </div>
       {% endif %}
@@ -82,7 +82,7 @@
             {% endif %}
           </li>
           <li class="list-group-item mb-3">
-            {% include 'app_users/blocks/social_links_block.html' %}
+            {% include 'blocks/social_links_block.html' %}
           </li>
         </ul>
       </div>
@@ -93,13 +93,13 @@
             <div class="resume-soft-skills-item">
               <p class="my-0">{{ resume.soft_skills }}</p>
               <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
-                {% include 'app_resume/blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
+                {% include 'blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
               </div>
             </div>
             <!-- Modal -->
-            {% include 'app_resume/blocks/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
+            {% include 'blocks/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
           {% else %}
-            {% include 'app_resume/blocks/forms/field_update_form.html' with path_name='resume_soft_skills_update' form=resume_soft_skills_form %}
+            {% include 'blocks/forms/field_update_form.html' with path_name='resume_soft_skills_update' form=resume_soft_skills_form %}
           {% endif %}
         </div>
       {% endif %}

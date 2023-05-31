@@ -5,10 +5,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container">
-      {% include 'page_header.html' with path_name='resume_list' %}
+      {% include 'blocks/page_header.html' with path_name='resume_list' %}
       <div class="row my-5">
         <ul class="list-group list-group-flush">
           {% for resume in page_obj %}
@@ -25,7 +25,7 @@
                       <p class="comment-text">{{ resume.position }}</p>
                     </div>
                     <div class="col-md-8">
-                      {% include 'app_resume/blocks/skill_list.html' with object_set=resume.skill_set.all path_name='resume_list' %}
+                      {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all path_name='resume_list' %}
                     </div>
                   </div>
                 </div>
@@ -40,9 +40,9 @@
                       {% endif %}
                     </div>
                     <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-                      {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=resume.pk %}
-                      {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=resume.pk %}
-                      {% include 'app_resume/blocks/buttons/rating_button.html' with resume=resume%}
+                      {% include 'blocks/buttons/like_button.html' with uuid_key=resume.pk %}
+                      {% include 'blocks/buttons/comment_button.html' with uuid_key=resume.pk %}
+                      {% include 'blocks/buttons/rating_button.html' with resume=resume%}
                     </div>
                   </div>
                 </div>
@@ -50,7 +50,7 @@
                 <a class="resume-hidden-link" href="{% url 'resume' username=resume.user.username slug=resume.slug %}"></a>
               </div>
               <!-- Modal -->
-              {% include 'app_resume/blocks/comments_modal.html' with uuid_key=resume.pk %}
+              {% include 'blocks/comments_modal.html' with uuid_key=resume.pk %}
             </li>
           {% endfor %}
         </ul>

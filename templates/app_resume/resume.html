@@ -15,11 +15,11 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container resume">
       <div class="row gx-5">
-        {% include 'user_card.html' with path_name='resume' object=owner %}
+        {% include 'blocks/user_card.html' with path_name='resume' object=owner %}
         <div class="col-lg-7">
           <div class="education mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-medal title-icon fs-1 me-3 mb-1"></i>Образование</h2>
@@ -33,17 +33,17 @@
                         <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
                       {% endif %}
                       <div class="main-education-buttons-block ms-auto">
-                        {% include 'app_resume/blocks/buttons/edit_button.html' with id=resume.maineducation.pk %}
+                        {% include 'blocks/buttons/edit_button.html' with id=resume.maineducation.pk %}
                       </div>
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% include 'app_resume/blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
-                  {% include 'app_resume/blocks/item_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
-                  {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
+                  {% include 'blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
+                  {% include 'app_resume/item_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
+                  {% include 'blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
                 {% else %}
                   {% if owner == user %}
-                    {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='main_education_create' %}
+                    {% include 'blocks/forms/item_create_form.html' with path_name='main_education_create' %}
                   {% else %}
                     <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
                   {% endif %}
@@ -51,13 +51,13 @@
                 {% if resume.additionaleducation_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3 mt-4">Дополнительное образование</h3>
                 {% endif %}
-                {% include 'app_resume/blocks/item_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
-                {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
+                {% include 'app_resume/item_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
                   <h3 class="text-uppercase fs-5 me-3 mt-4">Электронные сертификаты</h3>
                 {% endif %}
-                {% include 'app_resume/blocks/item_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
-                {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
+                {% include 'app_resume/item_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
               </li>
             </ul>
           </div>
@@ -66,8 +66,8 @@
             {% if not resume.skill_set.count and owner != user %}
               <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
             {% endif %}
-            {% include 'app_resume/blocks/skill_list.html' with object_set=resume.skill_set.all %}
-            {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
+            {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all %}
+            {% include 'blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
           </div>
           <div class="work-experience mb-5">
             <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
@@ -84,13 +84,13 @@
                         <p class="text-uppercase align-self-center d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                       {% endif %}
                       <div class="work-exp-section-buttons-block d-flex ms-auto">
-                        {% include 'app_resume/blocks/buttons/edit_button.html' with id=section.pk %}
-                        {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='work_exp_section_delete' pk=section.pk %}
+                        {% include 'blocks/buttons/edit_button.html' with id=section.pk %}
+                        {% include 'blocks/buttons/delete_button.html' with path_name='work_exp_section_delete' pk=section.pk %}
                       </div>
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% include 'app_resume/blocks/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
+                  {% include 'blocks/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
                   <ul class="list-group list-group-flush">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
                       <li class="list-group-item">
@@ -121,22 +121,22 @@
                               </a>
                             {% endif %}
                             <div class="job-buttons-block d-flex ms-auto">
-                              {% include 'app_resume/blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
-                              {% include 'app_resume/blocks/buttons/delete_button.html' with path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
-                              {% include 'app_resume/blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}
-                              {% include 'app_resume/blocks/buttons/comment_button.html' with uuid_key=job_form_dict.job.pk %}
+                              {% include 'blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
+                              {% include 'blocks/buttons/delete_button.html' with path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
+                              {% include 'blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}
+                              {% include 'blocks/buttons/comment_button.html' with uuid_key=job_form_dict.job.pk %}
                             </div>
                           </div>
                         </div>
                         <!-- Modal -->
-                        {% include 'app_resume/blocks/update_modal.html' with path_name='job_update' object=job_form_dict.job form=job_form_dict.job_update_form %}
-                        {% include 'app_resume/blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk %}
+                        {% include 'blocks/update_modal.html' with path_name='job_update' object=job_form_dict.job form=job_form_dict.job_update_form %}
+                        {% include 'blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk %}
                       </li>
                     {% endfor %}
                   </ul>
-                  {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}
+                  {% include 'blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}
                 {% endfor %}
-              {% include 'app_resume/blocks/forms/item_create_form.html' with path_name='work_exp_section_create' form=work_exp_section_create_form %}
+              {% include 'blocks/forms/item_create_form.html' with path_name='work_exp_section_create' form=work_exp_section_create_form %}
             </ul>
           </div>
         </div>

@@ -1,0 +1,156 @@
+{% block social_links %}
+
+  <div class="sharebuttons btn-group btn-group-lg btn-group-justified">
+    <!-- Twitter -->
+    {% if owner.profile.sociallinks.twitter %}
+      <a class="btn text-white" style="background-color: #55acee;" href="{{ owner.profile.sociallinks.twitter }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #55acee;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в Twitter"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                           <div class="d-flex">
+                           {{ social_links_form.twitter }}
+                           <button name="twitter-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-twitter social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+    <!-- Facebook -->
+    {% if owner.profile.sociallinks.facebook %}
+      <a class="btn text-white" id="fb-link" style="background-color: #3b5998;" href="{{ owner.profile.sociallinks.facebook }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f social-logo"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #3b5998;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в FaceBook"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                         <div class="d-flex">
+                           {{ social_links_form.facebook }}
+                           <button name="facebook-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-facebook-f social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+    <!-- Instagram -->
+    {% if owner.profile.sociallinks.instagram %}
+      <a class="btn text-white" id="instagram-link" style="background-color: #ac2bac;" href="{{ owner.profile.sociallinks.instagram }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram social-logo"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #ac2bac;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в Instagram"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                         <div class="d-flex">
+                           {{ social_links_form.instagram }}
+                           <button name="instagram-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-instagram social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+    <!-- Linkedin -->
+    {% if owner.profile.sociallinks.linked_in %}
+      <a class="btn text-white" id="linkedin-link" style="background-color: #0082ca;" href="{{ owner.profile.sociallinks.linked_in }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-linkedin-in social-logo"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #0082ca;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в LinkedIn"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                         <div class="d-flex">
+                           {{ social_links_form.linked_in }}
+                           <button name="linkedin-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-linkedin-in social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+    <!-- Vkontakte -->
+    {% if owner.profile.sociallinks.vk %}
+      <a class="btn text-white" id="vk-link" style="background-color: #4c75a3;" href="{{ owner.profile.sociallinks.vk }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-vk social-logo"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #4c75a3;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в Вконтакте"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                         <div class="d-flex">
+                           {{ social_links_form.vk }}
+                           <button name="vk-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-vk social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+    <!-- Github -->
+    {% if owner.profile.sociallinks.git_hub %}
+      <a class="btn text-white" id="github-link" style="background-color: #333333;" href="{{ owner.profile.sociallinks.git_hub }}"
+         role="button" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github social-logo"></i>
+      </a>
+    {% elif owner == user %}
+      <button type="button" class="btn text-white social-link" style="background-color: #333333;"
+              data-bs-html="true"
+              data-bs-placement="bottom"
+              data-bs-toggle="popover"
+              data-bs-title="Ваш профиль в GitHub"
+              data-bs-content=
+                      '<form method="post" action="{% url 'social_links_update' %}">
+                         {% csrf_token %}
+                         <div class="d-flex">
+                           {{ social_links_form.git_hub }}
+                           <button name="github-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                         </div>
+                       </form>'
+      >
+        <i class="fab fa-github social-logo"></i>
+        <i class="fw-bold social-plus-sign">+</i>
+      </button>
+    {% endif %}
+  </div>
+
+{% endblock %}

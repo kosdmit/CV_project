@@ -3,12 +3,12 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/breadcrumbs.html' %}
   {% block main_content %}
 
     <div class="container">
-      {% include 'page_header.html' with path_name='create_profile' %}
-      {% include 'app_resume/blocks/forms/form.html' with path_name='create_profile' submit_text='Отправить' %}
+      {% include 'blocks/page_header.html' with path_name='create_profile' %}
+      {% include 'blocks/forms/form.html' with path_name='create_profile' submit_text='Отправить' %}
     </div>
 
   {% endblock %}
