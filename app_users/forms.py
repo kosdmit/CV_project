@@ -80,9 +80,9 @@ class UserUpdateForm(forms.ModelForm):
 
 class CreateProfileForm(forms.ModelForm):
     GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Other'),
+        ('M', 'Муж'),
+        ('F', 'Жен'),
+        ('O', 'Другое'),
     )
 
     birthday_date = forms.DateField(
