@@ -3,9 +3,9 @@
 {% block items_list %}
 
   {% if object_set %}
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush mb-3">
       {% for object in object_set %}
-        <li class="list-group-item">
+        <li class="list-group-item shadow bg-light mb-1 rounded-2">
           <div class="item">
             {% if update_path_name == 'electronic_certificate_update' %}
               <div class="item-header">

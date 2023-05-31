@@ -9,10 +9,11 @@
   {% block main_content %}
     <div class="container">
       {% include 'blocks/page_header.html' with path_name='resume_list' %}
-      <div class="row my-5">
+      <div class="row mb-5">
+        <div>
         <ul class="list-group list-group-flush">
           {% for resume in page_obj %}
-            <li class="list-group-item">
+            <li class="list-group-item shadow rounded-2 bg-light mb-2">
               <div class="resume-item mt-2">
                 <div class="container px-0">
                   <div class="row">
@@ -54,6 +55,7 @@
             </li>
           {% endfor %}
         </ul>
+        </div>
       </div>
     <div class="row my-2">
       <nav aria-label="Page navigation example">

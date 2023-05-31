@@ -14,9 +14,9 @@
         {% include 'blocks/user_card.html' with path_name='profile' object=user %}
         <div class="col-md-7">
           <div class="profile-info mb-5">
-            <h3 class="text-uppercase fs-5">Данные профиля</h3>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item mb-3">
+            {% include 'blocks/second_title.html' with title='Данные профиля' %}
+            <ul class="list-group list-group-flush shadow rounded-2 bg-light mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_birth_date" class="form-label">Дата рождения:</label>
                 {% if user.profile.birthday_date %}
                   {{ user.profile.birthday_date }}
@@ -24,11 +24,11 @@
                   <p class="text-body-secondary d-inline">Не указано</p>
                 {% endif %}
               </li>
-              <li class="list-group-item mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_gender" class="form-label">Пол:</label>
                 {{ user.profile.get_gender }}
               </li>
-              <li class="list-group-item mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_phone_number" class="form-label">Телефон:</label>
                 {% if user.profile.phone_number %}
                   {{ user.profile.phone_number }}
@@ -40,15 +40,15 @@
             <a href="{% url 'profile_update' %}" class="btn btn-secondary">Редактировать профиль</a>
           </div>
           <div class="resume-list mb-5">
-            <h3 class="text-uppercase fs-5">Ваши резюме</h3>
+            {% include 'blocks/second_title.html' with title='Ваши резюме' %}
             {% if user.resume_set.all %}
               <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
                 {% csrf_token %}
-                <div class="list-group my-3">
+                <div class="list-group my-3 shadow">
                   {% for resume, radio in user.resume_set.all|zip:primary_resume_select_form.is_primary %}
                     <a href="{% url 'resume' username=user.username slug=resume.slug %}"
                        class="list-group-item list-group-item-action
-                       {% if resume.is_primary %} active{% endif %}" aria-current="true">
+                       {% if resume.is_primary %} active{% else %} bg-light{% endif %}" aria-current="true">
                       <div class="d-sm-flex flex-grow-1 justify-content-between">
                         <h5 class="mb-1">{{ resume.position }}</h5>
                         <div class="d-flex ms-auto">

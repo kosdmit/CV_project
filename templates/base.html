@@ -13,13 +13,13 @@
 </head>
 <body>
 
-<header class="p-3 text-bg-light mb-5 bg-light">
+<header class="p-3 text-bg-light mb-4 bg-light shadow-sm">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a class="navbar-brand fs-3 me-4" href="{% url 'main' %}">CV Project</a>
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body">Обзор</a></li>
+        <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body fw-semibold">Обзор</a></li>
         <li>
           <a class="nav-link px-2 {% if not user.is_authenticated or not user.profile.resume_set.all %}text-body-tertiary disabled"{% else %}
               text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
@@ -67,7 +67,7 @@
 {% block content %}
 {% endblock %}
 
-<div class="container-fluid bg-light">
+<div class="container-fluid bg-light shadow-sm mt-4">
   <div class="container">
     <footer class="py-5">
       <div class="row d-flex justify-content-between">

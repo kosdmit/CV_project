@@ -1,15 +1,15 @@
 {% block user_card %}
 
   <div class="col-lg-5 mb-5">
-    <div class="rounded-5 bg-light pt-5 pb-1 px-3">
+    <div class="rounded-5 bg-light pt-5 pb-1 px-3 shadow">
       <div class="hero mb-5">
         {% if object.profile.avatar %}
           <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-            <img src="{{ object.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
+            <img src="{{ object.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto shadow" alt="user`s avatar"
                  style="object-fit: cover; aspect-ratio: 1 / 1;">
           </div>
         {% else %}
-          <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
+          <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3 shadow" style="height: 250px; width: 250px">
             {% if object == user %}
               <p class="mx-auto text-light">Здесь будет ваше фото</p>
             {% else %}
@@ -44,8 +44,8 @@
         {% endif %}
       </div>
       {% if path_name == 'resume' %}
-        <div class="about-me mb-5 item">
-          <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
+        <div class="about-me item">
+          {% include 'blocks/second_title.html' with icon='fa-circle-user' title='Обо мне' %}
           {% if resume.about_me %}
             <div class="resume-about-me-item">
               <p class="my-0">{{ resume.about_me }}</p>
@@ -60,17 +60,17 @@
           {% endif %}
         </div>
       {% endif %}
-      <div class="my-contacts mb-5">
+      <div class="my-contacts mb-4">
         {% if path_name == 'resume' %}
-          <h2 class="text-uppercase"><i class="fa-solid fa-address-book title-icon fs-1 me-3 mb-1"></i>Контакты</h2>
+          {% include 'blocks/second_title.html' with icon='fa-address-book' title='Контакты' %}
         {% endif %}
         <ul class="list-unstyled">
           {% if path_name == 'profile' %}
-            <li class="list-group-item mb-3">
+            <li class="list-group-item mb-1">
               <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ object.username }}</p>
             </li>
           {% endif %}
-          <li class="list-group-item mb-3">
+          <li class="list-group-item mb-1">
             <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ object.email }}">{{ object.email }}</a>
           </li>
           <li class="list-group-item mb-3">
@@ -87,8 +87,8 @@
         </ul>
       </div>
       {% if path_name == 'resume' %}
-        <div class="personal-qualities mb-5 item">
-          <h2 class="text-uppercase text-sm"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
+        <div class="personal-qualities mb-4 item">
+          {% include 'blocks/second_title.html' with icon='fa-circle-check' title='Личные качества' %}
           {% if resume.soft_skills %}
             <div class="resume-soft-skills-item">
               <p class="my-0">{{ resume.soft_skills }}</p>
