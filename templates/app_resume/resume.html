@@ -94,7 +94,7 @@
                   <ul class="list-group list-group-flush">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
                       <li class="list-group-item">
-                        <div class="job-item">
+                        <div class="item">
                           {% if job_form_dict.job.company %}
                             <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
                                 {% if not job_form_dict.job.company_url %}disabled{% endif %}
@@ -120,7 +120,7 @@
                                 <small class="align-self-center">Проект на GitHub</small>
                               </a>
                             {% endif %}
-                            <div class="job-buttons-block d-flex ms-auto">
+                            <div class="hidden-buttons-block d-flex ms-auto">
                               {% include 'blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
                               {% include 'blocks/buttons/delete_button.html' with path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
                               {% include 'blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}

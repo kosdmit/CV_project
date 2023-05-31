@@ -44,12 +44,12 @@
         {% endif %}
       </div>
       {% if path_name == 'resume' %}
-        <div class="about-me mb-5">
+        <div class="about-me mb-5 item">
           <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
           {% if resume.about_me %}
             <div class="resume-about-me-item">
               <p class="my-0">{{ resume.about_me }}</p>
-              <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
+              <div class="item-footer d-flex justify-content-end hidden-buttons-block">
                 {% include 'blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
               </div>
             </div>
@@ -87,12 +87,12 @@
         </ul>
       </div>
       {% if path_name == 'resume' %}
-        <div class="personal-qualities mb-5">
+        <div class="personal-qualities mb-5 item">
           <h2 class="text-uppercase text-sm"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
           {% if resume.soft_skills %}
             <div class="resume-soft-skills-item">
               <p class="my-0">{{ resume.soft_skills }}</p>
-              <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
+              <div class="item-footer d-flex justify-content-end hidden-buttons-block">
                 {% include 'blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
               </div>
             </div>
