@@ -101,7 +101,9 @@ class CreateProfileForm(forms.ModelForm):
 
     phone_number = forms.CharField(
         label='Телефон:',
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'value': '+7',
+                                      'placeholder': '+7'}),
         required=False
     )
 
