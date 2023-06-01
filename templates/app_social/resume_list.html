@@ -5,7 +5,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'blocks/breadcrumbs.html' %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container">
       {% include 'blocks/page_header.html' with path_name='resume_list' %}
@@ -18,7 +18,7 @@
           </ul>
         </div>
       </div>
-      {% include 'blocks/pagination.html' %}
+      {% include 'blocks/navigation/pagination.html' %}
     </div>
 
   {% endblock %}

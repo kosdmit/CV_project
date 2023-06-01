@@ -14,7 +14,7 @@
           </div>
           {% if not modal %}
             <div class="col-md-8">
-              {% include 'blocks/skill_list.html' with object_set=object.skill_set.all path_name='resume_list' %}
+              {% include 'blocks/objects/skill_list.html' with object_set=object.skill_set.all path_name='resume_list' %}
             </div>
           {% endif %}
         </div>
@@ -45,7 +45,7 @@
     </div>
     <!-- Modal -->
     {% if modal != 'comment' %}
-      {% include 'blocks/comments_modal.html' with uuid_key=object.pk content_type='resume' %}
+      {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk content_type='resume' %}
     {% endif %}
   </li>
 

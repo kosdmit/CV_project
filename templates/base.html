@@ -75,8 +75,8 @@
         <div class="col-6 col-md-2 mb-3">
           <h5>CV Project</h5>
           <ul class="nav flex-column">
-            {% include 'blocks/nav_item.html' with path_name='main' link_text='Главная' %}
-            {% include 'blocks/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
+            {% include 'blocks/navigation/nav_item.html' with path_name='main' link_text='Главная' %}
+            {% include 'blocks/navigation/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
             <li class="nav-item mb-2">
               <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
                   text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>

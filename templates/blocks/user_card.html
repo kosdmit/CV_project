@@ -40,7 +40,7 @@
             {% include 'blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
           </div>
           <!-- Modal -->
-          {% include 'blocks/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
+          {% include 'blocks/modals/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
         {% endif %}
       </div>
       {% if path_name == 'resume' %}
@@ -54,7 +54,7 @@
               </div>
             </div>
             <!-- Modal -->
-            {% include 'blocks/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
+            {% include 'blocks/modals/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
           {% else %}
             {% include 'blocks/forms/field_update_form.html' with path_name='resume_about_me_update' form=resume_about_me_form %}
           {% endif %}
@@ -97,7 +97,7 @@
               </div>
             </div>
             <!-- Modal -->
-            {% include 'blocks/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
+            {% include 'blocks/modals/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
           {% else %}
             {% include 'blocks/forms/field_update_form.html' with path_name='resume_soft_skills_update' form=resume_soft_skills_form %}
           {% endif %}

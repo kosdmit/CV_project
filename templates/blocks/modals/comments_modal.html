@@ -5,17 +5,19 @@
   <div class="modal fade" id="comments-{{ uuid_key }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        {% if delete_path_name != 'job_delete' %}
+
           <div class="m-1">
             <ul class="content-item p-0">
               {% if content_type == 'resume' %}
                 {% include 'blocks/objects/resume_object.html' with modal='comment' %}
+              {% elif content_type == 'job' %}
+                {% include 'blocks/objects/job_object.html' with modal='comment' %}
               {% else %}
-                {% include 'app_resume/blocks/item.html' with modal='comments' %}
+                {% include 'blocks/objects/object.html' with modal='comments' %}
               {% endif %}
             </ul>
           </div>
-        {% endif %}
+
         <div class="modal-header">
           <h1 class="modal-title fs-5 d-block" id="exampleModalLabel">Комментарии</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -26,7 +28,7 @@
               <p>Комментариев пока нет, но вы можете оставить свой!</p>
             {% endif %}
             {% for comment in comments|get_value_from_dict:uuid_key %}
-              {% include 'blocks/comment_item.html' %}
+              {% include 'blocks/objects/comment_object.html' %}
             {% endfor %}
             {% include 'blocks/messages.html' with path_name='comment_create' %}
           </ul>

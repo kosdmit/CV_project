@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-  {% include 'blocks/breadcrumbs.html' %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container resume">
       <div class="row gx-5">
@@ -37,8 +37,8 @@
                       </div>
                     </div>
                   </div>
-                  {% include 'blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
-                  {% include 'app_resume/blocks/item_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
+                  {% include 'blocks/modals/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
+                  {% include 'blocks/objects/object_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
                   {% include 'blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
                 {% else %}
                   {% if owner == user %}
@@ -50,12 +50,12 @@
                 {% if resume.additionaleducation_set.all or owner == user %}
                   {% include 'blocks/second_title.html' with title='Дополнительное образование' %}
                 {% endif %}
-                {% include 'app_resume/blocks/item_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
+                {% include 'blocks/objects/object_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
                 {% include 'blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
                   {% include 'blocks/second_title.html' with title='Электронные сертификаты' %}
                 {% endif %}
-                {% include 'app_resume/blocks/item_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
+                {% include 'blocks/objects/object_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
                 {% include 'blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
               </li>
             </ul>
@@ -65,7 +65,7 @@
             {% if not resume.skill_set.count and owner != user %}
               <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
             {% endif %}
-            {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all delete_path_name='skill_delete' %}
+            {% include 'blocks/objects/skill_list.html' with object_set=resume.skill_set.all delete_path_name='skill_delete' %}
             {% include 'blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
           </div>
           <div class="work-experience mb-5">
@@ -89,48 +89,10 @@
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% include 'blocks/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
+                  {% include 'blocks/modals/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
                   <ul class="list-group list-group-flush mb-3">
-                    {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
-                      <li class="list-group-item shadow bg-light mb-1 rounded-3">
-                        <div class="item">
-                          {% if job_form_dict.job.company %}
-                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
-                                {% if not job_form_dict.job.company_url %}disabled{% endif %}
-                            >
-                              {{ job_form_dict.job.company }}
-                            </a>
-                          {% endif %}
-                          <p class="text-uppercase mb-1 d-inline">{{ job_form_dict.job.title }}</p>
-                          {% if job_form_dict.job.start_date %}
-                            <p class="text-uppercase d-inline">// {{ job_form_dict.job.start_date | date:'Y' }} - {{ job_form_dict.job.finish_date | date:'Y' }}</p>
-                          {% endif %}
-                          {% if job_form_dict.job.description %}
-                            <p>{{ job_form_dict.job.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            {% if job_form_dict.job.project_url %}
-                              <a href="{{ job_form_dict.job.project_url }}" target="_blank">
-                                <small class="align-self-center">Сайт проекта</small>
-                              </a>
-                            {% endif %}
-                            {% if job_form_dict.job.git_url %}
-                              <a href="{{ job_form_dict.job.git_url }}" class="ms-2" target="_blank">
-                                <small class="align-self-center">Проект на GitHub</small>
-                              </a>
-                            {% endif %}
-                            <div class="hidden-buttons-block d-flex ms-auto">
-                              {% include 'blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
-                              {% include 'blocks/buttons/delete_button.html' with delete_path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
-                              {% include 'blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}
-                              {% include 'blocks/buttons/comment_button.html' with uuid_key=job_form_dict.job.pk %}
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% include 'blocks/update_modal.html' with path_name='job_update' object=job_form_dict.job form=job_form_dict.job_update_form %}
-                        {% include 'blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk delete_path_name='job_delete' section=section.pk %}
-                      </li>
+                    {% for object_dict in jobs_in_sections|get_value_from_dict:section %}
+                      {% include 'blocks/objects/job_object.html' with section=section object=object_dict.job update_form=object_dict.job_update_form %}
                     {% endfor %}
                   </ul>
                   {% include 'blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}

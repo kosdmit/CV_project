@@ -1,0 +1,23 @@
+{% block object_footer %}
+
+  <div class="item-footer d-flex justify-content-between">
+    <div class="info-block">
+      {% if object.completion_date %}
+        <small class="align-self-center">{{ object.completion_date | date:'Y' }}г.</small>
+      {% endif %}
+    </div>
+    <div class="{% if not modal %}hidden-buttons-block{% endif %} d-flex">
+      {% if modal != 'update' and type_content != 'skill' %}
+        {% include 'blocks/buttons/edit_button.html' with id=object.pk %}
+      {% endif %}
+
+        {% include 'blocks/buttons/delete_button.html' with pk=object.pk%}
+
+      {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
+      {% if modal != 'comments' %}
+        {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}
