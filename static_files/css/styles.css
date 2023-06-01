@@ -1,9 +1,15 @@
 h2 {
-    color: #146bb0;
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 h3:not(.popover-header) {
-    color: #146bb0;
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 a {
@@ -11,7 +17,7 @@ a {
 }
 
 .progress-bar, .bg-primary {
-    background-color: #146bb0 !important;
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
 }
 
 .title-icon {

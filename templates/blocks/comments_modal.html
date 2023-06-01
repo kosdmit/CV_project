@@ -9,7 +9,7 @@
           <div class="m-1">
             <ul class="content-item p-0">
               {% if content_type == 'resume' %}
-                {% include 'app_resume/blocks/resume_object.html' with modal='comment' %}
+                {% include 'blocks/objects/resume_object.html' with modal='comment' %}
               {% else %}
                 {% include 'app_resume/blocks/item.html' with modal='comments' %}
               {% endif %}

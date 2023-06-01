@@ -11,9 +11,9 @@
   <script src="https://kit.fontawesome.com/a4a646474a.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{% static 'css/styles.css'%}">
 </head>
-<body>
+<body class="bg-body-secondary">
 
-<header class="p-3 text-bg-light mb-4 bg-light shadow-sm">
+<header class="p-3 text-bg-light mb-4 bg-light bg-gradient shadow-sm">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a class="navbar-brand fs-3 me-4" href="{% url 'main' %}">CV Project</a>
@@ -67,7 +67,7 @@
 {% block content %}
 {% endblock %}
 
-<div class="container-fluid bg-light shadow-sm mt-4">
+<div class="container-fluid bg-light bg-gradient shadow-sm mt-4">
   <div class="container">
     <footer class="py-5">
       <div class="row d-flex justify-content-between">

@@ -11,42 +11,14 @@
       {% include 'blocks/page_header.html' with path_name='resume_list' %}
       <div class="row mb-5">
         <div>
-        <ul class="list-group list-group-flush">
-          {% for object in page_obj %}
-            {% include 'app_resume/blocks/resume_object.html' %}
-          {% endfor %}
-        </ul>
+          <ul class="list-group list-group-flush">
+            {% for object in page_obj %}
+              {% include 'blocks/objects/resume_object.html' %}
+            {% endfor %}
+          </ul>
         </div>
       </div>
-    <div class="row my-2">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-            <a class="page-link" href="?page=1" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
-            </li>
-          {% endif %}
-          <li class="page-item active">
-            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-          </li>
-          {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-            </li>
-          {% endif %}
-          <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+      {% include 'blocks/pagination.html' %}
     </div>
 
   {% endblock %}

@@ -92,7 +92,7 @@
                   {% include 'blocks/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
                   <ul class="list-group list-group-flush mb-3">
                     {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
-                      <li class="list-group-item shadow bg-light mb-1 rounded-2">
+                      <li class="list-group-item shadow bg-light mb-1 rounded-3">
                         <div class="item">
                           {% if job_form_dict.job.company %}
                             <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
