@@ -3,7 +3,7 @@
 {% block skill_list %}
 
   {% for object in object_set %}
-    <button class="btn btn-light position-relative mb-3 me-3 shadow-sm skill-item {% if path_name == 'resume_list' %}btn-sm{% endif %}"
+    <button class="btn btn-light position-relative mb-3 me-3 shadow-sm skill-item item {% if path_name == 'resume_list' %}btn-sm{% endif %}"
             type="button" id="{{ object.pk }}" {% if path_name == 'resume_list' %}disabled{% endif %}>
       {{ object.title }}
       {% if owner == user %}

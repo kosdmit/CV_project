@@ -40,4 +40,8 @@ a {
     .hidden-buttons-block:not(.rounded-pill) {
         opacity: 0.4;
     }
+    .rounded-pill {
+        display: none;
+    }
+
 }
