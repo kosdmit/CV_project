@@ -49,7 +49,7 @@
           {% if resume.about_me %}
             <div class="resume-about-me-item mb-4">
               <p class="my-0">{{ resume.about_me }}</p>
-              <div class="item-footer d-flex justify-content-end hidden-buttons-block">
+              <div class="item-footer d-flex justify-content-end">
                 {% include 'blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
               </div>
             </div>
@@ -92,7 +92,7 @@
           {% if resume.soft_skills %}
             <div class="resume-soft-skills-item">
               <p class="my-0">{{ resume.soft_skills }}</p>
-              <div class="item-footer d-flex justify-content-end hidden-buttons-block">
+              <div class="item-footer d-flex justify-content-end">
                 {% include 'blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
               </div>
             </div>

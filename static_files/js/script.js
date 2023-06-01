@@ -207,11 +207,14 @@ for (let i = 0; i < resumes.length; i++) {
     openModal(commentButton.dataset.target)
   });
 
-  let likeButton = resumes[i].querySelector('.like-button');
-  likeButton.addEventListener('click', function(event) {
-    event.stopPropagation();
-    clickLike(likeButton.dataset.target);
-  });
+  let likeButton = resumes[i].querySelectorAll('.like-button');
+  for (let i = 0; i < likeButton.length; i++) {
+    likeButton[i].addEventListener('click', function (event) {
+      event.stopPropagation();
+      console.log('like button is clicked')
+      clickLike(likeButton.dataset.target);
+    });
+  }
 
   let ratingButton = resumes[i].querySelector('.rating-button');
   ratingButton.addEventListener('click', function(event) {
