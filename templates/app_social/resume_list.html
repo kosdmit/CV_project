@@ -12,47 +12,8 @@
       <div class="row mb-5">
         <div>
         <ul class="list-group list-group-flush">
-          {% for resume in page_obj %}
-            <li class="list-group-item shadow rounded-2 bg-light mb-2">
-              <div class="resume-item mt-2">
-                <div class="container px-0">
-                  <div class="row">
-                    <div class="col-md-4">
-                      {% if resume.user.first_name or resume.user.last_name %}
-                        <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
-                      {% else %}
-                        <p class="text-uppercase mb-1">{{ resume.user.username }}</p>
-                      {% endif %}
-                      <p class="comment-text">{{ resume.position }}</p>
-                    </div>
-                    <div class="col-md-8">
-                      {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all path_name='resume_list' %}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="item-footer container p-0">
-                  <div class="row">
-                    <div class="comment-info-block col-sm-8 mt-2">
-                      <small class="">{{ resume.created_date  | date:'d.m.Y G:i' }}</small>
-                      <br>
-                      {% if resume.updated_date != resume.created_date %}
-                        <small class="align-self-center">Отредактировано: {{ resume.updated_date | date:'d.m.Y G:i' }}</small>
-                      {% endif %}
-                    </div>
-                    <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-                      {% include 'blocks/buttons/like_button.html' with uuid_key=resume.pk %}
-                      {% include 'blocks/buttons/comment_button.html' with uuid_key=resume.pk %}
-                      {% include 'blocks/buttons/rating_button.html' with resume=resume%}
-                    </div>
-                  </div>
-                </div>
-                <!-- Hidden -->
-                <a class="resume-hidden-link" href="{% url 'resume' username=resume.user.username slug=resume.slug %}"></a>
-              </div>
-              <!-- Modal -->
-              {% include 'blocks/comments_modal.html' with uuid_key=resume.pk %}
-            </li>
+          {% for object in page_obj %}
+            {% include 'app_resume/blocks/resume_object.html' %}
           {% endfor %}
         </ul>
         </div>
