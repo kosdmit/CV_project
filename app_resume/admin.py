@@ -36,7 +36,7 @@ admin.site.register(ElectronicCertificate, ElectronicCertificateAdmin)
 
 
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ('resume', 'name', 'updated_date',)
+    list_display = ('resume', 'title', 'updated_date',)
 
 admin.site.register(Skill, SkillAdmin)
 

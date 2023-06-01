@@ -2,10 +2,10 @@
 
 {% block skill_list %}
 
-  {% for skill in object_set %}
+  {% for object in object_set %}
     <button class="btn btn-light position-relative mb-3 me-3 shadow-sm skill-item {% if path_name == 'resume_list' %}btn-sm{% endif %}"
-            type="button" id="{{ skill.pk }}" {% if path_name == 'resume_list' %}disabled{% endif %}>
-      {{ skill.name }}
+            type="button" id="{{ object.pk }}" {% if path_name == 'resume_list' %}disabled{% endif %}>
+      {{ object.title }}
       {% if owner == user %}
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block close-skill-badge">
           <i class="fa-solid fa-xmark"></i>
@@ -13,24 +13,24 @@
         </span>
       {% endif %}
       <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block like-skill-badge"
-            id="like-{{ skill.pk }}">
+            id="like-{{ object.pk }}">
         <i class="fa-heart
-          {% if skill.pk in users_likes_uuid %}
+          {% if object.pk in users_likes_uuid %}
             fa-solid">
           {% else %}
             fa-regular">
           {% endif %}
         </i>
         <small>
-          {% if like_counts|get_value_from_dict:skill.pk %}
-            {{ like_counts|get_value_from_dict:skill.pk }}
+          {% if like_counts|get_value_from_dict:object.pk %}
+            {{ like_counts|get_value_from_dict:object.pk }}
           {% else %}
             0
           {% endif %}
         </small>
       </span>
     </button>
-    {% include 'blocks/comments_modal.html' with uuid_key=skill.pk type_content='skill' %}
+    {% include 'blocks/comments_modal.html' with uuid_key=object.pk type_content='skill' %}
   {% endfor %}
 
 {% endblock %}

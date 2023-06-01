@@ -65,7 +65,7 @@
             {% if not resume.skill_set.count and owner != user %}
               <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
             {% endif %}
-            {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all %}
+            {% include 'blocks/skill_list.html' with object_set=resume.skill_set.all delete_path_name='skill_delete' %}
             {% include 'blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
           </div>
           <div class="work-experience mb-5">

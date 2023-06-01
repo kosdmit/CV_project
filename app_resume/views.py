@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db import OperationalError
 from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
@@ -30,7 +31,7 @@ class MainView(RedirectView):
         url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
     except Resume.MultipleObjectsReturned:
         url_to_redirect = reverse_lazy('primary_resume', kwargs={'username': USER_TO_REDIRECT})
-    except Resume.DoesNotExist:
+    except (Resume.DoesNotExist, OperationalError):
         url_to_redirect = reverse_lazy('login')
 
     url = url_to_redirect
@@ -306,7 +307,7 @@ class SkillCreateView(ResumeBounderMixin,
                       RatingUpdateForCreateViewMixin,
                       CreateView):
     model = Skill
-    fields = ['name']
+    fields = ['title']
 
 
 class SkillDeleteView(ResumeValidatorMixin,
