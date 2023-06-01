@@ -35,3 +35,9 @@ a {
 .item:hover .hidden-buttons-block {
     opacity: 1;
 }
+
+@media (max-width: 767px) {
+    .hidden-buttons-block:not(.rounded-pill) {
+        opacity: 0.4;
+    }
+}

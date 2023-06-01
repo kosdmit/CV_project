@@ -3,16 +3,16 @@
 {% block skill_list %}
 
   {% for skill in object_set %}
-    <button class="btn btn-light position-relative mb-3 me-3 shadow-sm item {% if path_name == 'resume_list' %}btn-sm{% endif %}"
+    <button class="btn btn-light position-relative mb-3 me-3 shadow-sm skill-item {% if path_name == 'resume_list' %}btn-sm{% endif %}"
             type="button" id="{{ skill.pk }}" {% if path_name == 'resume_list' %}disabled{% endif %}>
       {{ skill.name }}
       {% if owner == user %}
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block">
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block close-skill-badge">
           <i class="fa-solid fa-xmark"></i>
           <span class="visually-hidden">unread messages</span>
         </span>
       {% endif %}
-      <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block"
+      <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary hidden-buttons-block like-skill-badge"
             id="like-{{ skill.pk }}">
         <i class="fa-heart
           {% if skill.pk in users_likes_uuid %}
@@ -30,7 +30,7 @@
         </small>
       </span>
     </button>
-    {% include 'blocks/comments_modal.html' with uuid_key=skill.pk %}
+    {% include 'blocks/comments_modal.html' with uuid_key=skill.pk type_content='skill' %}
   {% endfor %}
 
 {% endblock %}

@@ -37,7 +37,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- Modal -->
                   {% include 'blocks/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
                   {% include 'app_resume/blocks/item_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
                   {% include 'blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
@@ -85,7 +84,7 @@
                       {% endif %}
                       <div class="work-exp-section-buttons-block d-flex ms-auto">
                         {% include 'blocks/buttons/edit_button.html' with id=section.pk %}
-                        {% include 'blocks/buttons/delete_button.html' with path_name='work_exp_section_delete' pk=section.pk %}
+                        {% include 'blocks/buttons/delete_button.html' with delete_path_name='work_exp_section_delete' pk=section.pk %}
                       </div>
                     </div>
                   </div>
@@ -122,7 +121,7 @@
                             {% endif %}
                             <div class="hidden-buttons-block d-flex ms-auto">
                               {% include 'blocks/buttons/edit_button.html' with id=job_form_dict.job.pk %}
-                              {% include 'blocks/buttons/delete_button.html' with path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
+                              {% include 'blocks/buttons/delete_button.html' with delete_path_name='job_delete' section=section.pk pk=job_form_dict.job.pk %}
                               {% include 'blocks/buttons/like_button.html' with uuid_key=job_form_dict.job.pk %}
                               {% include 'blocks/buttons/comment_button.html' with uuid_key=job_form_dict.job.pk %}
                             </div>
@@ -130,7 +129,7 @@
                         </div>
                         <!-- Modal -->
                         {% include 'blocks/update_modal.html' with path_name='job_update' object=job_form_dict.job form=job_form_dict.job_update_form %}
-                        {% include 'blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk %}
+                        {% include 'blocks/comments_modal.html' with uuid_key=job_form_dict.job.pk delete_path_name='job_delete' section=section.pk %}
                       </li>
                     {% endfor %}
                   </ul>

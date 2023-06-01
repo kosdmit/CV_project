@@ -23,11 +23,13 @@ class SignUpUserForm(UserCreationForm):
 
     password1 = forms.CharField(
         label='Пароль:',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                          'id': 'password1_field'}))
 
     password2 = forms.CharField(
         label='Повторите пароль:',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                          'id': 'password2_field'}))
 
     first_name = forms.CharField(
         label='Имя:',

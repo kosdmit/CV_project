@@ -2,12 +2,12 @@
 
   {% if owner == user %}
     <form method="post" action="
-        {% if path_name == 'job_delete' %}
+        {% if delete_path_name == 'job_delete' %}
           {% url 'job_delete' username=user.username slug=resume.slug section=section pk=pk %}
-        {% elif path_name == 'comment_delete' %}
+        {% elif delete_path_name == 'comment_delete' %}
           {% url 'comment_delete' pk=pk %}
         {% else %}
-          {% url path_name username=user.username slug=resume.slug pk=pk %}
+          {% url delete_path_name username=user.username slug=resume.slug pk=pk %}
         {% endif %}
     ">
       {% csrf_token %}

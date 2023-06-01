@@ -217,3 +217,17 @@ for (let i = 0; i < resumes.length; i++) {
 
   });
 }
+
+
+// password repeat front-end verification
+document.getElementById('signup_form').addEventListener('submit', function (event) {
+  var password1 = document.getElementById('password1_field');
+  var password2 = document.getElementById('password2_field');
+  var alertMessage = document.getElementById('password_repeat_alert')
+
+  if (password1.value !== password2.value) {
+    console.log('Passwords do not match!')
+    event.preventDefault();
+    alertMessage.removeAttribute('hidden')
+  }
+});
