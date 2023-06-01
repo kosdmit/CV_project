@@ -58,16 +58,18 @@ function clickLike(pk) {
     // Process the received JSON data
     console.log(data);
     // Perform any desired operations with the data
-    let likeSign = document.querySelector("#like-" + pk + " i");
-    let likesCount = document.querySelector("#like-" + pk + " small");
-    likesCount.innerHTML = data['likes_count']
-    if (data['is_liked']) {
-        likeSign.classList.remove("fa-regular")
-        likeSign.classList.add("fa-solid")
-    }
-    else {
-        likeSign.classList.remove("fa-solid")
-        likeSign.classList.add("fa-regular")
+    let likeSign = document.querySelectorAll("#like-" + pk + " i");
+    let likesCount = document.querySelectorAll("#like-" + pk + " small");
+    for (let i = 0; i < likeSign.length; i++) {
+      likesCount[i].innerHTML = data['likes_count']
+      if (data['is_liked']) {
+        likeSign[i].classList.remove("fa-regular")
+        likeSign[i].classList.add("fa-solid")
+      }
+      else {
+        likeSign[i].classList.remove("fa-solid")
+        likeSign[i].classList.add("fa-regular")
+      }
     }
   })
   .catch((error) => {
