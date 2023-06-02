@@ -224,6 +224,17 @@ for (let i = 0; i < resumes.length; i++) {
 }
 
 
+// Items on mobile screens is clickable
+if(window.innerWidth <= 767) {
+    itemList = document.querySelectorAll('.item:not(.item-in-modal)')
+    for (let i = 0; i < itemList.length; i++){
+      itemList[i].addEventListener('click', function (event) {
+        openModal('comments-' + itemList[i].getAttribute('data-id'));
+      })
+    }
+}
+
+
 // password repeat front-end verification
 document.getElementById('signup_form').addEventListener('submit', function (event) {
   var password1 = document.getElementById('password1_field');

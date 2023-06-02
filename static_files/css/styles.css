@@ -43,11 +43,12 @@ a {
 }
 
 @media (max-width: 767px) {
-    .hidden-buttons-block:not(.rounded-pill) {
-        opacity: 0.4;
+    .hidden-buttons-block {
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
-    .rounded-pill {
-        display: none;
+    .item:hover .hidden-buttons-block {
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
-
 }
