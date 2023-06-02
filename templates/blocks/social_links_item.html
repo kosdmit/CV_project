@@ -1,0 +1,29 @@
+{% block social_links_item %}
+
+  {% if url %}
+    <a class="btn text-white {{ service_name }}" href="{{ url }}"
+       role="button" target="_blank" rel="noopener noreferrer">
+      <i class="fab {{ icon }}"></i>
+    </a>
+  {% elif owner == user %}
+    <button type="button" class="btn text-white social-link {{ service_name }}"
+            data-bs-html="true"
+            data-bs-placement="bottom"
+            data-bs-custom-class="shadow"
+            data-bs-toggle="popover"
+            data-bs-title="Ваш профиль в {{ service_name|title }}"
+            data-bs-content=
+                    '<form method="post" action="{% url 'social_links_update' %}">
+                       {% csrf_token %}
+                         <div class="d-flex">
+                         {{ form }}
+                         <button name="twitter-submit" class="btn btn-outline-secondary fw-bold ms-2" type="submit">+</button>
+                       </div>
+                     </form>'
+    >
+      <i class="fab {{ icon }} social-logo"></i>
+      <i class="fw-bold social-plus-sign">+</i>
+    </button>
+  {% endif %}
+
+{% endblock %}
