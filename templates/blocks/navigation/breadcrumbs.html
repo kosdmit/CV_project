@@ -10,7 +10,11 @@
         </li>
         {% for text, url in breadcrumbs %}
           <li class="breadcrumb-item">
-            <a class="link-body-emphasis fw-semibold text-decoration-none" href="{{ url }}">{{ text }}</a>
+            {% if url %}
+              <a class="link-body-emphasis fw-semibold text-decoration-none" href="{{ url }}">{{ text }}</a>
+            {% else %}
+              <p class="fw-semibold text-decoration-none d-inline">{{ text }}</p>
+            {% endif %}
           </li>
         {% endfor %}
       </ol>

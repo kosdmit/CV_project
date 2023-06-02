@@ -146,6 +146,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     login_url = '/users/login/'
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
         try:
             profile = Profile.objects.get(user=request.user)
         except ObjectDoesNotExist:

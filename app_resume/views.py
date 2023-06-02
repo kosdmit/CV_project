@@ -116,8 +116,13 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             comment_counts[dict['uuid_key']] = dict['count']
         context['comment_counts'] = comment_counts
 
+        if self.request.user == owner:
+            profile_url = '/users/profile/'
+        else:
+            profile_url = None
+
         breadcrumbs = [
-            (owner.username, '/users/profile/'),
+            (owner.username, profile_url),
             (resume.position, ''),
         ]
         context['breadcrumbs'] = breadcrumbs
