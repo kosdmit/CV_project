@@ -61,11 +61,7 @@
                 </div>
               </form>
             {% else %}
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item mb-3">
-                  Вы еще не добавляли резюме, создайте новое резюме сейчас!
-                </li>
-              </ul>
+              <p class="ps-3">Вы еще не добавляли резюме, создайте новое резюме сейчас!</p>
             {% endif %}
             <form method="post">
               {% csrf_token %}

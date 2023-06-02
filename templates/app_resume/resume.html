@@ -44,7 +44,7 @@
                   {% if owner == user %}
                     {% include 'blocks/forms/item_create_form.html' with path_name='main_education_create' %}
                   {% else %}
-                    <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+                    {% include 'blocks/no_objects_message.html' %}
                   {% endif %}
                 {% endif %}
                 {% if resume.additionaleducation_set.all or owner == user %}
@@ -63,7 +63,7 @@
           <div class="skills mb-5">
             {% include 'blocks/prime_title.html' with icon='fa-laptop-code' title='Навыки' %}
             {% if not resume.skill_set.count and owner != user %}
-              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+              {% include 'blocks/no_objects_message.html' %}
             {% endif %}
             {% include 'blocks/objects/skill_list.html' with object_set=resume.skill_set.all delete_path_name='skill_delete' %}
             {% include 'blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
@@ -71,7 +71,7 @@
           <div class="work-experience mb-5">
             {% include 'blocks/prime_title.html' with icon='fa-suitcase' title='Опыт работы' %}
             {% if not resume.workexpsection_set.count and owner != user %}
-              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+              {% include 'blocks/no_objects_message.html' %}
             {% endif %}
             <ul class="list-unstyled">
               <li>
