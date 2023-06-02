@@ -1,7 +1,7 @@
 {% block resume_object %}
 
   <li class="list-group-item shadow rounded-2 bg-light mb-2">
-    <div class="resume-item mt-2">
+    <div class="{% if not modal %}resume-item{% endif %} mt-2">
       <div class="container px-0">
         <div class="row">
           <div class="{% if not modal %}col-md-4{% endif %}">

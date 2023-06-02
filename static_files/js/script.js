@@ -195,6 +195,7 @@ for (let i = 0; i < buttons.length; i++) {
 // Resume items clickable
 const resumes = document.querySelectorAll('.resume-item');
 for (let i = 0; i < resumes.length; i++) {
+  console.log(resumes.length)
   resumes[i].addEventListener('click', function (event) {
     let linkElement = resumes[i].querySelector('.resume-hidden-link');
     let linkUrl = linkElement.href;
