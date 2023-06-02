@@ -236,15 +236,28 @@ if(window.innerWidth <= 767) {
 }
 
 
-// password repeat front-end verification
-document.getElementById('signup_form').addEventListener('submit', function (event) {
-  var password1 = document.getElementById('password1_field');
-  var password2 = document.getElementById('password2_field');
-  var alertMessage = document.getElementById('password_repeat_alert')
+// Stop propagation for click on any links
+let links = document.querySelectorAll('a');
+for (let i = 0; i < links.length; i++) {
+  links[i].addEventListener('click', function (event) {
+    event.stopPropagation();
+  });
+}
 
-  if (password1.value !== password2.value) {
-    console.log('Passwords do not match!')
-    event.preventDefault();
-    alertMessage.removeAttribute('hidden')
-  }
-});
+
+// password repeat front-end verification
+let signupForm =  document.getElementById('signup_form');
+if (signupForm) {
+  signupForm.addEventListener('submit', function (event) {
+    var password1 = document.getElementById('password1_field');
+    var password2 = document.getElementById('password2_field');
+    var alertMessage = document.getElementById('password_repeat_alert')
+
+    if (password1.value !== password2.value) {
+      console.log('Passwords do not match!')
+      event.preventDefault();
+      alertMessage.removeAttribute('hidden')
+    }
+  });
+}
+
