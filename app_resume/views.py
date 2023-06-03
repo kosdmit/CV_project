@@ -35,7 +35,9 @@ class MainView(RedirectView):
         except (Resume.DoesNotExist, OperationalError):
             url = reverse_lazy('login')
 
-        url += '?' + self.request.GET.urlencode()
+        url_params = self.request.GET.urlencode()
+        if url_params:
+            url += '?' + self.request.GET.urlencode()
 
         return url
 

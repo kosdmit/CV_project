@@ -20,8 +20,12 @@ a {
     color: #146bb0; /* Цвет ссылок */
 }
 
-.progress-bar, .bg-primary {
+.progress-bar {
     background-image: linear-gradient(to left, #146bb0, #b393d3);
+}
+
+.bg-primary {
+    background-color: #146bb0 !important;
 }
 
 
