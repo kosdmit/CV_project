@@ -62,10 +62,19 @@ a {
 /* Items footer (buttons block) */
 .hidden-buttons-block {
     opacity: 0;
-    transition: opacity 0.3s ease 0.2s;
+    transition: opacity 0.3s ease;
 }
 .item:hover .hidden-buttons-block {
     opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.clickable-item:hover, .resume-item:hover {
+    box-shadow: 0  1rem 1.5rem rgba(0,0,0,.175) !important;
+    transform: scale(1.01);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.clickable-item, .resume-item {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 @media (max-width: 767px) {
     .hidden-buttons-block {

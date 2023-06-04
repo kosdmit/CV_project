@@ -1,49 +1,50 @@
 {% block job_object %}
 
-  <li class="list-group-item shadow bg-light mb-2 rounded-3">
-    <div class="item {% if modal %}item-in-modal{% endif %}" data-id="{{ object.pk }}">
-      {% if object.company %}
-        <a href="{{ object.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
-            {% if not object.company_url %}disabled{% endif %}
-        >
-          {{ object.company }}
+  <li class="list-group-item shadow bg-light mb-2 rounded-3 item
+      {% if modal %}item-in-modal{% else %}clickable-item{% endif %}"
+      {% if not modal %}data-id="{{ object.pk }}"{% endif %}
+  >
+    {% if object.company %}
+      <a href="{{ object.company_url }}" class="text-uppercase fw-bold mb-1 me-2" target="_blank"
+          {% if not object.company_url %}disabled{% endif %}
+      >
+        {{ object.company }}
+      </a>
+    {% endif %}
+    <p class="text-uppercase mb-1 d-inline">{{ object.title }}</p>
+    {% if object.start_date %}
+      <p class="text-uppercase d-inline">// {{ object.start_date | date:'Y' }} - {{ object.finish_date | date:'Y' }}</p>
+    {% endif %}
+    {% if object.description %}
+      <p>{{ object.description }}</p>
+    {% endif %}
+    <div class="item-footer d-flex justify-content-between">
+      {% if object.project_url %}
+        <a href="{{ object.project_url }}" target="_blank">
+          <small class="align-self-center">Сайт проекта</small>
         </a>
       {% endif %}
-      <p class="text-uppercase mb-1 d-inline">{{ object.title }}</p>
-      {% if object.start_date %}
-        <p class="text-uppercase d-inline">// {{ object.start_date | date:'Y' }} - {{ object.finish_date | date:'Y' }}</p>
+      {% if object.git_url %}
+        <a href="{{ object.git_url }}" class="ms-2" target="_blank">
+          <small class="align-self-center">Проект на GitHub</small>
+        </a>
       {% endif %}
-      {% if object.description %}
-        <p>{{ object.description }}</p>
-      {% endif %}
-      <div class="item-footer d-flex justify-content-between">
-        {% if object.project_url %}
-          <a href="{{ object.project_url }}" target="_blank">
-            <small class="align-self-center">Сайт проекта</small>
-          </a>
+      <div class="{% if not modal %}hidden-buttons-block{% endif %} d-flex ms-auto">
+        {% if modal != 'update' %}
+          {% include 'blocks/buttons/edit_button.html' with id=object.pk %}
         {% endif %}
-        {% if object.git_url %}
-          <a href="{{ object.git_url }}" class="ms-2" target="_blank">
-            <small class="align-self-center">Проект на GitHub</small>
-          </a>
+        {% include 'blocks/buttons/delete_button.html' with delete_path_name='job_delete' pk=object.pk %}
+        {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
+        {% if modal != 'comment' %}
+          {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
         {% endif %}
-        <div class="{% if not modal %}hidden-buttons-block{% endif %} d-flex ms-auto">
-          {% if modal != 'update' %}
-            {% include 'blocks/buttons/edit_button.html' with id=object.pk %}
-          {% endif %}
-          {% include 'blocks/buttons/delete_button.html' with delete_path_name='job_delete' pk=object.pk %}
-          {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
-          {% if modal != 'comment' %}
-            {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
-          {% endif %}
-        </div>
       </div>
     </div>
-    <!-- Modal -->
-    {% if not modal %}
-      {% include 'blocks/modals/update_modal.html' with path_name='job_update'  form=update_form content_type='job' modal='update' section=section.pk pk=object.pk %}
-      {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk delete_path_name='job_delete' section=section.pk content_type='job' modal='comment' %}
-    {% endif %}
   </li>
+  <!-- Modal -->
+  {% if not modal %}
+    {% include 'blocks/modals/update_modal.html' with path_name='job_update'  form=update_form content_type='job' modal='update' section=section.pk pk=object.pk %}
+    {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk delete_path_name='job_delete' section=section.pk content_type='job' modal='comment' %}
+  {% endif %}
 
 {% endblock %}

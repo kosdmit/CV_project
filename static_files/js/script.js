@@ -38,7 +38,6 @@ function skillDelete(pk) {
 
   let skill = document.getElementById(pk);
   skill.classList.add("invisible")
-
 }
 
 // Add and delete Likes
@@ -165,7 +164,7 @@ function openModal(modalId) {
 
 
 // Skill button functionality
-const buttons = document.querySelectorAll('.skill-item');
+let buttons = document.querySelectorAll('.skill-item');
 for (let i = 0; i < buttons.length; i++) {
   // Attach click event listener to the button
   buttons[i].addEventListener('click', function (event) {
@@ -225,14 +224,12 @@ for (let i = 0; i < resumes.length; i++) {
 }
 
 
-// Items on mobile screens is clickable
-if(window.innerWidth <= 767) {
-    itemList = document.querySelectorAll('.item:not(.item-in-modal)')
-    for (let i = 0; i < itemList.length; i++){
-      itemList[i].addEventListener('click', function (event) {
-        openModal('comments-' + itemList[i].getAttribute('data-id'));
-      })
-    }
+// Items are clickable
+itemList = document.querySelectorAll('.clickable-item')
+for (let i = 0; i < itemList.length; i++){
+  itemList[i].addEventListener('click', function (event) {
+    openModal('comments-' + itemList[i].getAttribute('data-id'));
+  })
 }
 
 
@@ -240,6 +237,15 @@ if(window.innerWidth <= 767) {
 let links = document.querySelectorAll('a');
 for (let i = 0; i < links.length; i++) {
   links[i].addEventListener('click', function (event) {
+    event.stopPropagation();
+  });
+}
+
+
+// Stop propagation for button blocks
+let itemButtons = document.querySelectorAll('.hidden-buttons-block button');
+for (let i = 0; i < itemButtons.length; i++) {
+  itemButtons[i].addEventListener('click', function (event) {
     event.stopPropagation();
   });
 }

@@ -2,20 +2,21 @@
 
 {% block item %}
 
-  <li class="list-group-item shadow bg-light bg-gradient mb-2 rounded-3 px-3 py-2">
-    <div class="item {% if modal %}item-in-modal{% endif %}" data-id="{{ object.pk }}">
-      {% if update_path_name == 'electronic_certificate_update' %}
-        {% include 'blocks/objects/electronic_certificate_body.html' %}
-      {% else %}
-        {% include 'blocks/objects/object_body.html' %}
-      {% endif %}
-      {% include 'blocks/objects/object_footer.html' %}
-    </div>
-    <!-- Modal -->
-    {% if not modal %}
-      {% include 'blocks/modals/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
-      {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk %}
+  <li class="list-group-item item shadow bg-light bg-gradient mb-2 rounded-3 px-3 py-2
+      {% if modal %}item-in-modal{% else %} clickable-item{% endif %}"
+      {% if not modal %}data-id="{{ object.pk }}{% endif %}"
+  >
+    {% if update_path_name == 'electronic_certificate_update' %}
+      {% include 'blocks/objects/electronic_certificate_body.html' %}
+    {% else %}
+      {% include 'blocks/objects/object_body.html' %}
     {% endif %}
+    {% include 'blocks/objects/object_footer.html' %}
   </li>
+  <!-- Modal -->
+  {% if not modal %}
+    {% include 'blocks/modals/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
+    {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk %}
+  {% endif %}
 
 {% endblock %}

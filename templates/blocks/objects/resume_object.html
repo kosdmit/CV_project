@@ -1,52 +1,50 @@
 {% block resume_object %}
 
-  <li class="list-group-item shadow rounded-2 bg-light mb-2">
-    <div class="{% if not modal %}resume-item{% endif %} mt-2">
-      <div class="container px-0">
-        <div class="row">
-          <div class="{% if not modal %}col-md-4{% endif %}">
-            {% if object.user.first_name or object.user.last_name %}
-              <p class="text-uppercase mb-1">{{ object.user.first_name }} {{ object.user.last_name }}</p>
-            {% else %}
-              <p class="text-uppercase mb-1">{{ object.user.username }}</p>
-            {% endif %}
-            <p class="comment-text">{{ object.position }}</p>
+  <li class="list-group-item shadow rounded-2 bg-light mb-2 {% if not modal %}resume-item{% endif %}">
+    <div class="container px-0">
+      <div class="row">
+        <div class="{% if not modal %}col-md-4{% endif %}">
+          {% if object.user.first_name or object.user.last_name %}
+            <p class="text-uppercase mb-1">{{ object.user.first_name }} {{ object.user.last_name }}</p>
+          {% else %}
+            <p class="text-uppercase mb-1">{{ object.user.username }}</p>
+          {% endif %}
+          <p class="comment-text">{{ object.position }}</p>
+        </div>
+        {% if not modal %}
+          <div class="col-md-8">
+            {% include 'blocks/objects/skill_list.html' with object_set=object.skill_set.all path_name='resume_list' %}
           </div>
-          {% if not modal %}
-            <div class="col-md-8">
-              {% include 'blocks/objects/skill_list.html' with object_set=object.skill_set.all path_name='resume_list' %}
-            </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="item-footer container p-0">
+      <div class="row">
+        <div class="comment-info-block col-sm-8 mt-2">
+          <small class="">{{ object.created_date  | date:'d.m.Y G:i' }}</small>
+          <br>
+          {% if object.updated_date != object.created_date %}
+            <small class="align-self-center">Отредактировано: {{ object.updated_date | date:'d.m.Y G:i' }}</small>
           {% endif %}
         </div>
-      </div>
-
-      <div class="item-footer container p-0">
-        <div class="row">
-          <div class="comment-info-block col-sm-8 mt-2">
-            <small class="">{{ object.created_date  | date:'d.m.Y G:i' }}</small>
-            <br>
-            {% if object.updated_date != object.created_date %}
-              <small class="align-self-center">Отредактировано: {{ object.updated_date | date:'d.m.Y G:i' }}</small>
-            {% endif %}
-          </div>
-          <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-            {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
-            {% if modal != 'comment' %}
-              {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
-            {% endif %}
-            {% include 'blocks/buttons/rating_button.html' with resume=object%}
-          </div>
+        <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
+          {% include 'blocks/buttons/like_button.html' with uuid_key=object.pk %}
+          {% if modal != 'comment' %}
+            {% include 'blocks/buttons/comment_button.html' with uuid_key=object.pk %}
+          {% endif %}
+          {% include 'blocks/buttons/rating_button.html' with resume=object%}
         </div>
       </div>
-      <!-- Hidden -->
-      {% if not modal %}
-        <a class="resume-hidden-link" href="{% url 'resume' username=object.user.username slug=object.slug %}"></a>
-      {% endif %}
     </div>
-    <!-- Modal -->
-    {% if modal != 'comment' %}
-      {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk content_type='resume' %}
+    <!-- Hidden -->
+    {% if not modal %}
+      <a class="resume-hidden-link" href="{% url 'resume' username=object.user.username slug=object.slug %}"></a>
     {% endif %}
   </li>
+  <!-- Modal -->
+  {% if modal != 'comment' %}
+    {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk content_type='resume' %}
+  {% endif %}
 
 {%  endblock %}
