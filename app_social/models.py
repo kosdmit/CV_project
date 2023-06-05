@@ -31,3 +31,13 @@ class Comment(models.Model):
         else:
             return f"Comment by unknown user"
 
+
+class Post(models.Model):
+    resume = models.ForeignKey('app_resume.Resume', on_delete=models.CASCADE, editable=False)
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    message = models.TextField()
+    image = models.ImageField(upload_to='files/post_images/', blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_date = models.DateTimeField(auto_now=True)
+

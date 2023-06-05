@@ -16,7 +16,7 @@ from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, \
     ElectronicCertificate, Skill, WorkExpSection, Job
 
-from app_social.forms import CommentForm, CommentUpdateForm
+from app_social.forms import CommentForm, CommentUpdateForm, PostCreateForm, PostForm
 from app_social.mixins import AddLikesIntoContextMixin
 from app_social.models import Comment
 from app_users.forms import SocialLinksForm
@@ -95,6 +95,9 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         for skill in resume.skill_set.all():
             uuid_list.append(skill.pk)
 
+        for post in resume.post_set.all():
+            uuid_list.append(post.pk)
+
         for work_exp_section in resume.workexpsection_set.all():
             for job in work_exp_section.job_set.all():
                 uuid_list.append(job.pk)
@@ -147,6 +150,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'skill_create_form': SkillCreateForm(),
             'work_exp_section_create_form': WorkExpSectionCreateForm(),
             'job_create_form': JobCreateForm(),
+            'post_create_form': PostCreateForm(),
         }
 
         context.update(owners_forms)
@@ -183,6 +187,11 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             )
             context['work_exp_section_update_forms'][
                 section] = work_exp_section_update_form
+
+        context['post_update_forms'] = {}
+        for post in resume.post_set.all():
+            post_update_form = PostForm(instance=post)
+            context['post_update_forms'][post] = post_update_form
 
         return context
 

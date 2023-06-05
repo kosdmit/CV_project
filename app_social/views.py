@@ -8,11 +8,13 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
 from CV_project.settings import RATING_SETTINGS
+from app_resume.mixins import ResumeBounderMixin, ResumeValidatorMixin, RefreshIfSuccessMixin, \
+    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin
 from app_resume.models import Resume
 from app_social.forms import CommentForm, CommentUpdateForm
 from app_social.mixins import OpenCommentModalIfSuccess, AddLikesIntoContextMixin,\
     get_resume_by_element_uuid, OwnerValidatorMixin
-from app_social.models import Like, Comment
+from app_social.models import Like, Comment, Post
 
 
 # Create your views here.
@@ -160,3 +162,26 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
             return query_set
         else:
             return super().get_queryset()
+
+
+class PostCreateView(ResumeBounderMixin,
+                     ResumeValidatorMixin,
+                     RefreshIfSuccessMixin,
+                     RatingUpdateForCreateViewMixin,
+                     CreateView):
+    model = Post
+    fields = ['message', 'image']
+
+
+class PostUpdateView(ResumeValidatorMixin,
+                     RefreshIfSuccessMixin,
+                     UpdateView):
+    model = Post
+    fields = ['message', 'image']
+
+
+class PostDeleteView(ResumeValidatorMixin,
+                     RefreshIfSuccessMixin,
+                     RatingUpdateForDeleteViewMixin,
+                     DeleteView):
+    model = Post

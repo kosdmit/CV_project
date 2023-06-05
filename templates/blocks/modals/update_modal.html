@@ -19,15 +19,16 @@
               </ul>
             </div>
           {% endif %}
-          <form method="post" action="
+          <form method="post" {% if enctype == 'multipart' %}enctype="multipart/form-data"{% endif %}
+                action="
               {% if path_name == 'job_update' %}
                 {% url path_name username=user.username slug=resume.slug section=object.work_exp_section.pk pk=object.pk %}
               {% elif path_name == 'resume_about_me_update' or path_name == 'resume_position_update' or path_name == 'resume_soft_skills_update' %}
                 {% url path_name username=user.username slug=resume.slug %}
               {% else %}
                 {% url path_name username=user.username slug=resume.slug pk=object.pk %}
-              {% endif %}
-          ">
+              {% endif %}"
+          >
             {% csrf_token %}
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabel">Редактировать</h1>

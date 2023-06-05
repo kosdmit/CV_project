@@ -19,7 +19,17 @@
   {% block main_content %}
     <div class="container resume">
       <div class="row gx-lg-4 gx-xl-5">
-        {% include 'blocks/user_card.html' with path_name='resume' object=owner %}
+        <div class="col-lg-5">
+          {% include 'blocks/user_card.html' with path_name='resume' object=owner %}
+          <div class="blog mb-5">
+            {% include 'blocks/prime_title.html' with icon='fa-comment' title='Новости' %}
+            {% if not owner.post_set.count and owner != user %}
+              {% include 'blocks/no_objects_message.html' %}
+            {% endif %}
+            {% include 'blocks/objects/object_list.html' with object_set=resume.post_set.all delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+            {% include 'blocks/forms/item_create_form.html' with path_name='post_create' form=post_create_form enctype='multipart' %}
+          </div>
+        </div>
         <div class="col-lg-7">
           <div class="education mb-5">
             {% include 'blocks/prime_title.html' with icon='fa-medal' title='Образование'%}

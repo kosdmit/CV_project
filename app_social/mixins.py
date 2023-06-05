@@ -69,6 +69,7 @@ def get_resume_by_element_uuid(uuid):
         Q(electroniccertificate__pk=uuid) |
         Q(skill__pk=uuid) |
         Q(workexpsection__job__pk=uuid) |
+        Q(post__pk=uuid) |
         Q(pk=uuid)
     ).distinct().first()
 
