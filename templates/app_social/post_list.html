@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load djutils %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
+  {% block main_content %}
+    <div class="container">
+      {% include 'blocks/page_header.html' with path_name='post_list' %}
+      <div class="row mb-5">
+        <div>
+          <ul class="list-group list-group-flush">
+            {% for object in page_obj %}
+              {% include 'blocks/objects/object.html' with delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% include 'blocks/navigation/pagination.html' %}
+    </div>
+
+  {% endblock %}
+
+{% endblock %}

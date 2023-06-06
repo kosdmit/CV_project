@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -186,3 +187,70 @@ class PostDeleteView(ResumeValidatorMixin,
                      RatingUpdateForDeleteViewMixin,
                      DeleteView):
     model = Post
+
+
+class PostListView(AddLikesIntoContextMixin, ListView):
+    template_name = 'app_social/post_list.html'
+    model = Post
+    paginate_by = 5
+    ordering = '-created_date'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        context['comment_form'] = CommentForm()
+
+        uuid_with_comments = Comment.objects.filter(
+            uuid_key__in=Resume.objects.values('pk')) \
+            .values_list('uuid_key', flat=True).distinct()
+
+        comments = {}
+        comment_edit_forms = {}
+        for uuid_key in uuid_with_comments:
+            comments[uuid_key] = Comment.objects.filter(uuid_key=uuid_key,
+                                                        is_approved=True)
+            for comment in comments[uuid_key]:
+                if comment.owner_id == self.request.user.pk or self.request.session.session_key:
+                    comment_edit_forms[comment.pk] = CommentUpdateForm(
+                        instance=comment)
+        context['comments'] = comments
+        context['comment_edit_forms'] = comment_edit_forms
+
+        comment_counts_result = Comment.objects.filter(is_approved=True) \
+            .values('uuid_key') \
+            .order_by('uuid_key') \
+            .annotate(count=Count('uuid_key'))
+        comment_counts = {}
+        for dict in comment_counts_result:
+            comment_counts[dict['uuid_key']] = dict['count']
+        context['comment_counts'] = comment_counts
+
+        if self.username_search_query:
+            user = User.objects.get(username=self.username_search_query)
+            title = f'Новости пользователя {user.first_name.title()}'
+        else:
+            title = 'Блоги'
+        context['title'] = title
+
+        breadcrumbs = [
+            ('Блоги', reverse_lazy('post_list'))
+        ]
+        context['breadcrumbs'] = breadcrumbs
+
+        return context
+
+    def get_queryset(self):
+        self.username_search_query = self.request.GET.get('username_search_query')
+        self.slug_search_query = self.request.GET.get('slug_search_query')
+
+        if self.username_search_query and self.slug_search_query:
+            query_set = Post.objects.filter(
+                resume__user__username=self.username_search_query,
+                resume__slug=self.slug_search_query)
+            return query_set
+        elif self.username_search_query:
+            query_set = Post.objects.filter(
+                resume__user__username=self.username_search_query)
+            return query_set
+        else:
+            return super().get_queryset()

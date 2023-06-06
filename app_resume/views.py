@@ -58,6 +58,8 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             resume = Resume.objects.get(profile=owner.profile, is_primary=True)
         context['resume'] = resume
 
+        context['post_set'] = resume.post_set.order_by('-created_date')[:2]
+
         try:
             main_education = resume.maineducation
         except MainEducation.DoesNotExist:

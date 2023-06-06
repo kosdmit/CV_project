@@ -7,6 +7,9 @@
       {% for object in object_set %}
         {% include 'blocks/objects/object.html' %}
       {% endfor %}
+      {% if resume.post_set.all|length > post_set|length %}
+        {% include 'blocks/buttons/show_all_button.html' %}
+      {% endif %}
     </ul>
   {% endif %}
 
