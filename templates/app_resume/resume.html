@@ -26,7 +26,7 @@
             {% if not owner.post_set.count and owner != user %}
               {% include 'blocks/no_objects_message.html' %}
             {% endif %}
-            {% include 'blocks/objects/object_list.html' with object_set=resume.post_set.all delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+            {% include 'blocks/objects/object_list.html' with object_set=resume.post_set.all|slice:"-2:" delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
             {% include 'blocks/forms/item_create_form.html' with path_name='post_create' form=post_create_form enctype='multipart' %}
           </div>
         </div>

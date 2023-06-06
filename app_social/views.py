@@ -9,7 +9,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
 from CV_project.settings import RATING_SETTINGS
 from app_resume.mixins import ResumeBounderMixin, ResumeValidatorMixin, RefreshIfSuccessMixin, \
-    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin
+    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin, OpenModalIfSuccessMixin
 from app_resume.models import Resume
 from app_social.forms import CommentForm, CommentUpdateForm
 from app_social.mixins import OpenCommentModalIfSuccess, AddLikesIntoContextMixin,\
@@ -164,7 +164,8 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
             return super().get_queryset()
 
 
-class PostCreateView(ResumeBounderMixin,
+class PostCreateView(OpenModalIfSuccessMixin,
+                     ResumeBounderMixin,
                      ResumeValidatorMixin,
                      RefreshIfSuccessMixin,
                      RatingUpdateForCreateViewMixin,

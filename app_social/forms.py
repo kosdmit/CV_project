@@ -7,8 +7,8 @@ class CommentForm(forms.ModelForm):
     message = forms.CharField(
         label="Добавить комментарий:",
         widget=forms.Textarea(attrs={'class': 'form-control',
-                                      'rows': '3',
-                                      'placeholder': "Введите текст комментария"}),
+                                     'rows': '3',
+                                     'placeholder': "Введите текст комментария"}),
     )
 
     class Meta:
@@ -38,11 +38,6 @@ class PostCreateForm(forms.Form):
                                      'rows': '3'}),
     )
 
-    image = forms.FileField(
-        required=False,
-        widget=forms.FileInput(attrs={'class': 'form-control'}),
-    )
-
 
 class PostForm(forms.ModelForm):
     message = forms.CharField(
@@ -62,6 +57,7 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['message', 'image']
+
 
 class ResumeSearchForm(forms.Form):
     search_query = forms.CharField(
