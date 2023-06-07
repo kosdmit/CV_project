@@ -15,7 +15,14 @@
       {% endif %}
       <div class="input-group mb-5">
         {% for field in form %}
-          {{ field }}
+          {% if field.name == 'image' %}
+            <label class="btn btn-outline-secondary d-flex align-items-center" for="id_image">
+              <input id="id_image" name="image" type="file" class="d-none">
+              <i class="fa-regular fa-image"></i>
+            </label>
+          {% else %}
+            {{ field }}
+          {% endif %}
         {% endfor %}
         {% if path_name == 'main_education_create' %}
           <span class="input-group-text flex-grow-1">Указать уровень образования</span>

@@ -192,7 +192,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
         context['post_update_forms'] = {}
         for post in resume.post_set.all():
-            post_update_form = PostForm(instance=post)
+            post_update_form = PostForm(instance=post, auto_id=False)
             context['post_update_forms'][post] = post_update_form
 
         return context

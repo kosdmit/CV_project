@@ -38,6 +38,11 @@ class PostCreateForm(forms.Form):
                                      'rows': '3'}),
     )
 
+    image = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+    )
+
 
 class PostForm(forms.ModelForm):
     message = forms.CharField(
