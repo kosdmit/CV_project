@@ -200,7 +200,7 @@ class PostListView(AddLikesIntoContextMixin, ListView):
         context['comment_form'] = CommentForm()
 
         uuid_with_comments = Comment.objects.filter(
-            uuid_key__in=Resume.objects.values('pk')) \
+            uuid_key__in=Post.objects.all()) \
             .values_list('uuid_key', flat=True).distinct()
 
         comments = {}
@@ -238,8 +238,9 @@ class PostListView(AddLikesIntoContextMixin, ListView):
 
         context['post_update_forms'] = {}
         for post in context['page_obj']:
-            post_update_form = PostForm(instance=post, auto_id=False)
-            context['post_update_forms'][post] = post_update_form
+            if post.resume.user == self.request.user:
+                post_update_form = PostForm(instance=post, auto_id=False)
+                context['post_update_forms'][post] = post_update_form
 
         return context
 
