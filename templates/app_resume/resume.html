@@ -27,7 +27,6 @@
               {% include 'blocks/no_objects_message.html' %}
             {% endif %}
             {% include 'blocks/objects/object_list.html' with object_set=post_set delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
-
             {% include 'blocks/forms/item_create_form.html' with path_name='post_create' form=post_create_form enctype='multipart' %}
           </div>
         </div>

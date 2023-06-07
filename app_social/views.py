@@ -225,8 +225,7 @@ class PostListView(AddLikesIntoContextMixin, ListView):
         context['comment_counts'] = comment_counts
 
         if self.username_search_query:
-            user = User.objects.get(username=self.username_search_query)
-            title = f'Новости пользователя {user.first_name.title()}'
+            title = f'Новости пользователя'
         else:
             title = 'Блоги'
         context['title'] = title
@@ -242,6 +241,12 @@ class PostListView(AddLikesIntoContextMixin, ListView):
                 post_update_form = PostForm(instance=post, auto_id=False)
                 context['post_update_forms'][post] = post_update_form
 
+        try:
+            user = User.objects.get(username=self.username_search_query)
+            context['author'] = user
+        except User.DoesNotExist:
+            pass
+
         return context
 
     def get_queryset(self):
@@ -251,11 +256,11 @@ class PostListView(AddLikesIntoContextMixin, ListView):
         if self.username_search_query and self.slug_search_query:
             query_set = Post.objects.filter(
                 resume__user__username=self.username_search_query,
-                resume__slug=self.slug_search_query)
+                resume__slug=self.slug_search_query).order_by('-created_date')
             return query_set
         elif self.username_search_query:
             query_set = Post.objects.filter(
-                resume__user__username=self.username_search_query)
+                resume__user__username=self.username_search_query).order_by('-created_date')
             return query_set
         else:
             return super().get_queryset()

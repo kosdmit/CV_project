@@ -1,5 +1,9 @@
 {% block show_all_button %}
 
-  <button class="btn btn-link link-secondary link-underline-opacity-0 mx-auto d-block p-0" type="submit" id="button-addon2">Смотреть все</button>
+
+  <a class="link-secondary link-underline-opacity-0 mx-auto d-block p-0"
+     href="{% url 'post_list' %}?username_search_query={{ owner.username }}&slug_search_query={{ resume.slug}}">
+    Смотреть все
+  </a>
 
 {% endblock %}

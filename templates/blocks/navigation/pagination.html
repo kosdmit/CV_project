@@ -4,25 +4,33 @@
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-          <a class="page-link" href="?page=1" aria-label="Previous">
+          <a class="page-link" aria-label="Previous"
+             href="?page=1{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
         {% if page_obj.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+              {{ page_obj.previous_page_number }}
+            </a>
           </li>
         {% endif %}
         <li class="page-item active">
-          <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+          <a class="page-link" href="?page={{ page_obj.number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+            {{ page_obj.number }}
+          </a>
         </li>
         {% if page_obj.has_next %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+              {{ page_obj.next_page_number }}
+            </a>
           </li>
         {% endif %}
         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+          <a class="page-link" aria-label="Next"
+             href="?page={{ page_obj.paginator.num_pages }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
