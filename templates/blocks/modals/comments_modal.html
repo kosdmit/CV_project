@@ -12,6 +12,8 @@
                 {% include 'blocks/objects/resume_object.html' with modal='comment' %}
               {% elif content_type == 'job' %}
                 {% include 'blocks/objects/job_object.html' with modal='comment' %}
+              {% elif content_type == 'post' %}
+                {% include 'blocks/objects/post_object.html' with modal='comment' %}
               {% else %}
                 {% include 'blocks/objects/object.html' with modal='comments' %}
               {% endif %}

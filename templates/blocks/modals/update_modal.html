@@ -6,10 +6,16 @@
     <div class="modal fade" id="{{ prefix }}{{ object.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          {% if path_name == 'institution_update' or path_name == 'additional_education_update' or path_name == 'electronic_certificate_update' or path_name == 'post_update' %}
+          {% if path_name == 'institution_update' or path_name == 'additional_education_update' or path_name == 'electronic_certificate_update' %}
             <div class="m-1">
               <ul class="content-item p-0">
                 {% include 'blocks/objects/object.html' with modal='update'%}
+              </ul>
+            </div>
+          {% elif path_name == 'post_update' %}
+            <div class="m-1">
+              <ul class="content-item p-0">
+                {% include 'blocks/objects/post_object.html' with modal='update'%}
               </ul>
             </div>
           {% elif content_type == 'job' %}

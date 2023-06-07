@@ -5,7 +5,11 @@
   {% if object_set %}
     <ul class="list-group list-group-flush mb-3">
       {% for object in object_set %}
-        {% include 'blocks/objects/object.html' %}
+        {% if update_path_name == 'post_update' %}
+          {% include 'blocks/objects/post_object.html' %}
+        {% else %}
+          {% include 'blocks/objects/object.html' %}
+        {% endif %}
       {% endfor %}
       {% if resume.post_set.all|length > post_set|length %}
         {% include 'blocks/buttons/show_all_button.html' %}

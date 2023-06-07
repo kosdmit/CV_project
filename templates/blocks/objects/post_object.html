@@ -1,0 +1,23 @@
+{% load app_resume_filters %}
+
+{% block post_object %}
+
+  <div class="card item shadow bg-light bg-gradient mb-2
+        {% if modal %}item-in-modal{% else %} clickable-item{% endif %}"
+        {% if not modal %}data-id="{{ object.pk }}"{% endif %}
+  >
+    {% if object.image %}
+      <img src="{{ object.image.url }}" class="card-img-top" alt="content image">
+    {% endif %}
+    <div class="card-body">
+      {% include 'blocks/objects/object_body.html' %}
+      {% include 'blocks/objects/object_footer.html' %}
+    </div>
+  </div>
+  <!-- Modal -->
+  {% if not modal %}
+    {% include 'blocks/modals/update_modal.html' with path_name=update_path_name object=object form=form_set|get_value_from_dict:object %}
+    {% include 'blocks/modals/comments_modal.html' with uuid_key=object.pk content_type='post' %}
+  {% endif %}
+
+{% endblock %}
