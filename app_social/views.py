@@ -12,7 +12,7 @@ from CV_project.settings import RATING_SETTINGS
 from app_resume.mixins import ResumeBounderMixin, ResumeValidatorMixin, RefreshIfSuccessMixin, \
     RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin, OpenModalIfSuccessMixin
 from app_resume.models import Resume
-from app_social.forms import CommentForm, CommentUpdateForm
+from app_social.forms import CommentForm, CommentUpdateForm, PostForm
 from app_social.mixins import OpenCommentModalIfSuccess, AddLikesIntoContextMixin,\
     get_resume_by_element_uuid, OwnerValidatorMixin
 from app_social.models import Like, Comment, Post
@@ -235,6 +235,11 @@ class PostListView(AddLikesIntoContextMixin, ListView):
             ('Блоги', reverse_lazy('post_list'))
         ]
         context['breadcrumbs'] = breadcrumbs
+
+        context['post_update_forms'] = {}
+        for post in context['page_obj']:
+            post_update_form = PostForm(instance=post, auto_id=False)
+            context['post_update_forms'][post] = post_update_form
 
         return context
 

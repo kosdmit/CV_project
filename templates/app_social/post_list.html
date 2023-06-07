@@ -17,12 +17,12 @@
         {% for object in page_obj %}
           {% if not forloop.counter|divisibleby:2 %}
             <div class="col-md-6">
-              {% include 'blocks/objects/object.html' with delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+              {% include 'blocks/objects/object.html' with delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' owner=object.resume.user resume=object.resume %}
             </div>
           {% endif %}
           {% if forloop.counter|divisibleby:2 %}
             <div class="col-md-6">
-            {% include 'blocks/objects/object.html' with delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+            {% include 'blocks/objects/object.html' with delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' owner=object.resume.user resume=object.resume %}
             </div>
           {% endif %}
         {% endfor %}
