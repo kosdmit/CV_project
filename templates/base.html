@@ -37,12 +37,6 @@
             Ваше резюме
           </a>
         </li>
-        <li>
-          <a class="nav-link px-2 {% if not user.is_authenticated %}text-body-tertiary disabled"{% else %}
-              text-body" href="{% url 'profile' %}"{% endif %}>
-            Ваш профиль
-          </a>
-        </li>
       </ul>
 
       <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
@@ -81,13 +75,19 @@
 <div class="container-fluid bg-light bg-gradient shadow-sm mt-4">
   <div class="container">
     <footer class="py-5">
-      <div class="row d-flex justify-content-between">
+      <div class="row d-flex">
 
         <div class="col-6 col-md-2 mb-3">
           <h5>CV Project</h5>
           <ul class="nav flex-column">
             {% include 'blocks/navigation/nav_item.html' with path_name='main' link_text='Главная' %}
             {% include 'blocks/navigation/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
+            {% include 'blocks/navigation/nav_item.html' with path_name='post_list' link_text='Блоги' %}
+          </ul>
+        </div>
+        <div class="col-6 col-md-2 mb-3">
+          <h5 class="invisible">CV Project</h5>
+          <ul class="nav flex-column">
             <li class="nav-item mb-2">
               <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
                   text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
@@ -103,7 +103,7 @@
           </ul>
         </div>
 
-        <div class="col-md-5 offset-md-1 mb-3">
+        <div class="col-md-5 offset-md-1 mb-3 ms-auto">
           <form method="post" action="{% url 'add_raw_contact' %}">
             {% csrf_token %}
             <h5>Оставьте ваши контакты</h5>
