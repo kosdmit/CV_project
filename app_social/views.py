@@ -191,7 +191,7 @@ class PostDeleteView(ResumeValidatorMixin,
 class PostListView(AddLikesIntoContextMixin, ListView):
     template_name = 'app_social/post_list.html'
     model = Post
-    paginate_by = 5
+    paginate_by = 8
     ordering = '-created_date'
 
     def get_context_data(self, **kwargs):
