@@ -78,11 +78,11 @@ a {
 }
 @media (max-width: 767px) {
     .hidden-buttons-block {
-        opacity: 0 !important;
+        display: none !important;
         pointer-events: none !important;
     }
     .item:hover .hidden-buttons-block {
-        opacity: 0 !important;
+        display: none !important;
         pointer-events: none !important;
     }
 }

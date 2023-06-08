@@ -201,11 +201,13 @@ for (let i = 0; i < resumes.length; i++) {
     window.location.href = linkUrl
   });
 
-  let commentButton = resumes[i].querySelector('.comment-button');
-  commentButton.addEventListener('click', function(event) {
-    event.stopPropagation();
-    openModal(commentButton.dataset.target)
-  });
+  let commentButtons = resumes[i].querySelectorAll('.comment-button');
+  for (let i = 0; i < commentButtons.length; i++) {
+    commentButtons[i].addEventListener('click', function(event) {
+      event.stopPropagation();
+      openModal(commentButtons[i].dataset.target)
+    })
+  };
 
   let likeButton = resumes[i].querySelectorAll('.like-button');
   for (let i = 0; i < likeButton.length; i++) {
