@@ -13,6 +13,9 @@ class CompressImageBeforeSaveMixin:
         # Opening the uploaded image
         image = Image.open(self.image)
 
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
         # Correct image orientation if necessary
         if hasattr(image, '_getexif') and image._getexif() is not None:
             exif = dict(image._getexif().items())
