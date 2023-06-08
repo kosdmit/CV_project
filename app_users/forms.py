@@ -109,7 +109,7 @@ class CreateProfileForm(forms.ModelForm):
         required=False
     )
 
-    avatar = forms.FileField(
+    image = forms.FileField(
         label='Фото профиля:',
         widget=forms.FileInput(attrs={'class': 'form-control'}),
         required=False
@@ -117,7 +117,7 @@ class CreateProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('birthday_date', 'gender', 'phone_number', 'avatar')
+        fields = ('birthday_date', 'gender', 'phone_number', 'image')
 
 
 class CustomAuthenticationForm(AuthenticationForm):

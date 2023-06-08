@@ -5,15 +5,17 @@
     {% if object.updated_date != object.created_date %}
       <small class="align-self-center">Ред.: {{ object.updated_date | date:'d.m.Y' }}</small>
     {% endif %}
-    <small>
-      <a href="{% url 'primary_resume' username=owner.username %}">
-        {% if owner.first_name %}
-          {{ owner.first_name }}
-        {% else %}
-          {{ owner.username }}
-        {% endif %}
-      </a>
-    </small>
+    {% if owner %}
+      <small>
+        <a href="{% url 'primary_resume' username=owner.username %}">
+          {% if owner.first_name %}
+            {{ owner.first_name }}
+          {% else %}
+            {{ owner.username }}
+          {% endif %}
+        </a>
+      </small>
+    {% endif %}
   </div>
 
 {% endblock %}

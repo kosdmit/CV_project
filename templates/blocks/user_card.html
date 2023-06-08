@@ -2,9 +2,9 @@
 
   <div class="rounded-3 bg-light bg-gradient pt-5 pb-1 px-3 mb-5 shadow">
     <div class="hero mb-5">
-      {% if object.profile.avatar %}
+      {% if object.profile.image %}
         <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-          <img src="{{ object.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto shadow" alt="user`s avatar"
+          <img src="{{ object.profile.image.url }}" class="avatar rounded-circle w-100 h-auto shadow" alt="user`s avatar"
                style="object-fit: cover; aspect-ratio: 1 / 1;">
         </div>
       {% else %}
