@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
+from app_social.model_mixins import CompressImageBeforeSaveMixin
+
 
 # Create your models here.
 class Like(models.Model):
@@ -34,7 +36,12 @@ class Comment(models.Model):
             return f"Comment by unknown user"
 
 
-class Post(models.Model):
+class Post(CompressImageBeforeSaveMixin, models.Model):
+    def __init__(self, *args, **kwargs):
+        self.image_width = 642
+        self.image_name_suffix = 'post_image'
+        super().__init__(*args, **kwargs)
+
     resume = models.ForeignKey('app_resume.Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
