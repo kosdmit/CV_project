@@ -5,7 +5,7 @@
     {% if object.updated_date != object.created_date %}
       <small class="align-self-center">Ред.: {{ object.updated_date | date:'d.m.Y' }}</small>
     {% endif %}
-    {% if owner %}
+    {% if owner and content_type != 'comment' %}
       <small>
         <a href="{% url 'primary_resume' username=owner.username %}">
           {% if owner.first_name %}
