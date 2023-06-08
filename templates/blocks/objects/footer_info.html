@@ -1,6 +1,6 @@
 {% block footer_info %}
 
-  <div class="comment-info-block col-sm-6">
+  <div class="comment-info-block">
     <small class="">{{ object.created_date | date:'d.m.Y' }}</small>
     {% if object.updated_date != object.created_date %}
       <small class="align-self-center">Ред.: {{ object.updated_date | date:'d.m.Y' }}</small>
