@@ -21,7 +21,7 @@
         </div>
       </form>
       <div class="item-footer container p-0">
-        <div class="row justify-content-between align-items-center">
+        <div class="d-sm-flex justify-content-between align-items-center">
           {% include 'blocks/objects/footer_info.html' with content_type='comment' %}
           <div class="comment-buttons-block d-flex align-items-end">
             {% include 'blocks/buttons/edit_button.html' with owner=comment.user prefix='edit-comment-' id=comment.pk %}
