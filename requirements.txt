@@ -19,6 +19,8 @@ sw-python-utils==0.0.18
 tzdata==2023.3
 urllib3==1.26.15
 wheel==0.38.4
+django-markdown-deux==1.0.6
+markdown2==2.4.8
 
 #for production
 gunicorn

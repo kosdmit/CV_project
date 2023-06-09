@@ -1,3 +1,5 @@
+{% load markdown_deux_tags %}
+
 {% block object_body %}
 
   {% if object.website_url %}
@@ -8,7 +10,7 @@
   {% if object.description %}
     <p>{{ object.description }}</p>
   {% else %}
-    <p>{{ object.message }}</p>
+    <p>{{ object.message|markdown }}</p>
   {% endif %}
 
 

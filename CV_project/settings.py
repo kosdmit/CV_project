@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'autoslug',
     'djutils',
+    'markdown_deux',
     'app_users',
     'app_resume',
     'app_social',
