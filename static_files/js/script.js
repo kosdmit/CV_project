@@ -269,3 +269,9 @@ if (signupForm) {
   });
 }
 
+
+<!-- SimpleMDE - Markdown Editor -->
+let mdeForms = document.querySelectorAll('.simple-mde-enable')
+for (let i = 0; i < mdeForms.length; i++) {
+  var simplemde = new SimpleMDE({element: mdeForms[i], showIcons: ["code",], hideIcons: ["quote"],});
+};

@@ -48,9 +48,9 @@ class PostForm(forms.ModelForm):
     message = forms.CharField(
         required=True,
         label='Введите текст сообщения:',
-        widget=forms.Textarea(attrs={'class': 'form-control',
+        widget=forms.Textarea(attrs={'class': 'form-control simple-mde-enable',
                                      'aria-describedby': 'messageHelp',
-                                     'rows': '3'}),
+                                     'rows': '8'}),
     )
 
     image = forms.FileField(
