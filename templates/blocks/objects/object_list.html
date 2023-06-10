@@ -1,6 +1,6 @@
 {% load app_resume_filters %}
 
-{% block ioobject_list %}
+{% block object_list %}
 
   {% if object_set %}
     <ul class="list-group list-group-flush mb-3">
@@ -11,7 +11,7 @@
           {% include 'blocks/objects/object.html' %}
         {% endif %}
       {% endfor %}
-      {% if resume.post_set.all|length > post_set|length %}
+      {% if resume.post_set.all|length > post_set|length and update_path_name == 'post_update' %}
         {% include 'blocks/buttons/show_all_button.html' %}
       {% endif %}
     </ul>
