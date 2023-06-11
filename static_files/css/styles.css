@@ -1,0 +1,95 @@
+/* Titles */
+h2 {
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+h3:not(.popover-header) {
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+.title-icon {
+    vertical-align: middle;
+}
+
+
+a {
+    color: #146bb0; /* Цвет ссылок */
+}
+
+.progress-bar {
+    background-image: linear-gradient(to left, #146bb0, #b393d3);
+}
+
+.bg-primary {
+    background-color: #146bb0 !important;
+}
+
+
+/* Social links block */
+.social-plus-sign {
+ display:none;
+}
+.social-link:hover .social-logo {
+ display:none;
+}
+.social-link:hover .social-plus-sign{
+ display:block;
+}
+.twitter {
+    background-color: #55acee !important;
+}
+.facebook {
+    background-color: #3b5998 !important;
+}
+.instagram {
+    background-color: #ac2bac !important;
+}
+.linkedin {
+    background-color: #0082ca !important;
+}
+.vk {
+    background-color: #4c75a3 !important;
+}
+.github {
+    background-color: #333333 !important;
+}
+
+
+/* Items footer (buttons block) */
+.hidden-buttons-block {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.item:hover .hidden-buttons-block {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.clickable-item:hover, .resume-item:hover {
+    box-shadow: 0  1rem 1.5rem rgba(0,0,0,.175) !important;
+    transform: scale(1.01);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.clickable-item, .resume-item {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+@media (max-width: 767px) {
+    .hidden-buttons-block {
+        display: none !important;
+        pointer-events: none !important;
+    }
+    .item:hover .hidden-buttons-block {
+        display: none !important;
+        pointer-events: none !important;
+    }
+}
+
+
+/* Styles for images added by markdown */
+img {
+  max-width: 100%;
+  height: auto;
+}

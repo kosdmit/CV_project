@@ -1,0 +1,15 @@
+{% block edit_button %}
+
+  {% if owner == user %}
+    <button type="button" class="btn btn-sm"
+        {% if prefix ==  'edit-comment-' %}
+          onclick="toggleCommentEditForm(this)"
+        {% else %}
+         data-bs-toggle="modal" data-bs-target="#{{ prefix }}{{ id }}"
+        {% endif %}
+    >
+      <i class="fa-regular fa-pen-to-square"></i>
+    </button>
+  {% endif %}
+
+{% endblock %}

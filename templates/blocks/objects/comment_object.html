@@ -1,0 +1,36 @@
+{% load djutils %}
+
+{% block comment_item %}
+
+  <li class="list-group-item">
+    <div class="comment-item mt-2">
+      {% if comment.user.resume_set %}
+        <a href="{% url 'primary_resume' username=comment.user.username %}" class="text-uppercase mb-1">{{ comment.user.username }}</a>
+      {% else %}
+        <p class="text-uppercase mb-1 text-body-secondary">{% if comment.user %}{{ comment.user.username }}{% else %}Аноним{% endif %}</p>
+      {% endif %}
+      <p class="comment-text">{{ comment.message }}</p>
+      <form method="post" action="{% url 'comment_update' pk=comment.pk %}"
+            style="display: none;" class="edit-form">
+        {% csrf_token %}
+        <div class="">
+          {{ comment_edit_forms|get_value_from_dict:comment.pk }}
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary btn-sm mt-1">Сохранить</button>
+          </div>
+        </div>
+      </form>
+      <div class="item-footer container p-0">
+        <div class="d-sm-flex justify-content-between align-items-center">
+          {% include 'blocks/objects/footer_info.html' with content_type='comment' %}
+          <div class="comment-buttons-block d-flex align-items-end">
+            {% include 'blocks/buttons/edit_button.html' with owner=comment.user prefix='edit-comment-' id=comment.pk %}
+            {% include 'blocks/buttons/delete_button.html' with path_name='comment_delete' pk=comment.pk owner=comment.user %}
+            {% include 'blocks/buttons/like_button.html' with uuid_key=comment.pk %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+
+{% endblock %}

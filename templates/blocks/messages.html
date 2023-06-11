@@ -1,0 +1,22 @@
+{% block messages %}
+
+  {% if messages or form.errors %}
+    <div class="{% if path_name != 'comment_create' %}col-md-6 col-lg-5{% endif %} pe-0 mt-3">
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
+          {{ message|safe }}
+        </div>
+      {% endfor %}
+      {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}</strong> {{ error|escape }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% endblock %}

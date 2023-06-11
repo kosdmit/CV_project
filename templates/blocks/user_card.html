@@ -1,0 +1,110 @@
+{% block user_card %}
+
+  <div class="rounded-3 bg-light bg-gradient pt-5 pb-1 px-3 mb-5 shadow">
+    <div class="hero mb-5">
+      {% if object.profile.image %}
+        <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
+          <img src="{{ object.profile.image.url }}" class="avatar rounded-circle w-100 h-auto shadow" alt="user`s avatar"
+               style="object-fit: cover; aspect-ratio: 1 / 1;">
+        </div>
+      {% else %}
+        <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3 shadow" style="height: 250px; width: 250px">
+          {% if object == user %}
+            <p class="mx-auto text-light">Здесь будет ваше фото</p>
+          {% else %}
+            <p class="mx-auto text-light">{{ object.username }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+      {% if object.first_name or object.last_name %}
+        <h1 class="text-uppercase text-center">
+          {{ object.first_name }}
+          <br>
+          <strong>{{ object.last_name }}</strong>
+        </h1>
+      {% elif object == user %}
+        <p class="text-center">
+          Вы не указали ваше имя или фамилию
+          <br>
+          <a href="{% url 'user_update' %}">Редактировать</a>
+        </p>
+      {% else %}
+        <h1 class="text-uppercase text-center">
+          {{ object.username }}
+        </h1>
+      {% endif %}
+      {% if path_name == 'resume' %}
+        <div class="resume-position-item d-flex justify-content-center">
+          <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
+          {% include 'blocks/buttons/edit_button.html' with prefix='position-update-' id=resume.pk %}
+        </div>
+        <!-- Modal -->
+        {% include 'blocks/modals/update_modal.html' with path_name='resume_position_update' prefix='position-update-' object=resume form=resume_position_form %}
+      {% endif %}
+    </div>
+    {% if path_name == 'resume' %}
+      <div class="about-me item">
+        {% include 'blocks/second_title.html' with icon='fa-circle-user' title='Обо мне' %}
+        {% if resume.about_me %}
+          <div class="resume-about-me-item mb-4">
+            <p class="my-0">{{ resume.about_me }}</p>
+            <div class="item-footer d-flex justify-content-end">
+              {% include 'blocks/buttons/edit_button.html' with prefix='about-me-update-' id=resume.pk %}
+            </div>
+          </div>
+          <!-- Modal -->
+          {% include 'blocks/modals/update_modal.html' with path_name='resume_about_me_update' prefix='about-me-update-' object=resume form=resume_about_me_form %}
+        {% else %}
+          {% include 'blocks/forms/field_update_form.html' with path_name='resume_about_me_update' form=resume_about_me_form %}
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="my-contacts mb-4">
+      {% if path_name == 'resume' %}
+        {% include 'blocks/second_title.html' with icon='fa-address-book' title='Контакты' %}
+      {% endif %}
+      <ul class="list-unstyled">
+        {% if path_name == 'profile' %}
+          <li class="list-group-item mb-1">
+            <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ object.username }}</p>
+          </li>
+        {% endif %}
+        <li class="list-group-item mb-1">
+          <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ object.email }}">{{ object.email }}</a>
+        </li>
+        <li class="list-group-item mb-3">
+          <p class="text-uppercase me-3 d-inline">Телефон:</p>
+          {% if object.profile.phone_number %}
+            <a href="tel:{{ object.profile.phone_number }}">{{ object.profile.phone_number }}</a>
+          {% else %}
+            <p class="d-inline">Не указан</p>
+          {% endif %}
+        </li>
+        <li class="list-group-item mb-3">
+          {% include 'blocks/social_links_block.html' %}
+        </li>
+      </ul>
+    </div>
+    {% if path_name == 'resume' %}
+      <div class="personal-qualities mb-4 item">
+        {% include 'blocks/second_title.html' with icon='fa-circle-check' title='Личные качества' %}
+        {% if resume.soft_skills %}
+          <div class="resume-soft-skills-item">
+            <p class="my-0">{{ resume.soft_skills }}</p>
+            <div class="item-footer d-flex justify-content-end">
+              {% include 'blocks/buttons/edit_button.html' with prefix='soft-skills-update-' id=resume.pk %}
+            </div>
+          </div>
+          <!-- Modal -->
+          {% include 'blocks/modals/update_modal.html' with path_name='resume_soft_skills_update' prefix='soft-skills-update-' object=resume form=resume_soft_skills_form %}
+        {% else %}
+          {% include 'blocks/forms/field_update_form.html' with path_name='resume_soft_skills_update' form=resume_soft_skills_form %}
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if path_name == 'profile' %}
+      <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
+    {% endif %}
+  </div>
+
+{%  endblock %}

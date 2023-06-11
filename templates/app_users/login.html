@@ -1,47 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Войти{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% if breadcrumbs %}
-    {% include 'breadcrumbs_base.html' %}
-  {% endif %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
 
     <div class="container">
-      <div class="row mb-5">
-        <div class="col-12">
-          <h1>Вход на сайт</h1>
-          <p>Используйте свой логин и пароль чтобы авторизоваться на сайте.</p>
-        </div>
-      </div>
-      <div class="row mb-5">
-        <div class="col-md-6 col-lg-5">
-          {% for message in messages %}
-            <div class="alert {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
-              {{ message }}
-            </div>
-          {% endfor %}
-
-          <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="id_username" class="form-label">Имя пользователя:</label>
-              {{ form.username }}
-            </div>
-            <div class="mb-3">
-              <label for="id_password" class="form-label">Пароль:</label>
-              {{ form.password }}
-            </div>
-            <button type="submit" class="btn btn-primary">Войти</button>
-          </form>
-
-        </div>
-      </div>
+      {% include 'blocks/page_header.html' with path_name='login' %}
+      {% include 'blocks/forms/form.html' with path_name='login' submit_text='Войти' %}
     </div>
-
-
-
 
   {% endblock %}
 

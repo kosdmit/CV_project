@@ -1,0 +1,25 @@
+{% block electronic_certificate_body %}
+
+  <div class="item-header">
+    <div class="ms-2 w-100 me-3">
+      <div class="mb-2">
+        {% if object.certificate_url %}
+          <a href="{{ object.certificate_url }}" class="" target="_blank">{{ object.title }}</a>
+        {% else %}
+          <p class="">{{ object.title }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="item-body d-flex justify-content-between align-items-start mb-2">
+    {% if object.completion_percentage %}
+      <div class="ms-2" style="width: 90%">
+        <div class="progress me-2" role="progressbar" aria-label="Basic example" aria-valuenow="{{ object.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" style="width: {{ object.completion_percentage }}%"></div>
+        </div>
+      </div>
+      <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ object.completion_percentage }}%</span>
+    {% endif %}
+  </div>
+
+{% endblock %}

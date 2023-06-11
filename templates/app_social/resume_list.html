@@ -5,134 +5,20 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h1>{{ title }}</h1>
-          <p>
-            {% if user.is_authenticated and user.first_name %}
-              Привет, {{ user.first_name }}!
-            {% elif user.is_authenticated %}
-              Привет, {{ user.username }}!
-            {% endif %}
-            На этой странице вы можете посмотреть резюме других пользователей.
-            Они располагаются в порядке их рейтинга. Рейтинг можно увеличить
-            добавив больше данных в ваше резюме, а также за лайки и комментарии.
-          </p>
+      {% include 'blocks/page_header.html' with path_name='resume_list' %}
+      <div class="row mb-5">
+        <div>
+          <ul class="list-group list-group-flush">
+            {% for object in page_obj %}
+              {% include 'blocks/objects/resume_object.html' %}
+            {% endfor %}
+          </ul>
         </div>
       </div>
-      <div class="row my-5">
-        <ul class="list-group list-group-flush">
-          {% for resume in page_obj %}
-            <li class="list-group-item">
-              <div class="resume-item mt-2">
-                <div class="container px-0">
-                  <div class="row">
-                    <div class="col-md-4">
-                      {% if resume.user.first_name or resume.user.last_name %}
-                        <p class="text-uppercase mb-1">{{ resume.user.first_name }} {{ resume.user.last_name }}</p>
-                      {% else %}
-                        <p class="text-uppercase mb-1">{{ resume.user.username }}</p>
-                      {% endif %}
-                      <p class="comment-text">{{ resume.position }}</p>
-                    </div>
-                    <div class="col-md-8">
-                      {% for skill in resume.skill_set.all %}
-                        <button class="btn btn-light position-relative mb-2 me-2 skill-item btn-sm" disabled type="button" id="{{ skill.pk }}">
-                          {{ skill.name }}
-                        </button>
-                      {% endfor %}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="item-footer container p-0">
-                  <div class="row">
-                    <div class="comment-info-block col-sm-8 mt-2">
-                      <small class="">{{ resume.created_date  | date:'d.m.Y G:i' }}</small>
-                      <br>
-                      {% if resume.updated_date != resume.created_date %}
-                        <small class="align-self-center">Отредактировано: {{ resume.updated_date | date:'d.m.Y G:i' }}</small>
-                      {% endif %}
-                    </div>
-                    <div class="comment-buttons-block d-flex align-items-end justify-content-md-end col-sm-4 mt-2">
-                      <button type="button" class="btn btn-sm like-button" id="like-{{ resume.pk }}"
-                              data-target="{{ resume.pk }}">
-                        <i class="fa-heart
-                          {% if resume.pk in users_likes_uuid %}
-                            fa-solid">
-                          {% else %}
-                            fa-regular">
-                          {% endif %}
-                        </i>
-                        <small>
-                          {% if like_counts|get_value_from_dict:resume.pk %}
-                            {{ like_counts|get_value_from_dict:resume.pk }}
-                          {% else %}
-                            0
-                          {% endif %}
-                        </small>
-                      </button>
-                      <button type="button" class="btn btn-sm comment-button" data-target="comments-{{ resume.pk }}">
-                        <i class="fa-regular fa-comment"></i>
-                        <small>
-                          {% if comment_counts|get_value_from_dict:resume.pk %}
-                            {{ comment_counts|get_value_from_dict:resume.pk }}
-                          {% else %}
-                            0
-                          {% endif %}
-                        </small>
-                      </button>
-                      <button type="button" class="btn btn-sm rating-button"
-                              data-bs-toggle="tooltip"
-                              data-bs-title="Рейтинг резюме определяется на основе количества
-                              заполненных полей и активности других пользователей">
-                        <i class="fa-regular fa-star"></i>
-                        <small>{{ resume.rating }}</small>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Hidden -->
-                <a class="resume-hidden-link" href="{% url 'resume' username=resume.user.username slug=resume.slug %}"></a>
-              </div>
-              <!-- Modal -->
-              {% include 'app_social/blocks/resume_list_comments_modal.html' %}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    <div class="row my-2">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-            <a class="page-link" href="?page=1" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
-            </li>
-          {% endif %}
-          <li class="page-item active">
-            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-          </li>
-          {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-            </li>
-          {% endif %}
-          <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+      {% include 'blocks/navigation/pagination.html' %}
     </div>
 
   {% endblock %}

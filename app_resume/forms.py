@@ -23,7 +23,7 @@ class ResumePositionForm(forms.ModelForm):
 
 class ResumeAboutMeForm(forms.ModelForm):
     about_me = forms.CharField(
-        label='О себе:',
+        label='Расскажите о себе:',
         widget=forms.Textarea(attrs={'class': 'form-control',
                                      'rows': '3'})
     )
@@ -35,7 +35,7 @@ class ResumeAboutMeForm(forms.ModelForm):
 
 class ResumeSoftSkillsForm(forms.ModelForm):
     soft_skills = forms.CharField(
-        label='Положительные качества:',
+        label='Расcкажите о ваших сильных сторонах:',
         widget=forms.Textarea(attrs={'class': 'form-control',
                                      'rows': '3'})
     )
@@ -219,8 +219,20 @@ class ElectronicCertificateForm(forms.ModelForm):
 
 
 class SkillCreateForm(forms.Form):
-    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
                                                           'placeholder': "Добавить навык"}))
+
+
+class WorkExpSectionCreateForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Заголовок:',
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Добавить отрасль или период работы"})
+    )
+
+    class Meta:
+        model = WorkExpSection
+        fields = ['title',]
 
 
 class WorkExpSectionForm(forms.ModelForm):

@@ -1,0 +1,20 @@
+{% block delete_button %}
+
+  {% if owner == user %}
+    <form method="post" action="
+        {% if delete_path_name == 'job_delete' %}
+          {% url delete_path_name username=user.username slug=resume.slug section=section pk=pk %}
+        {% elif delete_path_name == 'comment_delete' or delete_path_name == 'skill_delete' %}
+          {% url delete_path_name pk=pk %}
+        {% else %}
+          {% url delete_path_name username=user.username slug=resume.slug pk=pk %}
+        {% endif %}
+    ">
+      {% csrf_token %}
+      <button class="btn ms-auto btn-sm" type="submit">
+        <i class="fa-regular fa-trash-can"></i>
+      </button>
+    </form>
+  {% endif %}
+
+{% endblock %}

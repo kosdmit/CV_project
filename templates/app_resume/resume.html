@@ -1,149 +1,38 @@
 {% extends 'base.html' %}
 
-{% load djutils %}
+{% load app_resume_filters %}
 {% load static %}
 
 
-{% block title %}Ваш профиль{% endblock %}
+{% block title %}
+  {% if owner == user %}
+    Ваше резюме - {{ resume.position }} - CV Project
+  {% else %}
+    Резюме пользователя -
+    {% if owner.first_name %}{{ owner.first_name }}{% else %}{{ owner.username }}{% endif %}
+    - CV Project
+  {% endif %}
+{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container resume">
-      <div class="row gx-5">
-        <div class="col-lg-5 mb-5">
-          <div class="rounded-5 bg-light pt-5 pb-1 px-3">
-            <div class="hero mb-5">
-              {% if owner.profile.avatar %}
-                <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                  <img src="{{ owner.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
-                       style="object-fit: cover; aspect-ratio: 1 / 1;">
-                </div>
-              {% else %}
-                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
-                  {% if owner == user %}
-                    <p class="mx-auto text-light">Здесь будет ваше фото</p>
-                  {% else %}
-                    <p class="mx-auto text-light">{{ owner.username }}</p>
-                  {% endif %}
-                </div>
-              {% endif %}
-              {% if owner.first_name and owner.last_name %}
-                <h1 class="text-uppercase text-center">
-                  {{ owner.first_name }}
-                  <br>
-                  <strong>{{ owner.last_name }}</strong>
-                </h1>
-              {% elif owner == user %}
-                <p class="text-center">
-                  Вы не указали ваше имя или фамилию
-                  <br>
-                  <a href="{% url 'user_update' %}">Редактировать</a>
-                </p>
-              {% else %}
-                <p class="text-center">
-                  Пользователь {{ owner.username }} еще не указал имя или фамилию
-                </p>
-              {% endif %}
-              <div class="resume-position-item d-flex justify-content-center">
-                <p class="text-uppercase text-center lead my-0"><strong>{{ resume.position }}</strong></p>
-                {% if owner == user %}
-                  <button type="button" class="btn btn-sm resume-position-update-button" data-bs-toggle="modal" data-bs-target="#position-update-{{ resume.pk }}">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
-                {% endif %}
-              </div>
-              <!-- Modal -->
-              {% if owner == user %}
-                {% include 'app_resume/blocks/resume_position_update_modal.html' %}
-              {% endif %}
-            </div>
-            <div class="about-me mb-5">
-              <h2 class="text-uppercase"><i class="fa-solid fa-circle-user title-icon fs-1 me-3 mb-1"></i>Обо мне</h2>
-              {% if resume.about_me %}
-                <div class="resume-about-me-item">
-                  <p>{{ resume.about_me }}</p>
-                  <div class="item-footer d-flex justify-content-end resume-about-me-buttons-block">
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#about-me-update-{{ resume.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
-                  </div>
-                </div>
-                <!-- Modal -->
-                {% if owner == user %}
-                    {% include 'app_resume/blocks/resume_about_me_update_modal.html' %}
-                {% endif %}
-              {% else %}
-                {% if owner == user %}
-                  <div class="mb-3">
-                    <form method="post" action="{% url 'resume_about_me_update' username=user.username slug=resume.slug %}" id="resume_about_me">
-                      {% csrf_token %}
-                      <label for="id_about_me" class="form-label">Расскажите о себе:</label>
-                      <div class="input-group">
-                        {{ resume_about_me_form.about_me }}
-                        <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                      </div>
-                    </form>
-                  </div>
-                {% else %}
-                  <p>Пользователь еще не добавил информацию в этот раздел</p>
-                {% endif %}
-              {% endif %}
-            </div>
-            <div class="my-contacts mb-5">
-              <h2 class="text-uppercase"><i class="fa-solid fa-address-book title-icon fs-1 me-3 mb-1"></i>Контакты</h2>
-              <ul class="list-unstyled">
-                <li class="list-group-item mb-3">
-                  <h3 class="text-uppercase fs-5 me-3">Email:</h3><a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
-                </li>
-                {% if owner.profile.phone_number %}
-                  <li class="list-group-item mb-3">
-                    <h3 class="text-uppercase fs-5 me-3">Телефон:</h3>
-                    <a href="tel:{{ owner.profile.phone_number }}">{{ owner.profile.phone_number }}</a>
-                  </li>
-                {% endif %}
-                <li class="list-group-item mb-3">
-                  {% include 'app_users/blocks/social_links_block.html' %}
-                </li>
-              </ul>
-            </div>
-            <div class="personal-qualities mb-5">
-              <h2 class="text-uppercase text-sm"><i class="fa-solid fa-circle-check title-icon fs-1 me-3 mb-1"></i>Личные качества</h2>
-              {% if resume.soft_skills %}
-                <div class="resume-soft-skills-item">
-                  <p>{{ resume.soft_skills }}</p>
-                  <div class="item-footer d-flex justify-content-end resume-soft-skills-buttons-block">
-                    <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#soft-skills-update-{{ resume.pk }}">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
-                  </div>
-                </div>
-                <!-- Modal -->
-                {% if owner == user %}
-                    {% include 'app_resume/blocks/resume_soft_skills_update_modal.html' %}
-                {% endif %}
-              {% else %}
-                {% if owner == user %}
-                  <div class="mb-3">
-                    <form method="post" action="{% url 'resume_soft_skills_update' username=user.username slug=resume.slug %}" id="resume_soft_skills">
-                      {% csrf_token %}
-                      <label for="id_soft_skills" class="form-label">Расcкажите о ваших сильных сторонах:</label>
-                      <div class="input-group">
-                        {{ resume_soft_skills_form.soft_skills }}
-                        <button type="submit" class="btn btn-secondary fw-bold">+</button>
-                      </div>
-                    </form>
-                  </div>
-                {% else %}
-                  <p>Пользователь еще не добавил информацию в этот раздел</p>
-                {% endif %}
-              {% endif %}
-            </div>
+      <div class="row gx-lg-4 gx-xl-5">
+        <div class="col-lg-5">
+          {% include 'blocks/user_card.html' with path_name='resume' object=owner %}
+          <div class="blog mb-5">
+            {% include 'blocks/prime_title.html' with icon='fa-comment' title='Новости' %}
+            {% if not resume.post_set.all and owner != user %}
+              {% include 'blocks/no_objects_message.html' %}
+            {% endif %}
+            {% include 'blocks/objects/object_list.html' with object_set=post_set delete_path_name='post_delete' update_path_name='post_update' form_set=post_update_forms enctype='multipart' %}
+            {% include 'blocks/forms/item_create_form.html' with path_name='post_create' form=post_create_form enctype='multipart' %}
           </div>
         </div>
         <div class="col-lg-7">
           <div class="education mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-medal title-icon fs-1 me-3 mb-1"></i>Образование</h2>
+            {% include 'blocks/prime_title.html' with icon='fa-medal' title='Образование'%}
             <ul class="list-unstyled">
               <li>
                 {% if resume.maineducation %}
@@ -154,348 +43,45 @@
                         <p class="text-uppercase mb-0 py-1">// {{ resume.maineducation.get_degree.upper }}</p>
                       {% endif %}
                       <div class="main-education-buttons-block ms-auto">
-                        {% if owner == user %}
-                          <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ resume.maineducation.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                        {% endif %}
+                        {% include 'blocks/buttons/edit_button.html' with id=resume.maineducation.pk %}
                       </div>
                     </div>
                   </div>
-                  <!-- Modal -->
-                  {% if owner == user %}
-                    {% include 'app_resume/blocks/main_education_update_modal.html' %}
-                  {% endif %}
-                  <ul class="list-group list-group-flush">
-                    {% for institution in resume.maineducation.institution_set.all %}
-                      <li class="list-group-item">
-                        <div class="institution-item">
-                          {% if institution.website_url %}
-                            <a href="{{ institution.website_url }}" class="text-uppercase mb-1">{{ institution.title }}</a>
-                          {% else %}
-                            <p class="text-uppercase mb-1">{{ institution.title }}</p>
-                          {% endif %}
-                          {% if institution.description %}
-                            <p>{{ institution.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            <div class="institution-info-block">
-                              {% if institution.completion_date %}
-                                <small class="align-self-center">{{ institution.completion_date | date:'Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="institution-buttons-block d-flex">
-                              {% if owner == user %}
-                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ institution.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <form action="{% url 'institution_delete' username=user.username slug=resume.slug pk=institution.pk %}" method="post">
-                                  {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
-                                </form>
-                              {% endif %}
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ institution.pk }}"
-                                      onclick="clickLike('{{ institution.pk }}')">
-                                <i class="fa-heart
-                                  {% if institution.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:institution.pk %}
-                                    {{ like_counts|get_value_from_dict:institution.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ institution.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:institution.pk %}
-                                    {{ comment_counts|get_value_from_dict:institution.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/institution_update_modal.html' %}
-                        {% endif %}
-                        {% include 'app_resume/blocks/institution_comments_modal.html' %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                  {% if owner == user %}
-                    <form action="{% url 'institution_create' username=user.username slug=resume.slug %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group mb-5">
-                        <!-- <span class="input-group-text">Учебное учреждение</span> -->
-                        {{ institution_create_form.title }}
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                    </form>
-                  {% endif %}
+                  {% include 'blocks/modals/update_modal.html' with path_name='main_education_update' object=resume.maineducation form=main_education_form %}
+                  {% include 'blocks/objects/object_list.html' with update_path_name='institution_update' delete_path_name='institution_delete' object_set=resume.maineducation.institution_set.all form_set=institution_forms %}
+                  {% include 'blocks/forms/item_create_form.html' with path_name='institution_create' form=institution_create_form %}
                 {% else %}
                   {% if owner == user %}
-                    <form action="{% url 'main_education_create' username=user.username slug=resume.slug %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group my-3">
-                        <span class="input-group-text flex-grow-1">Указать уровень образования</span>
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                      <div class="visually-hidden">
-                        {{ main_education_form.level }}
-                        {{ main_education_form.degree }}
-                      </div>
-                    </form>
+                    {% include 'blocks/forms/item_create_form.html' with path_name='main_education_create' %}
                   {% else %}
-                    <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+                    {% include 'blocks/no_objects_message.html' %}
                   {% endif %}
                 {% endif %}
                 {% if resume.additionaleducation_set.all or owner == user %}
-                  <h3 class="text-uppercase fs-5 me-3">Дополнительное образование</h3>
+                  {% include 'blocks/second_title.html' with title='Дополнительное образование' %}
                 {% endif %}
-                {% if resume.additionaleducation_set.all%}
-                  <ul class="list-group list-group-flush">
-                    {% for education in resume.additionaleducation_set.all %}
-                      <li class="list-group-item">
-                        <div class="additional-education-item">
-                          {% if education.website_url %}
-                            <a href="{{ education.website_url }}" class="text-uppercase mb-1">{{ education.title }}</a>
-                          {% else %}
-                            <p class="text-uppercase mb-1">{{ education.title }}</p>
-                          {% endif %}
-                          {% if education.description %}
-                            <p>{{ education.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            <div class="additional-education-info-block">
-                              {% if education.completion_date %}
-                                <small class="align-self-center">{{ education.completion_date | date:'Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="additional-education-buttons-block d-flex">
-                              {% if owner == user %}
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ education.pk }}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                              </button>
-                              <form action="{% url 'additional_education_delete' username=user.username slug=resume.slug pk=education.pk %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn ms-auto btn-sm" type="submit">
-                                  <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                              </form>
-                              {% endif %}
-
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ education.pk }}"
-                                    onclick="clickLike('{{ education.pk }}')">
-                              <i class="fa-heart
-                                {% if education.pk in users_likes_uuid %}
-                                  fa-solid">
-                                {% else %}
-                                  fa-regular">
-                                {% endif %}
-                              </i>
-                              <small>
-                                {% if like_counts|get_value_from_dict:education.pk %}
-                                  {{ like_counts|get_value_from_dict:education.pk }}
-                                {% else %}
-                                  0
-                                {% endif %}
-                              </small>
-                            </button>
-                            <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ education.pk }}">
-                              <i class="fa-regular fa-comment"></i>
-                              <small>
-                                {% if comment_counts|get_value_from_dict:education.pk %}
-                                  {{ comment_counts|get_value_from_dict:education.pk }}
-                                {% else %}
-                                  0
-                                {% endif %}
-                              </small>
-                            </button>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/additional_education_update_modal.html' %}
-                        {% endif %}
-                        {% include 'app_resume/blocks/additional_education_comments_modal.html' %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
-                {% if owner == user %}
-                  <form method="post" action="{% url 'additional_education_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group mb-5">
-                      <!-- <span class="input-group-text">Дополнительное образование</span> -->
-                      {{ additional_education_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+                {% include 'blocks/objects/object_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
-                  <h3 class="text-uppercase fs-5 me-3">Электронные сертификаты</h3>
+                  {% include 'blocks/second_title.html' with title='Электронные сертификаты' %}
                 {% endif %}
-                {% if resume.electroniccertificate_set.all %}
-                  <ul class="list-group list-group mt-3">
-                    {% for certificate in resume.electroniccertificate_set.all %}
-                      <li class="list-group-item">
-                        <div class="electronic-certificate-item">
-                          <div class="item-header">
-                            <div class="ms-2 w-100 me-3">
-                              <div class="mb-2">
-                                {% if certificate.certificate_url %}
-                                  <a href="{{ certificate.certificate_url }}" class="">{{ certificate.title }}</a>
-                                {% else %}
-                                  <p class="">{{ certificate.title }}</p>
-                                {% endif %}
-                              </div>
-                            </div>
-                          </div>
-                          <div class="item-body d-flex justify-content-between align-items-start">
-                            {% if certificate.completion_percentage %}
-                              <div class="ms-2" style="width: 90%">
-                                <div class="progress me-2" role="progressbar" aria-label="Basic example" aria-valuenow="{{ certificate.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                  <div class="progress-bar" style="width: {{ certificate.completion_percentage }}%"></div>
-                                </div>
-                              </div>
-                              <span class="badge bg-primary mt-auto" style="height: 17px; line-height: 0.65;">{{ certificate.completion_percentage }}%</span>
-                            {% endif %}
-                          </div>
-                          <div class="item-footer d-flex justify-content-between ms-2">
-                            <div class="electronic-certificate-info-block">
-                              {% if certificate.completion_date %}
-                                <small class="align-self-center">{{ certificate.completion_date | date:'E Y' }}г.</small>
-                              {% endif %}
-                            </div>
-                            <div class="electronic-certificate-buttons-block d-flex">
-                              {% if owner == user %}
-                                <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ certificate.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <form action="{% url 'electronic_certificate_delete' username=user.username slug=resume.slug pk=certificate.pk %}" method="post">
-                                  {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
-                                </form>
-                              {% endif %}
-
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ certificate.pk }}"
-                                    onclick="clickLike('{{ certificate.pk }}')">
-                                <i class="fa-heart
-                                  {% if certificate.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:certificate.pk %}
-                                    {{ like_counts|get_value_from_dict:certificate.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ certificate.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:certificate.pk %}
-                                    {{ comment_counts|get_value_from_dict:certificate.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/electronic_certificate_update_modal.html' %}
-                        {% endif %}
-                        {% include 'app_resume/blocks/electronic_certificate_comments_modal.html' %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
-                {% if owner == user %}
-                  <form method="post" action="{% url 'electronic_certificate_create' username=user.username slug=resume.slug %}">
-                    {% csrf_token %}
-                    <div class="input-group my-3">
-                      <!-- <span class="input-group-text">Электронный сертификат</span> -->
-                      {{ electronic_certificate_create_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+                {% include 'blocks/objects/object_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
               </li>
             </ul>
           </div>
           <div class="skills mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-laptop-code title-icon fs-1 me-3 mb-1"></i>Навыки</h2>
+            {% include 'blocks/prime_title.html' with icon='fa-laptop-code' title='Навыки' %}
             {% if not resume.skill_set.count and owner != user %}
-              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+              {% include 'blocks/no_objects_message.html' %}
             {% endif %}
-            {% for skill in resume.skill_set.all %}
-              <button class="btn btn-light position-relative mb-3 me-3 skill-item" type="button" id="{{ skill.pk }}">
-                {{ skill.name }}
-                {% if owner == user %}
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary close-skill-badge">
-                    <i class="fa-solid fa-xmark"></i>
-                    <span class="visually-hidden">unread messages</span>
-                  </span>
-                {% endif %}
-                <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-secondary like-skill-badge"
-                      id="like-{{ skill.pk }}">
-
-                  <i class="fa-heart
-                    {% if skill.pk in users_likes_uuid %}
-                      fa-solid">
-                    {% else %}
-                      fa-regular">
-                    {% endif %}
-                  </i>
-                  <small>
-                    {% if like_counts|get_value_from_dict:skill.pk %}
-                      {{ like_counts|get_value_from_dict:skill.pk }}
-                    {% else %}
-                      0
-                    {% endif %}
-                  </small>
-
-                </span>
-              </button>
-              {% include 'app_resume/blocks/skill_comments_modal.html' %}
-            {% endfor %}
-            {% if owner == user %}
-              <form method="post" action="{% url 'skill_create' username=user.username slug=resume.slug %}">
-                {% csrf_token %}
-                <div class="input-group mb-5">
-                  <!-- <span class="input-group-text">Добавить навык</span> -->
-                  {{ skill_create_form.name }}
-                  <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                </div>
-              </form>
-            {% endif %}
+            {% include 'blocks/objects/skill_list.html' with object_set=resume.skill_set.all delete_path_name='skill_delete' %}
+            {% include 'blocks/forms/item_create_form.html' with path_name='skill_create' form=skill_create_form %}
           </div>
           <div class="work-experience mb-5">
-            <h2 class="text-uppercase"><i class="fa-solid fa-suitcase title-icon fs-1 me-3 mb-1"></i>Опыт работы</h2>
+            {% include 'blocks/prime_title.html' with icon='fa-suitcase' title='Опыт работы' %}
             {% if not resume.workexpsection_set.count and owner != user %}
-              <p class="text-body-secondary">Пользователь еще не добавил информацию в этот раздел</p>
+              {% include 'blocks/no_objects_message.html' %}
             {% endif %}
             <ul class="list-unstyled">
               <li>
@@ -504,124 +90,24 @@
                     <h3 class="text-uppercase fs-5 me-3 mb-0">{{ section.title }}</h3>
                     <div class="d-flex flex-grow-1">
                       {% if section.start_date %}
-                        <p class="text-uppercase d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
+                        <p class="text-uppercase align-self-center d-inline mb-0">// {{ section.start_date | date:'Y' }} - {{ section.finish_date | date:'Y' }}</p>
                       {% endif %}
                       <div class="work-exp-section-buttons-block d-flex ms-auto">
-                        {% if owner == user %}
-                          <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#{{ section.pk }}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <form action="{% url 'work_exp_section_delete' username=user.username slug=resume.slug pk=section.pk %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn ms-auto btn-sm" type="submit">
-                              <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                          </form>
-                        {% endif %}
+                        {% include 'blocks/buttons/edit_button.html' with id=section.pk %}
+                        {% include 'blocks/buttons/delete_button.html' with delete_path_name='work_exp_section_delete' pk=section.pk %}
                       </div>
                     </div>
                   </div>
                   <!-- Modal -->
-                  {% if owner == user %}
-                    {% include 'app_resume/blocks/work_exp_section_update_modal.html' %}
-                  {% endif %}
-                  <ul class="list-group list-group-flush">
-                    {% for job_form_dict in jobs_in_sections|get_value_from_dict:section %}
-                      <li class="list-group-item">
-                        <div class="job-item">
-                          {% if job_form_dict.job.company %}
-                            <a href="{{ job_form_dict.job.company_url }}" class="text-uppercase fw-bold mb-1">
-                              {{ job_form_dict.job.company }}
-                            </a>
-                          {% endif %}
-                          <p class="text-uppercase mb-1 d-inline">{{ job_form_dict.job.title }}</p>
-                          {% if job_form_dict.job.start_date %}
-                            <p class="text-uppercase d-inline">// {{ job_form_dict.job.start_date | date:'Y' }} - {{ job_form_dict.job.finish_date | date:'Y' }}</p>
-                          {% endif %}
-                          {% if job_form_dict.job.description %}
-                            <p>{{ job_form_dict.job.description }}</p>
-                          {% endif %}
-                          <div class="item-footer d-flex justify-content-between">
-                            {% if job_form_dict.job.project_url %}
-                              <a href="{{ job_form_dict.job.project_url }}"><small class="align-self-center">Сайт проекта</small></a>
-                            {% endif %}
-                            {% if job_form_dict.job.git_url %}
-                              <a href="{{ job_form_dict.job.git_url }}" class="ms-2"><small class="align-self-center">Проект на GitHub</small></a>
-                            {% endif %}
-                            <div class="job-buttons-block d-flex ms-auto">
-                              {% if owner == user %}
-                                <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#{{ job_form_dict.job.pk }}">
-                                  <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <form action="{% url 'job_delete' username=user.username slug=resume.slug section=section.pk pk=job_form_dict.job.pk %}" method="post">
-                                  {% csrf_token %}
-                                  <button class="btn ms-auto btn-sm" type="submit">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                  </button>
-                                </form>
-                              {% endif %}
-                              <button type="button" class="btn ms-auto btn-sm" id="like-{{ job_form_dict.job.pk }}"
-                                    onclick="clickLike('{{ job_form_dict.job.pk }}')">
-                                <i class="fa-heart
-                                  {% if job_form_dict.job.pk in users_likes_uuid %}
-                                    fa-solid">
-                                  {% else %}
-                                    fa-regular">
-                                  {% endif %}
-                                </i>
-                                <small>
-                                  {% if like_counts|get_value_from_dict:job_form_dict.job.pk %}
-                                    {{ like_counts|get_value_from_dict:job_form_dict.job.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                              <button type="button" class="btn ms-auto btn-sm" data-bs-toggle="modal" data-bs-target="#comments-{{ job_form_dict.job.pk }}">
-                                <i class="fa-regular fa-comment"></i>
-                                <small>
-                                  {% if comment_counts|get_value_from_dict:job_form_dict.job.pk %}
-                                    {{ comment_counts|get_value_from_dict:job_form_dict.job.pk }}
-                                  {% else %}
-                                    0
-                                  {% endif %}
-                                </small>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Modal -->
-                        {% if owner == user %}
-                          {% include 'app_resume/blocks/job_update_modal.html' %}
-                        {% endif %}
-                        {% include 'app_resume/blocks/job_comments_modal.html' %}
-                      </li>
+                  {% include 'blocks/modals/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
+                  <ul class="list-group list-group-flush mb-3">
+                    {% for object_dict in jobs_in_sections|get_value_from_dict:section %}
+                      {% include 'blocks/objects/job_object.html' with section=section object=object_dict.job update_form=object_dict.job_update_form %}
                     {% endfor %}
                   </ul>
-                  {% if owner == user %}
-                    <form action="{% url 'job_create' username=user.username slug=resume.slug section=section.pk %}" method="post">
-                      {% csrf_token %}
-                      <div class="input-group mb-5">
-                        <!-- <span class="input-group-text">Проект или место работы</span> -->
-                        {{ job_create_form.title }}
-                        <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                      </div>
-                    </form>
-                  {% endif %}
+                  {% include 'blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}
                 {% endfor %}
-                {% if owner == user %}
-                  <form action="{% url 'work_exp_section_create' username=user.username slug=resume.slug %}" method="post">
-                    {% csrf_token %}
-                    <!-- <label class="">Добавить отрасль или период работы:</label> -->
-                    {% if resume.workexpsection_set.all %}
-                      <hr>
-                    {% endif %}
-                    <div class="input-group my-3">
-                      {{ work_exp_section_form.title }}
-                      <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
-                    </div>
-                  </form>
-                {% endif %}
+              {% include 'blocks/forms/item_create_form.html' with path_name='work_exp_section_create' form=work_exp_section_create_form %}
             </ul>
           </div>
         </div>

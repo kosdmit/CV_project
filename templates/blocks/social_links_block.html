@@ -1,0 +1,12 @@
+{% block social_links %}
+
+  <div class="sharebuttons btn-group btn-group-lg btn-group-justified">
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.twitter service_name='twitter' icon='fa-twitter' form=social_links_form.twitter %}
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.facebook service_name='facebook' icon='fa-facebook-f' form=social_links_form.facebook %}
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.instagram service_name='instagram' icon='fa-instagram' form=social_links_form.instagram %}
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.linked_in service_name='linkedin' icon='fa-linkedin-in' form=social_links_form.linked_in %}
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.vk service_name='vk' icon='fa-vk' form=social_links_form.vk %}
+    {% include 'blocks/social_links_item.html' with url=owner.profile.sociallinks.git_hub service_name='github' icon='fa-github' form=social_links_form.git_hub %}
+  </div>
+
+{% endblock %}

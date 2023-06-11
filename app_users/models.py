@@ -1,9 +1,17 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from app_social.model_mixins import CompressImageBeforeSaveMixin
+from app_users.validators import phone_number_validator
+
 
 # Create your models here.
-class Profile(models.Model):
+class Profile(CompressImageBeforeSaveMixin, models.Model):
+    def __init__(self, *args, **kwargs):
+        self.image_width = 250
+        self.image_name_suffix = 'user_image'
+        super().__init__(*args, **kwargs)
+
     GENDERS = [
         ('M', 'Муж'),
         ('F', 'Жен'),
@@ -14,8 +22,8 @@ class Profile(models.Model):
 
     birthday_date = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=6, blank=True, null=True, choices=GENDERS)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True, validators=[phone_number_validator,])
+    image = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def get_gender(self):
         return dict(self.GENDERS).get(self.gender)

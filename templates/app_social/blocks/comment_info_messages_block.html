@@ -1,9 +1,0 @@
-{% block comment_info_messages %}
-
-  {% for message in messages %}
-    <div class="alert my-2 {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
-      {{ message|safe }}
-    </div>
-  {% endfor %}
-
-{% endblock %}

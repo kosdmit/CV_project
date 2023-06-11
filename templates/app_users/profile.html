@@ -3,76 +3,22 @@
 {% load djutils %}
 {% load app_users_filters %}
 
-{% block title %}Ваш профиль{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  {% include 'breadcrumbs_base.html' %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
   {% block main_content %}
     <div class="container">
-      <div class="row mb-3">
-        <div class="col-12">
-          <h1>Профиль</h1>
-          <p>
-            Привет,
-            {% if user.first_name %}
-              {{ user.first_name }}!
-            {% else %}
-              {{ user.username }}!
-            {% endif %}
-            На этой странице вы можете посмотреть данные своего профиля. Они используются при формировании резюме и для связи с работодателем.
-          </p>
-        </div>
-      </div>
+      {% include 'blocks/page_header.html' with path_name='profile' %}
       <div class="row gx-5">
-        <div class="col-lg-5 mb-5">
-          <div class="rounded-5 bg-light pt-5 pb-1 px-3">
-            <div class="hero mb-5">
-              {% if user.profile.avatar %}
-                <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
-                  <img src="{{ user.profile.avatar.url }}" class="avatar rounded-circle w-100 h-auto" alt="user`s avatar"
-                       style="object-fit: cover; aspect-ratio: 1 / 1;">
-                </div>
-              {% else %}
-                <div class="rounded-circle bg-secondary mx-auto d-flex align-items-center mb-3" style="height: 250px; width: 250px">
-                  <p class="mx-auto text-light">Здесь будет ваше фото</p>
-                </div>
-              {% endif %}
-              {% if user.first_name and user.last_name %}
-                <h1 class="text-uppercase text-center">
-                  {{ user.first_name }}
-                  <br>
-                  <strong>{{ user.last_name }}</strong>
-                </h1>
-              {% else %}
-                <p class="text-center">
-                  Вы не указали ваше имя или фамилию
-                  <br>
-                  <a href="{% url 'user_update' %}">Редактировать</a>
-                </p>
-              {% endif %}
-            </div>
-            <div class="user-info">
-              <ul class="list-unstyled">
-                <li class="list-group-item mb-3">
-                  <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ user.username }}</p>
-                </li>
-                <li class="list-group-item mb-3">
-                  <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ user.email }}">{{ user.email }}</a>
-                </li>
-                <li class="list-group-item mb-3">
-                  {% include 'app_users/blocks/social_links_block.html' %}
-                </li>
-              </ul>
-            </div>
-            <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
-          </div>
+        <div class="col-lg-5">
+          {% include 'blocks/user_card.html' with path_name='profile' object=user %}
         </div>
-
         <div class="col-md-7">
           <div class="profile-info mb-5">
-            <h3 class="text-uppercase fs-5">Данные профиля</h3>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item mb-3">
+            {% include 'blocks/second_title.html' with title='Данные профиля' %}
+            <ul class="list-group list-group-flush shadow rounded-2 bg-light mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_birth_date" class="form-label">Дата рождения:</label>
                 {% if user.profile.birthday_date %}
                   {{ user.profile.birthday_date }}
@@ -80,11 +26,11 @@
                   <p class="text-body-secondary d-inline">Не указано</p>
                 {% endif %}
               </li>
-              <li class="list-group-item mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_gender" class="form-label">Пол:</label>
                 {{ user.profile.get_gender }}
               </li>
-              <li class="list-group-item mb-3">
+              <li class="list-group-item bg-light">
                 <label for="id_phone_number" class="form-label">Телефон:</label>
                 {% if user.profile.phone_number %}
                   {{ user.profile.phone_number }}
@@ -94,18 +40,17 @@
               </li>
             </ul>
             <a href="{% url 'profile_update' %}" class="btn btn-secondary">Редактировать профиль</a>
-            </form>
           </div>
           <div class="resume-list mb-5">
-            <h3 class="text-uppercase fs-5">Ваши резюме</h3>
+            {% include 'blocks/second_title.html' with title='Ваши резюме' %}
             {% if user.resume_set.all %}
               <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
                 {% csrf_token %}
-                <div class="list-group my-3">
+                <div class="list-group my-3 shadow">
                   {% for resume, radio in user.resume_set.all|zip:primary_resume_select_form.is_primary %}
                     <a href="{% url 'resume' username=user.username slug=resume.slug %}"
                        class="list-group-item list-group-item-action
-                       {% if resume.is_primary %} active{% endif %}" aria-current="true">
+                       {% if resume.is_primary %} active{% else %} bg-light{% endif %}" aria-current="true">
                       <div class="d-sm-flex flex-grow-1 justify-content-between">
                         <h5 class="mb-1">{{ resume.position }}</h5>
                         <div class="d-flex ms-auto">
@@ -118,11 +63,7 @@
                 </div>
               </form>
             {% else %}
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item mb-3">
-                  Вы еще не добавляли резюме, создайте новое резюме сейчас!
-                </li>
-              </ul>
+              <p class="ps-3">Вы еще не добавляли резюме, создайте новое резюме сейчас!</p>
             {% endif %}
             <form method="post">
               {% csrf_token %}

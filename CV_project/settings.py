@@ -23,13 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
-                            'django-insecure-rc*05=8v9uioti#g=y4n#pbd)8n@m@n2*44v4_hi*6uh=c0($&')
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
+DEBUG = True if os.environ['DJANGO_DEBUG'] == 'True' else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['185.14.45.230', '185.14.45.230:8000', 'www.cvproject.ru', 'cvproject.ru',
+                 '127.0.0.1', 'localhost']
+
 
 
 # Application definition
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'autoslug',
     'djutils',
+    'markdown_deux',
     'app_users',
     'app_resume',
     'app_social',
@@ -56,7 +58,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # X-Frame_Option is configurated in Nginx conf
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'CV_project.urls'
@@ -64,8 +67,7 @@ ROOT_URLCONF = 'CV_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,15 +89,16 @@ WSGI_APPLICATION = 'CV_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if os.environ.get('DJANGO_DATABASE') == 'postgres':
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "OPTIONS": {
-                "service": "my_service",
-                "passfile": ".my_pgpass",
-            },
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'cvproject_db',
+            'USER': 'cvproject_user',
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '5432',
         }
     }
-else:
+elif os.environ['DJANGO_DATABASE'] == 'sqlite':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -108,18 +111,10 @@ else:
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 
@@ -140,8 +135,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static_files"),
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

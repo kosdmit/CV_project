@@ -1,0 +1,33 @@
+{% block form %}
+
+  <form method="post"
+        {% if path_name == 'create_profile' %}
+          enctype="multipart/form-data"
+        {% elif path_name == 'signup' %}
+          id="signup_form"
+        {% endif %}
+  >
+    {% csrf_token %}
+    <div class="container p-0">
+      <div class="row">
+        {% include 'blocks/messages.html' %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            <div class="col-md-6 col-lg-5">
+              {{ field }}
+            </div>
+            {% include 'blocks/forms/help_fields.html' %}
+          </div>
+        {% endfor %}
+        <div class="col-md-6 col-lg-5 pe-0 mt-3" id="password_repeat_alert" hidden>
+          <div class="alert alert-warning" role="alert">
+            Введенные пароли не совпадают!
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'blocks/buttons/submit_button.html' %}
+  </form>
+
+{% endblock %}

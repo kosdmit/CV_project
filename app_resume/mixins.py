@@ -99,3 +99,9 @@ class RatingUpdateForDeleteViewMixin:
         resume.save()
 
         return super().form_valid(form)
+
+
+class GetResumeObjMixin:
+    def get_object(self):
+        obj = Resume.objects.get(slug=self.kwargs['slug'], user=self.request.user)
+        return obj

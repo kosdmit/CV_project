@@ -122,7 +122,7 @@ class Skill(RepresentationForResumesObjectMixin, models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    name = models.CharField(max_length=45)
+    title = models.CharField(max_length=45)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
