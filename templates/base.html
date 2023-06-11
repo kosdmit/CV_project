@@ -18,129 +18,131 @@
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript" src="{% static 'js/yandex_metrika_counter.js' %}"></script>
   <noscript><div><img src="https://mc.yandex.ru/watch/93827266" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
   {% block extra_head %}{% endblock %}
+
 </head>
+
 <body class="bg-body-secondary">
+  <header class="p-3 text-bg-light mb-4 bg-light bg-gradient shadow-sm">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a class="navbar-brand fs-3 me-4" href="{% url 'main' %}">CV Project</a>
 
-<header class="p-3 text-bg-light mb-4 bg-light bg-gradient shadow-sm">
-  <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a class="navbar-brand fs-3 me-4" href="{% url 'main' %}">CV Project</a>
-
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body fw-semibold">Обзор</a></li>
-        <li><a href="{% url 'post_list' %}" class="nav-link px-2 text-body fw-semibold">Блоги</a></li>
-        <li>
-          <a class="nav-link px-2 {% if not user.is_authenticated or not user.profile.resume_set.all %}text-body-tertiary disabled"{% else %}
-              text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
-            Ваше резюме
-          </a>
-        </li>
-      </ul>
-
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
-            method="get" action="{% url 'resume_list' %}">
-        <div class="input-group">
-          {{ resume_search_form.search_query }}
-          <button type="submit" class="btn btn-secondary">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-      </form>
-
-      <div class="text-end">
-        {% if user.is_authenticated %}
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ user.username }}
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
-              <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
-            </ul>
-          </div>
-        {% else %}
-          <a href="{% url 'login' %}" class="btn btn-outline me-2">Войти</a>
-          <a href="{% url 'signup' %}" class="btn btn-warning">Регистрация</a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</header>
-
-{% block content %}
-{% endblock %}
-
-<div class="container-fluid bg-light bg-gradient shadow-sm mt-4">
-  <div class="container">
-    <footer class="py-5">
-      <div class="row d-flex">
-
-        <div class="col-6 col-md-2 mb-3">
-          <h5>CV Project</h5>
-          <ul class="nav flex-column">
-            {% include 'blocks/navigation/nav_item.html' with path_name='main' link_text='Главная' %}
-            {% include 'blocks/navigation/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
-            {% include 'blocks/navigation/nav_item.html' with path_name='post_list' link_text='Блоги' %}
-          </ul>
-        </div>
-        <div class="col-6 col-md-2 mb-3">
-          <h5 class="invisible">CV Project</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-              <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
-                  text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
-                Ваше резюме
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a class="nav-link p-0 {% if not user.profile %}text-body-tertiary disabled"{% else %}
-                  text-body" href="{% url 'profile' %}"{% endif %}>
-                Ваш профиль
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="col-md-5 offset-md-1 mb-3 ms-auto">
-          <form method="post" action="{% url 'add_raw_contact' %}">
-            {% csrf_token %}
-            <h5>Оставьте ваши контакты</h5>
-            <p>Если вы ищите разработчика и вам понравился этот сайт.</p>
-            <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-              {{ raw_contact_employer_form.raw_contact }}
-              <button class="btn btn-primary" type="submit">Отправить</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
-        <p class="align-self-center">© 2023 Косырьков Дмитрий, <a href="mailto:kosdmit@hotmail.com">kosdmit@hotmail.com</a></p>
-        <ul class="list-unstyled d-flex mb-0">
-          <li class="fs-2 pe-2">
-            <a class="link-body-emphasis" href="https://vk.com/kosdmit" target="_blank" style="color: #0077FF">
-              <i class="fa-brands fa-vk"></i>
-            </a>
-          </li>
-          <li class="fs-2 pe-2">
-            <a class="link-body-emphasis" href="https://github.com/kosdmit" target="_blank" style="color: #000000">
-              <i class="fa-brands fa-github"></i>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body fw-semibold">Обзор</a></li>
+          <li><a href="{% url 'post_list' %}" class="nav-link px-2 text-body fw-semibold">Блоги</a></li>
+          <li>
+            <a class="nav-link px-2 {% if not user.is_authenticated or not user.profile.resume_set.all %}text-body-tertiary disabled"{% else %}
+                text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
+              Ваше резюме
             </a>
           </li>
         </ul>
-      </div>
-    </footer>
-  </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
-        crossorigin="anonymous"></script>
-<!-- SimpleMDE - Markdown Editor -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-<!-- SimpleMDE - Markdown Editor -->
-<script src="{% static 'js/script.js' %}"></script>
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
+              method="get" action="{% url 'resume_list' %}">
+          <div class="input-group">
+            {{ resume_search_form.search_query }}
+            <button type="submit" class="btn btn-secondary">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+
+        <div class="text-end">
+          {% if user.is_authenticated %}
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.username }}
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+              </ul>
+            </div>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline me-2">Войти</a>
+            <a href="{% url 'signup' %}" class="btn btn-warning">Регистрация</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% block content %}
+  {% endblock %}
+
+  <div class="container-fluid bg-light bg-gradient shadow-sm mt-4">
+    <div class="container">
+      <footer class="py-5">
+        <div class="row d-flex">
+
+          <div class="col-6 col-md-2 mb-3">
+            <h5>CV Project</h5>
+            <ul class="nav flex-column">
+              {% include 'blocks/navigation/nav_item.html' with path_name='main' link_text='Главная' %}
+              {% include 'blocks/navigation/nav_item.html' with path_name='resume_list' link_text='Обзор' %}
+              {% include 'blocks/navigation/nav_item.html' with path_name='post_list' link_text='Блоги' %}
+            </ul>
+          </div>
+          <div class="col-6 col-md-2 mb-3">
+            <h5 class="invisible">CV Project</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2">
+                <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
+                    text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
+                  Ваше резюме
+                </a>
+              </li>
+              <li class="nav-item mb-2">
+                <a class="nav-link p-0 {% if not user.profile %}text-body-tertiary disabled"{% else %}
+                    text-body" href="{% url 'profile' %}"{% endif %}>
+                  Ваш профиль
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-md-5 offset-md-1 mb-3 ms-auto">
+            <form method="post" action="{% url 'add_raw_contact' %}">
+              {% csrf_token %}
+              <h5>Оставьте ваши контакты</h5>
+              <p>Если вы ищите разработчика и вам понравился этот сайт.</p>
+              <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                {{ raw_contact_employer_form.raw_contact }}
+                <button class="btn btn-primary" type="submit">Отправить</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
+          <p class="align-self-center">© 2023 Косырьков Дмитрий, <a href="mailto:kosdmit@hotmail.com">kosdmit@hotmail.com</a></p>
+          <ul class="list-unstyled d-flex mb-0">
+            <li class="fs-2 pe-2">
+              <a class="link-body-emphasis" href="https://vk.com/kosdmit" target="_blank" style="color: #0077FF">
+                <i class="fa-brands fa-vk"></i>
+              </a>
+            </li>
+            <li class="fs-2 pe-2">
+              <a class="link-body-emphasis" href="https://github.com/kosdmit" target="_blank" style="color: #000000">
+                <i class="fa-brands fa-github"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+          crossorigin="anonymous"></script>
+  <!-- SimpleMDE - Markdown Editor -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+  <!-- SimpleMDE - Markdown Editor -->
+  <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
