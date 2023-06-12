@@ -23,4 +23,4 @@ django-markdown-deux==1.0.6
 markdown2==2.4.8
 
 #for production
-gunicorn
+# gunicorn

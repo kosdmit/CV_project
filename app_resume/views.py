@@ -72,6 +72,8 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
         context['jobs_in_sections'] = {}
         for section in resume.workexpsection_set.all():
+            if self.request.user == owner:
+                context['job_create_form']: JobCreateForm()
             jobs = Job.objects.filter(work_exp_section=section)
             job_form_dicts = []
             for job in jobs:
@@ -151,7 +153,6 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'electronic_certificate_create_form': ElectronicCertificateCreateForm(),
             'skill_create_form': SkillCreateForm(),
             'work_exp_section_create_form': WorkExpSectionCreateForm(),
-            'job_create_form': JobCreateForm(),
             'post_create_form': PostCreateForm(),
         }
 

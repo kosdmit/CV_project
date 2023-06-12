@@ -1,3 +1,4 @@
+from unittest import expectedFailure
 from uuid import uuid4
 from django.test import TestCase, RequestFactory
 
@@ -62,16 +63,19 @@ class MainViewTest(TestCase):
 class ResumeViewTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+        self.view = ResumeView.as_view()
+
+        # Create objects
         self.user = User.objects.create_user(username='kosdmit', password='testpassword')
         self.profile = Profile.objects.create(user=self.user)
         self.social_links = SocialLinks.objects.create(user=self.user, profile=self.profile)
-        self.view = ResumeView.as_view()
 
-    def setUpOwner(self):
-        pass
+        self.slug = 'test_slug'
+        self.resume_with_slug = self.create_resume(slug=self.slug)
+        self.resume_primary = self.create_resume(is_primary=True)
+        for _ in range(3):
+            self.create_resume()
 
-    def setUpGuest(self):
-        pass
 
     def create_resume(self, *args, **kwargs):
         resume = Resume.objects.create(user=self.user, profile=self.profile, slug=str(uuid4())[:4], position=str(uuid4())[:4])
@@ -82,41 +86,81 @@ class ResumeViewTest(TestCase):
         return resume
 
     def test_context_for_owner_with_slug(self):
-        slug = 'test_slug'
-
-        resume = self.create_resume(slug=slug)
-        for _ in range(3):
-            self.create_resume()
-
-        request = self.factory.get(f'/{self.user.username}/{slug}/')
+        request = self.factory.get(f'/{self.user.username}/{self.slug}/')
         request.user = self.user
 
-        response = self.view(request, slug=slug, username=self.user.username)
+        response = self.view(request, slug=self.slug, username=self.user.username)
         context = response.context_data
 
+
         self.assertEqual(context['owner'], self.user)
-        self.assertEqual(context['resume'], resume)
+        self.assertEqual(context['resume'], self.resume_with_slug)
         self.assertTrue('resume_position_form' in context)
-        self.assertFalse('job_update_form' in context)
+
+        self.assertFalse('institution_create_form' in context)
+        self.assertFalse('job_create_form' in context)
+
         self.assertEqual(context['breadcrumbs'][0][1], reverse('profile'))
 
     def test_context_for_guest_with_slug(self):
-        slug = 'test_slug'
-
-        resume = self.create_resume(slug=slug)
-        for _ in range(3):
-            self.create_resume()
-
-        request = self.factory.get(f'/{self.user.username}/{slug}/')
+        request = self.factory.get(f'/{self.user.username}/{self.slug}/')
 
         guest = User.objects.create(username='guest', password='testpassword')
         request.user = guest
 
-        response = self.view(request, slug=slug, username=self.user.username)
+        response = self.view(request, slug=self.slug, username=self.user.username)
         context = response.context_data
 
+
         self.assertEqual(context['owner'], self.user)
-        self.assertEqual(context['resume'], resume)
+        self.assertEqual(context['resume'], self.resume_with_slug)
         self.assertTrue('resume_position_form' not in context)
-        self.assertFalse('job_update_form' in context)
+
+        self.assertFalse('institution_create_form' in context)
+        self.assertFalse('job_create_form' in context)
+
         self.assertEqual(context['breadcrumbs'][0][1], None)
+
+    def test_context_for_owner_without_slug(self):
+        request = self.factory.get(f'/{self.user.username}/')
+        request.user = self.user
+
+        response = self.view(request, username=self.user.username)
+        context = response.context_data
+
+
+        self.assertEqual(context['owner'], self.user)
+        self.assertEqual(context['resume'], self.resume_primary)
+        self.assertTrue('resume_position_form' in context)
+
+        self.assertFalse('institution_create_form' in context)
+        self.assertFalse('job_create_form' in context)
+
+        self.assertEqual(context['breadcrumbs'][0][1], reverse('profile'))
+
+    def test_context_for_guest_without_slug(self):
+        request = self.factory.get(f'/{self.user.username}/')
+
+        guest = User.objects.create(username='guest', password='testpassword')
+        request.user = guest
+
+        response = self.view(request, username=self.user.username)
+        context = response.context_data
+
+
+        self.assertEqual(context['owner'], self.user)
+        self.assertEqual(context['resume'], self.resume_primary)
+        self.assertTrue('resume_position_form' not in context)
+
+        self.assertFalse('institution_create_form' in context)
+        self.assertFalse('job_create_form' in context)
+
+        self.assertEqual(context['breadcrumbs'][0][1], None)
+
+    @expectedFailure
+    def test_context_data_with_wrong_slug(self):
+        slug = 'wrong-slug'
+        request = self.factory.get(f'/{self.user.username}/{slug}/')
+        response = self.view(request, username=self.user.username, slug=slug)
+
+        self.assertEqual(response.status_code, '404')
