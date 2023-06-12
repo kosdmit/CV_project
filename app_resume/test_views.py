@@ -1,13 +1,36 @@
 from unittest import expectedFailure
 from uuid import uuid4
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 
 from django.contrib.auth.models import User
 from django.urls import reverse
 
 from app_resume.models import Resume
-from app_resume.views import MainView, ResumeView
+from app_resume.views import MainView, ResumeView, ResumePositionUpdateView
 from app_users.models import Profile, SocialLinks
+
+
+def create_resume(self, *args, **kwargs):
+    resume = Resume.objects.create(user=self.user, profile=self.profile,
+                                   slug=str(uuid4())[:4],
+                                   position=str(uuid4())[:4])
+    for key, value in kwargs.items():
+        resume.__setattr__(key, value)
+
+    resume.save()
+    return resume
+
+
+def create_user(self, *args, **kwargs):
+    self.user = User.objects.create_user(username=str(uuid4())[:4], password='testpassword')
+    self.profile = Profile.objects.create(user=self.user)
+    self.social_links = SocialLinks.objects.create(user=self.user, profile=self.profile)
+
+    for key, value in kwargs.items():
+        self.user.__setattr__(key, value)
+
+    self.user.save()
+    return self.user
 
 
 class MainViewTest(TestCase):
@@ -65,25 +88,12 @@ class ResumeViewTest(TestCase):
         self.factory = RequestFactory()
         self.view = ResumeView.as_view()
 
-        # Create objects
-        self.user = User.objects.create_user(username='kosdmit', password='testpassword')
-        self.profile = Profile.objects.create(user=self.user)
-        self.social_links = SocialLinks.objects.create(user=self.user, profile=self.profile)
-
+        self.user = create_user(self)
         self.slug = 'test_slug'
-        self.resume_with_slug = self.create_resume(slug=self.slug)
-        self.resume_primary = self.create_resume(is_primary=True)
+        self.resume_with_slug = create_resume(self, slug=self.slug)
+        self.resume_primary = create_resume(self, is_primary=True)
         for _ in range(3):
-            self.create_resume()
-
-
-    def create_resume(self, *args, **kwargs):
-        resume = Resume.objects.create(user=self.user, profile=self.profile, slug=str(uuid4())[:4], position=str(uuid4())[:4])
-        for key, value in kwargs.items():
-            resume.__setattr__(key, value)
-
-        resume.save()
-        return resume
+            create_resume(self)
 
     def test_context_for_owner_with_slug(self):
         request = self.factory.get(f'/{self.user.username}/{self.slug}/')
@@ -164,3 +174,52 @@ class ResumeViewTest(TestCase):
         response = self.view(request, username=self.user.username, slug=slug)
 
         self.assertEqual(response.status_code, '404')
+
+
+class ResumePositionUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create objects
+        self.user1 = create_user(self, username='kosdmit')
+        self.user2 = create_user(self, username='otheruser')
+        self.resume = create_resume(self, user=self.user1, position='Position1')
+
+    def test_form_valid_with_owner(self):
+        self.client.login(username='kosdmit', password='testpassword')
+        response = self.client.post(
+            reverse('resume_position_update', kwargs={'username': self.user1.username,
+                                                      'slug': self.resume.slug}),
+            {'position': 'New Position'},
+            HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
+                                                   'slug': self.resume.slug})
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Resume.objects.get(pk=self.resume.pk).position, 'New Position')
+
+    def test_form_valid_with_not_owner(self):
+        self.client.login(username='otheruser', password='testpassword')
+        response = self.client.post(
+            reverse('resume_position_update', kwargs={'username': self.user1.username,
+                                                      'slug': self.resume.slug}),
+            {'position': 'New Position'},
+            HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
+                                                   'slug': self.resume.slug})
+        )
+
+        self.assertEqual(response.status_code, 403)  # Permission Denied
+        self.assertEqual(Resume.objects.get(pk=self.resume.pk).position, 'Position1')
+
+    def test_get_success_url(self):
+        self.client.login(username='kosdmit', password='testpassword')
+        response = self.client.post(
+            reverse('resume_position_update', kwargs={'username': self.user1.username,
+                                                      'slug': self.resume.slug}),
+            {'position': 'New Position'},
+            HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
+                                                   'slug': self.resume.slug}) + '?modal_id=123'
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], reverse('resume', kwargs={'username': self.user1.username,
+                                                   'slug': self.resume.slug}))
