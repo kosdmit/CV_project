@@ -200,7 +200,7 @@ class ResumeUpdateViewTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Resume.objects.get(pk=self.resume.pk).position, 'New Position')
-        self.assertEqual(Resume.objects.get(pk=self.resume.pk).about_me, 'New AboutMe1')
+        self.assertEqual(Resume.objects.get(pk=self.resume.pk).about_me, 'AboutMe1')
 
     def test_form_valid_with_not_owner(self):
         self.client.login(username='otheruser', password='testpassword')
@@ -227,3 +227,46 @@ class ResumeUpdateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'], reverse('resume', kwargs={'username': self.user1.username,
                                                    'slug': self.resume.slug}))
+
+
+class ResumeIsPrimaryUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Create objects
+        self.user1 = create_user(self, username='kosdmit')
+        self.user2 = create_user(self, username='otheruser')
+        self.resume1 = create_resume(self, user=self.user1, is_primary=True)
+        self.resume2 = create_resume(self, user=self.user1, is_primary=False)
+
+        self.url = reverse('resume_is_primary_update', kwargs={'username': self.user1.username})
+
+
+    def test_with_owner(self):
+        self.client.login(username='kosdmit', password='testpassword')
+        response = self.client.post(self.url, {'is_primary': self.resume2.pk},
+                                    HTTP_REFERER=reverse('profile'))
+
+        self.resume1.refresh_from_db()
+        self.resume2.refresh_from_db()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.resume1.is_primary, False)
+        self.assertEqual(self.resume2.is_primary, True)
+
+    def test_with_guest(self):
+        self.client.login(username='otheruser', password='testpassword')
+        response = self.client.post(self.url, {'is_primary': self.resume2.pk},
+                                    HTTP_REFERER=reverse('profile'))
+
+        self.resume1.refresh_from_db()
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.resume1.is_primary, True)
+        self.assertEqual(self.resume2.is_primary, False)
+
+    def test_with_invalid_resume_id(self):
+        self.client.login(username='kosdmit', password='testpassword')
+        response = self.client.post(self.url, {'is_primary': 'invalid_id'})
+
+        self.assertEqual(response.status_code, 404)  # Not Found

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import OperationalError
 from django.db.models import Count
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
@@ -226,7 +228,10 @@ class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, Updat
     fields = ['is_primary']
 
     def get_object(self, queryset=None):
-        obj = Resume.objects.get(pk=self.request.POST['is_primary'])
+        try:
+            obj = Resume.objects.get(pk=self.request.POST['is_primary'])
+        except ValidationError:
+            raise Http404()
         return obj
 
 
