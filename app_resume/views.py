@@ -4,10 +4,14 @@ from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
-from app_resume.forms import ResumeAboutMeForm, ResumeSoftSkillsForm, MainEducationForm, \
-    AdditionalEducationForm, ElectronicCertificateForm, AdditionalEducationCreateForm, \
-    ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, SkillCreateForm, \
-    WorkExpSectionForm, JobCreateForm, JobForm, ResumePositionForm, WorkExpSectionCreateForm
+from app_resume.forms import ResumeSoftSkillsForm, \
+    MainEducationForm, \
+    AdditionalEducationForm, ElectronicCertificateForm, \
+    AdditionalEducationCreateForm, \
+    ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, \
+    SkillCreateForm, \
+    WorkExpSectionForm, JobCreateForm, JobForm, WorkExpSectionCreateForm, \
+    ResumePositionForm, ResumeAboutMeForm
 from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
     RatingUpdateForCreateViewMixin, \
     RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, \
@@ -199,25 +203,22 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
         return context
 
 
-class ResumePositionUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
+class ResumeUpdateView(UserValidatorMixin,
+                       GetResumeObjMixin,
+                       RefreshIfSuccessMixin,
+                       UpdateView):
     model = Resume
-    fields = ['position']
+    fields = ['position', 'about_me', 'soft_skills']
 
+    def get_form_class(self):
+        if 'position' in self.request.POST:
+            form_class = ResumePositionForm
+        elif 'about_me' in self.request.POST:
+            form_class = ResumeAboutMeForm
+        elif 'soft_skills' in self.request.POST:
+            form_class = ResumeSoftSkillsForm
 
-class ResumeAboutMeUpdateView(UserValidatorMixin,
-                              GetResumeObjMixin,
-                              RefreshIfSuccessMixin,
-                              UpdateView):
-    model = Resume
-    fields = ['about_me']
-
-
-class ResumeSoftSkillsUpdateView(UserValidatorMixin,
-                                 GetResumeObjMixin,
-                                 RefreshIfSuccessMixin,
-                                 UpdateView):
-    model = Resume
-    fields = ['soft_skills']
+        return form_class
 
 
 class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):

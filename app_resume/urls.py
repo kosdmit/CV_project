@@ -1,18 +1,20 @@
 from django.urls import path
 
-from app_resume.views import ResumeView, ResumeAboutMeUpdateView, ResumeSoftSkillsUpdateView, MainEducationCreateView, \
-    AdditionalEducationCreateView, ElectronicCertificateCreateView, InstitutionCreateView, InstitutionUpdateView, \
-    AdditionalEducationUpdateView, ElectronicCertificateUpdateView, SkillCreateView, WorkExpSectionCreateView, \
-    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, InstitutionDeleteView, MainEducationUpdateView, \
-    AdditionalEducationDeleteView, ElectronicCertificateDeleteView, SkillDeleteView, WorkExpSectionUpdateView, \
-    WorkExpSectionDeleteView, JobDeleteView, ResumePositionUpdateView
+from app_resume.views import ResumeView, MainEducationCreateView, \
+    AdditionalEducationCreateView, ElectronicCertificateCreateView, \
+    InstitutionCreateView, InstitutionUpdateView, \
+    AdditionalEducationUpdateView, ElectronicCertificateUpdateView, \
+    SkillCreateView, WorkExpSectionCreateView, \
+    JobCreateView, JobUpdateView, ResumeIsPrimaryUpdateView, \
+    InstitutionDeleteView, MainEducationUpdateView, \
+    AdditionalEducationDeleteView, ElectronicCertificateDeleteView, \
+    SkillDeleteView, WorkExpSectionUpdateView, \
+    WorkExpSectionDeleteView, JobDeleteView, ResumeUpdateView
 
 urlpatterns = [
     path('<username>/', ResumeView.as_view(), name='primary_resume'),
     path('<username>/<slug>/', ResumeView.as_view(), name='resume'),
-    path('<username>/<slug>/resume_position_update', ResumePositionUpdateView.as_view(), name='resume_position_update'),
-    path('<username>/<slug>/resume_about_me_update', ResumeAboutMeUpdateView.as_view(), name='resume_about_me_update'),
-    path('<username>/<slug>/resume_soft_skills_update', ResumeSoftSkillsUpdateView.as_view(), name='resume_soft_skills_update'),
+    path('<username>/<slug>/resume_update', ResumeUpdateView.as_view(), name='resume_update'),
     path('<username>/resume_is_primary_update', ResumeIsPrimaryUpdateView.as_view(), name='resume_is_primary_update'),
 
     # Main education items

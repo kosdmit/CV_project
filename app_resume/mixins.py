@@ -1,5 +1,6 @@
 from urllib.parse import urlparse, urlunparse
 
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 
@@ -103,5 +104,6 @@ class RatingUpdateForDeleteViewMixin:
 
 class GetResumeObjMixin:
     def get_object(self):
-        obj = Resume.objects.get(slug=self.kwargs['slug'], user=self.request.user)
+        user = User.objects.get(username=self.kwargs['username'])
+        obj = Resume.objects.get(slug=self.kwargs['slug'], user=user)
         return obj

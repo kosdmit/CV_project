@@ -29,7 +29,7 @@
                 action="
               {% if path_name == 'job_update' %}
                 {% url path_name username=user.username slug=resume.slug section=object.work_exp_section.pk pk=object.pk %}
-              {% elif path_name == 'resume_about_me_update' or path_name == 'resume_position_update' or path_name == 'resume_soft_skills_update' %}
+              {% elif path_name == 'resume_update' %}
                 {% url path_name username=user.username slug=resume.slug %}
               {% else %}
                 {% url path_name username=user.username slug=resume.slug pk=object.pk %}

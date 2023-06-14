@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from app_resume.models import Resume
-from app_resume.views import MainView, ResumeView, ResumePositionUpdateView
+from app_resume.views import MainView, ResumeView
 from app_users.models import Profile, SocialLinks
 
 
@@ -176,20 +176,23 @@ class ResumeViewTest(TestCase):
         self.assertEqual(response.status_code, '404')
 
 
-class ResumePositionUpdateViewTest(TestCase):
+class ResumeUpdateViewTest(TestCase):
     def setUp(self):
         self.client = Client()
 
         # Create objects
         self.user1 = create_user(self, username='kosdmit')
         self.user2 = create_user(self, username='otheruser')
-        self.resume = create_resume(self, user=self.user1, position='Position1')
+        self.resume = create_resume(self,
+                                    user=self.user1,
+                                    position='Position1',
+                                    about_me='AboutMe1')
 
     def test_form_valid_with_owner(self):
         self.client.login(username='kosdmit', password='testpassword')
         response = self.client.post(
-            reverse('resume_position_update', kwargs={'username': self.user1.username,
-                                                      'slug': self.resume.slug}),
+            reverse('resume_update', kwargs={'username': self.user1.username,
+                                             'slug': self.resume.slug}),
             {'position': 'New Position'},
             HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
                                                    'slug': self.resume.slug})
@@ -197,12 +200,13 @@ class ResumePositionUpdateViewTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Resume.objects.get(pk=self.resume.pk).position, 'New Position')
+        self.assertEqual(Resume.objects.get(pk=self.resume.pk).about_me, 'New AboutMe1')
 
     def test_form_valid_with_not_owner(self):
         self.client.login(username='otheruser', password='testpassword')
         response = self.client.post(
-            reverse('resume_position_update', kwargs={'username': self.user1.username,
-                                                      'slug': self.resume.slug}),
+            reverse('resume_update', kwargs={'username': self.user1.username,
+                                             'slug': self.resume.slug}),
             {'position': 'New Position'},
             HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
                                                    'slug': self.resume.slug})
@@ -214,7 +218,7 @@ class ResumePositionUpdateViewTest(TestCase):
     def test_get_success_url(self):
         self.client.login(username='kosdmit', password='testpassword')
         response = self.client.post(
-            reverse('resume_position_update', kwargs={'username': self.user1.username,
+            reverse('resume_update', kwargs={'username': self.user1.username,
                                                       'slug': self.resume.slug}),
             {'position': 'New Position'},
             HTTP_REFERER=reverse('resume', kwargs={'username': self.user1.username,
