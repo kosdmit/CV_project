@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import OperationalError
 from django.db.models import Count
 from django.http import Http404
@@ -251,7 +251,10 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        try:
+            resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        except Resume.DoesNotExist:
+            raise PermissionDenied
         self.object.main_education = resume.maineducation
 
         return super().form_valid(form)

@@ -8,8 +8,9 @@ from django.test import TestCase, RequestFactory, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from app_resume.models import Resume, MainEducation
-from app_resume.tests.test_mixins import CreateMethodsMixin
+from app_resume.models import Resume, MainEducation, Institution
+from app_resume.tests.test_mixins import CreateMethodsMixin, BaseSetUpMixin, \
+    ResumeItemCreateViewTestMixin
 from app_resume.views import MainView, ResumeView
 from app_users.models import Profile, SocialLinks
 
@@ -157,13 +158,9 @@ class ResumeViewTest(CreateMethodsMixin, TestCase):
         self.assertEqual(response.status_code, '404')
 
 
-class ResumeUpdateViewTest(CreateMethodsMixin, TestCase):
+class ResumeUpdateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
-        self.client = Client()
-
-        # Create objects
-        self.user1 = self.create_user(username='kosdmit')
-        self.user2 = self.create_user(username='otheruser')
+        super().setUp()
         self.resume = self.create_resume(user=self.user1, position='Position1',
                                          about_me='AboutMe1')
 
@@ -208,13 +205,9 @@ class ResumeUpdateViewTest(CreateMethodsMixin, TestCase):
                                                    'slug': self.resume.slug}))
 
 
-class ResumeIsPrimaryUpdateViewTest(CreateMethodsMixin, TestCase):
+class ResumeIsPrimaryUpdateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
-        self.client = Client()
-
-        # Create objects
-        self.user1 = self.create_user(username='kosdmit')
-        self.user2 = self.create_user(username='otheruser')
+        super().setUp()
         self.resume1 = self.create_resume(user=self.user1, is_primary=True)
         self.resume2 = self.create_resume(user=self.user1, is_primary=False)
 
@@ -248,66 +241,21 @@ class ResumeIsPrimaryUpdateViewTest(CreateMethodsMixin, TestCase):
         self.client.login(username='kosdmit', password='testpassword')
         response = self.client.post(self.url, {'is_primary': 'invalid_id'})
 
-        self.assertEqual(response.status_code, 404)  # Not Found
+        self.assertEqual(response.status_code, 404)
 
 
-class MainEducationCreateViewTest(TestCase):
+class MainEducationCreateViewTest(ResumeItemCreateViewTestMixin,
+                                  BaseSetUpMixin,
+                                  CreateMethodsMixin,
+                                  TestCase):
     def setUp(self):
-        self.client = Client()
-
-        # Create Objects
-        self.user1 = self.create_user(username='kosdmit')
-        self.user2 = self.create_user(username='otheruser')
-        self.resume = self.create_resume(user=self.user1, slug='python-developer')
-
-        self.url = reverse('main_education_create', kwargs={'username': self.user1.username,
-                                                            'slug': self.resume.slug})
-        self.referer = reverse('resume', kwargs={'username': self.user1.username,
-                                                 'slug': self.resume.slug})
-
-    @patch('django.views.generic.edit.CreateView.form_valid')
-    def test_open_modal_if_success(self, mock_form_valid):
-        self.client.login(username=self.user1.username, password='testpassword')
-        mock_form_valid.return_value = HttpResponseRedirect(self.referer)
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(f'modal_id={self.resume.maineducation.pk}', response.url)
-        self.assertIn(self.referer, response.url)
-
-    def test_with_owner(self):
-        self.client.login(username=self.user1.username, password='testpassword')
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
-
-        main_education = MainEducation.objects.filter(resume=self.resume).all()
-
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(f'modal_id={main_education.first().pk}', response.url)
-        self.assertEqual(main_education.count(), 1)
-
-    @patch('django.views.generic.edit.CreateView.form_valid')
-    def test_with_guest(self, mock_form_valid):
-        self.client.login(username=self.user2.username, password='testpassword')
-        mock_form_valid.return_value = HttpResponseRedirect(self.referer)
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_updates_rating(self):
-        initial_rating = self.resume.rating
-        self.client.login(username=self.user1.username, password='testpassword')
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
-        self.resume.refresh_from_db()
-        self.assertEqual(response.status_code, 302)
-        self.assertGreater(self.resume.rating, initial_rating)
+        super().setUp(url_name='main_education_create')
+        self.model = MainEducation
 
 
-class MainEducationUpdateViewTest(CreateMethodsMixin, TestCase):
+class MainEducationUpdateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user1 = self.create_user(username='kosdmit')
-        self.user2 = self.create_user(username='otheruser')
-        self.resume = self.create_resume(user=self.user1, slug='python-developer')
+        super().setUp()
         self.education = MainEducation.objects.create(resume=self.resume, level='Basic General')
         self.url = reverse('main_education_update', kwargs={'pk': self.education.pk,
                                                             'username': self.user1.username,
@@ -336,5 +284,11 @@ class MainEducationUpdateViewTest(CreateMethodsMixin, TestCase):
         self.assertEqual(response.status_code, 403)
 
 
-
-
+class TestInstitutionCreateView(ResumeItemCreateViewTestMixin,
+                                BaseSetUpMixin,
+                                CreateMethodsMixin,
+                                TestCase):
+    def setUp(self):
+        super().setUp('institution_create')
+        self.main_education1 = MainEducation.objects.create(resume=self.resume)
+        self.model = Institution
