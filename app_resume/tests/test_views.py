@@ -9,31 +9,9 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from app_resume.models import Resume, MainEducation
+from app_resume.tests.test_mixins import CreateMethodsMixin
 from app_resume.views import MainView, ResumeView
 from app_users.models import Profile, SocialLinks
-
-
-def create_resume(self, *args, **kwargs):
-    resume = Resume.objects.create(user=self.user, profile=self.profile,
-                                   slug=str(uuid4())[:4],
-                                   position=str(uuid4())[:4])
-    for key, value in kwargs.items():
-        resume.__setattr__(key, value)
-
-    resume.save()
-    return resume
-
-
-def create_user(self, *args, **kwargs):
-    self.user = User.objects.create_user(username=str(uuid4())[:4], password='testpassword')
-    self.profile = Profile.objects.create(user=self.user)
-    self.social_links = SocialLinks.objects.create(user=self.user, profile=self.profile)
-
-    for key, value in kwargs.items():
-        self.user.__setattr__(key, value)
-
-    self.user.save()
-    return self.user
 
 
 class MainViewTest(TestCase):
@@ -86,17 +64,17 @@ class MainViewTest(TestCase):
         self.assertIn('param2=value2', response.url)
 
 
-class ResumeViewTest(TestCase):
+class ResumeViewTest(CreateMethodsMixin, TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.view = ResumeView.as_view()
 
-        self.user = create_user(self)
+        self.user = self.create_user()
         self.slug = 'test_slug'
-        self.resume_with_slug = create_resume(self, slug=self.slug)
-        self.resume_primary = create_resume(self, is_primary=True)
+        self.resume_with_slug = self.create_resume(slug=self.slug)
+        self.resume_primary = self.create_resume(is_primary=True)
         for _ in range(3):
-            create_resume(self)
+            self.create_resume()
 
     def test_context_for_owner_with_slug(self):
         request = self.factory.get(f'/{self.user.username}/{self.slug}/')
@@ -179,17 +157,15 @@ class ResumeViewTest(TestCase):
         self.assertEqual(response.status_code, '404')
 
 
-class ResumeUpdateViewTest(TestCase):
+class ResumeUpdateViewTest(CreateMethodsMixin, TestCase):
     def setUp(self):
         self.client = Client()
 
         # Create objects
-        self.user1 = create_user(self, username='kosdmit')
-        self.user2 = create_user(self, username='otheruser')
-        self.resume = create_resume(self,
-                                    user=self.user1,
-                                    position='Position1',
-                                    about_me='AboutMe1')
+        self.user1 = self.create_user(username='kosdmit')
+        self.user2 = self.create_user(username='otheruser')
+        self.resume = self.create_resume(user=self.user1, position='Position1',
+                                         about_me='AboutMe1')
 
     def test_form_valid_with_owner(self):
         self.client.login(username='kosdmit', password='testpassword')
@@ -232,15 +208,15 @@ class ResumeUpdateViewTest(TestCase):
                                                    'slug': self.resume.slug}))
 
 
-class ResumeIsPrimaryUpdateViewTest(TestCase):
+class ResumeIsPrimaryUpdateViewTest(CreateMethodsMixin, TestCase):
     def setUp(self):
         self.client = Client()
 
         # Create objects
-        self.user1 = create_user(self, username='kosdmit')
-        self.user2 = create_user(self, username='otheruser')
-        self.resume1 = create_resume(self, user=self.user1, is_primary=True)
-        self.resume2 = create_resume(self, user=self.user1, is_primary=False)
+        self.user1 = self.create_user(username='kosdmit')
+        self.user2 = self.create_user(username='otheruser')
+        self.resume1 = self.create_resume(user=self.user1, is_primary=True)
+        self.resume2 = self.create_resume(user=self.user1, is_primary=False)
 
         self.url = reverse('resume_is_primary_update', kwargs={'username': self.user1.username})
 
@@ -280,9 +256,9 @@ class MainEducationCreateViewTest(TestCase):
         self.client = Client()
 
         # Create Objects
-        self.user1 = create_user(self, username='kosdmit')
-        self.user2 = create_user(self, username='otheruser')
-        self.resume = create_resume(self, user=self.user1, slug='python-developer')
+        self.user1 = self.create_user(username='kosdmit')
+        self.user2 = self.create_user(username='otheruser')
+        self.resume = self.create_resume(user=self.user1, slug='python-developer')
 
         self.url = reverse('main_education_create', kwargs={'username': self.user1.username,
                                                             'slug': self.resume.slug})
@@ -326,12 +302,12 @@ class MainEducationCreateViewTest(TestCase):
         self.assertGreater(self.resume.rating, initial_rating)
 
 
-class MainEducationUpdateViewTest(TestCase):
+class MainEducationUpdateViewTest(CreateMethodsMixin, TestCase):
     def setUp(self):
         self.client = Client()
-        self.user1 = create_user(self, username='kosdmit')
-        self.user2 = create_user(self, username='otheruser')
-        self.resume = create_resume(self, user=self.user1, slug='python-developer')
+        self.user1 = self.create_user(username='kosdmit')
+        self.user2 = self.create_user(username='otheruser')
+        self.resume = self.create_resume(user=self.user1, slug='python-developer')
         self.education = MainEducation.objects.create(resume=self.resume, level='Basic General')
         self.url = reverse('main_education_update', kwargs={'pk': self.education.pk,
                                                             'username': self.user1.username,

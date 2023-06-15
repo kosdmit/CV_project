@@ -1,0 +1,16 @@
+{% block span_text_for_create_form %}
+
+  {% if path_name == 'main_education_create' %}
+    Указать уровень образования
+  {% elif path_name == 'institution_create' %}
+    Добавить учебное учреждение
+  {% elif path_name == 'additional_education_create' %}
+    Добавить дополнительное образование
+  {% elif path_name == 'electronic_certificate_create' %}
+    Добавить сертификат
+  {% elif path_name == 'job_create' %}
+    Добавить место работы
+  {% elif path_name == 'work_exp_section_create' %}
+    Добавить отрасль или период работы
+  {% endif %}
+{% endblock %}

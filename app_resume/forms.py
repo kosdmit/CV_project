@@ -79,11 +79,6 @@ class MainEducationForm(forms.ModelForm):
         fields = ['level', 'degree']
 
 
-class InstitutionCreateForm(forms.Form):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Добавить учебное учреждение"}))
-
-
 class InstitutionForm(forms.ModelForm):
     title = forms.CharField(
         label='Наименование учебного учреждения:',
@@ -130,11 +125,6 @@ class InstitutionForm(forms.ModelForm):
         fields = ['title', 'description', 'website_url', 'diploma', 'completion_date', 'is_primary']
 
 
-class AdditionalEducationCreateForm(forms.Form):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Добавить дополнительное образование"}))
-
-
 class AdditionalEducationForm(forms.ModelForm):
     title = forms.CharField(
         label='Наименование учебной программы:',
@@ -172,11 +162,6 @@ class AdditionalEducationForm(forms.ModelForm):
     class Meta:
         model = AdditionalEducation
         fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
-
-
-class ElectronicCertificateCreateForm(forms.Form):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Добавить сертификат"}))
 
 
 class ElectronicCertificateForm(forms.ModelForm):
@@ -225,18 +210,6 @@ class SkillCreateForm(forms.Form):
                                                           'placeholder': "Добавить навык"}))
 
 
-class WorkExpSectionCreateForm(forms.ModelForm):
-    title = forms.CharField(
-        label='Заголовок:',
-        widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': "Добавить отрасль или период работы"})
-    )
-
-    class Meta:
-        model = WorkExpSection
-        fields = ['title',]
-
-
 class WorkExpSectionForm(forms.ModelForm):
     title = forms.CharField(
         label='Заголовок:',
@@ -261,11 +234,6 @@ class WorkExpSectionForm(forms.ModelForm):
     class Meta:
         model = WorkExpSection
         fields = ['title', 'start_date', 'finish_date']
-
-
-class JobCreateForm(forms.Form):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Добавить место работы"}))
 
 
 class JobForm(forms.ModelForm):

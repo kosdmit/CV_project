@@ -61,12 +61,12 @@
                   {% include 'blocks/second_title.html' with title='Дополнительное образование' %}
                 {% endif %}
                 {% include 'blocks/objects/object_list.html' with update_path_name='additional_education_update' delete_path_name='additional_education_delete' object_set=resume.additionaleducation_set.all form_set=additional_education_forms %}
-                {% include 'blocks/forms/item_create_form.html' with path_name='additional_education_create' form=additional_education_create_form %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='additional_education_create' %}
                 {% if resume.electroniccertificate_set.all or owner == user %}
                   {% include 'blocks/second_title.html' with title='Электронные сертификаты' %}
                 {% endif %}
                 {% include 'blocks/objects/object_list.html' with update_path_name='electronic_certificate_update' delete_path_name='electronic_certificate_delete' object_set=resume.electroniccertificate_set.all form_set=electronic_certificate_forms %}
-                {% include 'blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' form=electronic_certificate_create_form %}
+                {% include 'blocks/forms/item_create_form.html' with path_name='electronic_certificate_create' %}
               </li>
             </ul>
           </div>
@@ -105,9 +105,9 @@
                       {% include 'blocks/objects/job_object.html' with section=section object=object_dict.job update_form=object_dict.job_update_form %}
                     {% endfor %}
                   </ul>
-                  {% include 'blocks/forms/item_create_form.html' with path_name='job_create' form=job_create_form %}
+                  {% include 'blocks/forms/item_create_form.html' with path_name='job_create' %}
                 {% endfor %}
-              {% include 'blocks/forms/item_create_form.html' with path_name='work_exp_section_create' form=work_exp_section_create_form %}
+              {% include 'blocks/forms/item_create_form.html' with path_name='work_exp_section_create' %}
             </ul>
           </div>
         </div>

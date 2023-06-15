@@ -76,7 +76,7 @@ class Institution(RepresentationForResumesObjectMixin, models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=True, null=False, default='New Object')
     description = models.TextField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
     diploma = models.FileField(upload_to='files/main_diplomas/', blank=True, null=True)
@@ -99,7 +99,7 @@ class AdditionalEducation(RepresentationForResumesObjectMixin, models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=True, null=False, default='New Object')
     description = models.TextField(blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
     diploma = models.FileField(upload_to='files/additional_diplomas/', blank=True, null=True)
@@ -111,7 +111,7 @@ class ElectronicCertificate(RepresentationForResumesObjectMixin, models.Model):
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     slug = AutoSlugField(populate_from='title', unique_with='resume')
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=True, null=False, default='New Object')
     certificate_url = models.URLField(blank=True, null=True)
     certificate = models.FileField(upload_to='files/certificates/', blank=True, null=True)
     completion_percentage = models.IntegerField(blank=True, null=True, validators=[percentage_validator])
@@ -140,7 +140,7 @@ class Job(models.Model):
     work_exp_section = models.ForeignKey('WorkExpSection', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=True, null=False, default='New Object')
     description = models.TextField(blank=True, null=True)
     project_url = models.URLField(blank=True, null=True)
     git_url = models.URLField(blank=True, null=True)

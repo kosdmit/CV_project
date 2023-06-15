@@ -8,11 +8,9 @@ from django.views.generic import CreateView, TemplateView, UpdateView, RedirectV
 
 from app_resume.forms import ResumeSoftSkillsForm, \
     MainEducationForm, \
-    AdditionalEducationForm, ElectronicCertificateForm, \
-    AdditionalEducationCreateForm, \
-    ElectronicCertificateCreateForm, InstitutionCreateForm, InstitutionForm, \
+    AdditionalEducationForm, ElectronicCertificateForm, InstitutionForm, \
     SkillCreateForm, \
-    WorkExpSectionForm, JobCreateForm, JobForm, WorkExpSectionCreateForm, \
+    WorkExpSectionForm, JobForm, \
     ResumePositionForm, ResumeAboutMeForm
 from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
     RatingUpdateForCreateViewMixin, \
@@ -78,8 +76,6 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
         context['jobs_in_sections'] = {}
         for section in resume.workexpsection_set.all():
-            if self.request.user == owner:
-                context['job_create_form']: JobCreateForm()
             jobs = Job.objects.filter(work_exp_section=section)
             job_form_dicts = []
             for job in jobs:
@@ -155,10 +151,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             'resume_soft_skills_form': ResumeSoftSkillsForm(instance=resume),
             'social_links_form': SocialLinksForm(instance=owner.profile.sociallinks),
             'main_education_form': MainEducationForm(instance=main_education),
-            'additional_education_create_form': AdditionalEducationCreateForm(),
-            'electronic_certificate_create_form': ElectronicCertificateCreateForm(),
             'skill_create_form': SkillCreateForm(),
-            'work_exp_section_create_form': WorkExpSectionCreateForm(),
             'post_create_form': PostCreateForm(),
         }
 
@@ -169,8 +162,6 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
             for institution in resume.maineducation.institution_set.all():
                 institution_form = InstitutionForm(instance=institution)
                 context['institution_forms'][institution] = institution_form
-
-            context['institution_create_form'] = InstitutionCreateForm()
 
         context['additional_education_forms'] = {}
         for education in resume.additionaleducation_set.all():
@@ -350,7 +341,8 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
                                ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
                                CreateView):
-    form_class = WorkExpSectionCreateForm
+    model = WorkExpSection
+    fields = ['title']
 
 
 class WorkExpSectionUpdateView(ResumeValidatorMixin,

@@ -1,14 +1,14 @@
-{% block item_create_form %}
+{% block new_create_form %}
 
   {% if owner == user %}
     <form method="post" {% if enctype == 'multipart' %}enctype="multipart/form-data"{% endif %}
           action="
-        {% if path_name == 'job_create' %}
-          {% url path_name username=user.username slug=resume.slug section=section.pk %}
-        {% else %}
-          {% url path_name username=user.username slug=resume.slug %}
-        {% endif %}"
-    >
+            {% if path_name == 'job_create' %}
+              {% url path_name username=user.username slug=resume.slug section=section.pk %}
+            {% else %}
+              {% url path_name username=user.username slug=resume.slug %}
+            {% endif %}
+          ">
       {% csrf_token %}
       {% if path_name == 'work_exp_section_create' and resume.workexpsection_set.all %}
         <hr>
@@ -24,9 +24,9 @@
             {{ field }}
           {% endif %}
         {% endfor %}
-        {% if path_name == 'main_education_create' %}
-          <span class="input-group-text flex-grow-1">Указать уровень образования</span>
-        {% endif %}
+        {% if not form %}
+          <span class="input-group-text flex-grow-1">{% include 'blocks/forms/span_text_for_create_form.html' %}</span>
+         {% endif %}
         <button class="btn btn-outline-secondary fw-bold" type="submit" id="button-addon2">+</button>
       </div>
     </form>
