@@ -1,5 +1,5 @@
 from unittest import expectedFailure
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from uuid import uuid4
 
 from django.http import HttpResponseRedirect
@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from app_resume.models import Resume, MainEducation, Institution
 from app_resume.tests.test_mixins import CreateMethodsMixin, BaseSetUpMixin, \
-    ResumeItemCreateViewTestMixin
+    ResumeItemCreateViewTestMixin, ResumeItemUpdateViewTestMixin
 from app_resume.views import MainView, ResumeView
 from app_users.models import Profile, SocialLinks
 
@@ -253,35 +253,17 @@ class MainEducationCreateViewTest(ResumeItemCreateViewTestMixin,
         self.model = MainEducation
 
 
-class MainEducationUpdateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
+class MainEducationUpdateViewTest(ResumeItemUpdateViewTestMixin,
+                                  BaseSetUpMixin,
+                                  CreateMethodsMixin,
+                                  TestCase):
     def setUp(self):
-        super().setUp()
-        self.education = MainEducation.objects.create(resume=self.resume, level='Basic General')
-        self.url = reverse('main_education_update', kwargs={'pk': self.education.pk,
-                                                            'username': self.user1.username,
-                                                            'slug': self.resume.slug})
-        self.referer = reverse('resume', kwargs={'username': self.user1.username,
-                                                 'slug': self.resume.slug}) \
-            + '?modal_id=' + str(self.education.pk)
+        self.model = MainEducation
         self.data = {
             'level': 'Higher education',
             'degree': 'Master'
         }
-
-    def test_with_owner(self):
-        self.client.login(username=self.user1.username, password='testpassword')
-        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
-        self.education.refresh_from_db()
-        self.assertEqual(response.status_code, 302)
-        self.assertNotIn('modal_id=', response.url)
-        self.assertEqual(self.education.level, self.data['level'])
-        self.assertEqual(self.education.degree, self.data['degree'])
-
-    def test_with_guest(self):
-        self.client.login(username=self.user2.username, password='testpassword')
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
-
-        self.assertEqual(response.status_code, 403)
+        super().setUp(url_name='main_education_update')
 
 
 class TestInstitutionCreateView(ResumeItemCreateViewTestMixin,
@@ -292,3 +274,18 @@ class TestInstitutionCreateView(ResumeItemCreateViewTestMixin,
         super().setUp('institution_create')
         self.main_education1 = MainEducation.objects.create(resume=self.resume)
         self.model = Institution
+
+
+class InstitutionUpdateViewTest(BaseSetUpMixin,
+                                ResumeItemUpdateViewTestMixin,
+                                CreateMethodsMixin,
+                                TestCase):
+    def setUp(self):
+        self.model = Institution
+        self.data = {
+            'title': 'New title',
+            'description': 'New description'
+        }
+        super().setUp()
+        main_education = MainEducation.objects.create(resume=self.resume)
+        ResumeItemUpdateViewTestMixin.setUp(self, url_name='institution_update', main_education=main_education)

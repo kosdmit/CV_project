@@ -86,3 +86,31 @@ class ResumeItemCreateViewTestMixin:
         self.resume.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertGreater(self.resume.rating, initial_rating)
+
+
+class ResumeItemUpdateViewTestMixin:
+    def setUp(self, url_name, *args, **kwargs):
+        super().setUp()
+        self.object = self.model.objects.create(resume=self.resume, **kwargs)
+        self.url = reverse(url_name, kwargs={'pk': self.object.pk,
+                                             'username': self.user1.username,
+                                             'slug': self.resume.slug})
+
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug}) \
+            + '?modal_id=' + str(self.object.pk)
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        self.object.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('modal_id=', response.url)
+        for key in self.data:
+            self.assertEqual(self.object.__getattribute__(key), self.data[key])
+
+    def test_with_guest(self):
+        self.client.login(username=self.user2.username, password='testpassword')
+        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
+
+        self.assertEqual(response.status_code, 403)

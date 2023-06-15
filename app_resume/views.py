@@ -255,6 +255,7 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
             resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
         except Resume.DoesNotExist:
             raise PermissionDenied
+
         self.object.main_education = resume.maineducation
 
         return super().form_valid(form)
