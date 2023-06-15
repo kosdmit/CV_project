@@ -296,7 +296,7 @@ class MainEducationCreateViewTest(TestCase):
         response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn(f'?modal_id={self.resume.maineducation.pk}', response.url)
+        self.assertIn(f'modal_id={self.resume.maineducation.pk}', response.url)
         self.assertIn(self.referer, response.url)
 
     def test_with_owner(self):
@@ -306,7 +306,7 @@ class MainEducationCreateViewTest(TestCase):
         main_education = MainEducation.objects.filter(resume=self.resume).all()
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn(f'?modal_id={main_education.first().pk}', response.url)
+        self.assertIn(f'modal_id={main_education.first().pk}', response.url)
         self.assertEqual(main_education.count(), 1)
 
     @patch('django.views.generic.edit.CreateView.form_valid')
@@ -324,3 +324,41 @@ class MainEducationCreateViewTest(TestCase):
         self.resume.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertGreater(self.resume.rating, initial_rating)
+
+
+class MainEducationUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = create_user(self, username='kosdmit')
+        self.user2 = create_user(self, username='otheruser')
+        self.resume = create_resume(self, user=self.user1, slug='python-developer')
+        self.education = MainEducation.objects.create(resume=self.resume, level='Basic General')
+        self.url = reverse('main_education_update', kwargs={'pk': self.education.pk,
+                                                            'username': self.user1.username,
+                                                            'slug': self.resume.slug})
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug}) \
+            + '?modal_id=' + str(self.education.pk)
+        self.data = {
+            'level': 'Higher education',
+            'degree': 'Master'
+        }
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        self.education.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('modal_id=', response.url)
+        self.assertEqual(self.education.level, self.data['level'])
+        self.assertEqual(self.education.degree, self.data['degree'])
+
+    def test_with_guest(self):
+        self.client.login(username=self.user2.username, password='testpassword')
+        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
+
+        self.assertEqual(response.status_code, 403)
+
+
+
+
