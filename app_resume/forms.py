@@ -61,12 +61,14 @@ class MainEducationForm(forms.ModelForm):
     ]
 
     level = forms.ChoiceField(
+        required=False,
         label='Уровень образования:',
         choices=EDUCATION_LEVELS,
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     degree = forms.ChoiceField(
+        required=False,
         label='Степень или квалификация:',
         choices=DEGREES,
         widget=forms.Select(attrs={'class': 'form-select'})

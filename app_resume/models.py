@@ -61,7 +61,7 @@ class MainEducation(RepresentationForResumesObjectMixin, models.Model):
     resume = models.OneToOneField('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    level = models.CharField(max_length=25, choices=EDUCATION_LEVELS)
+    level = models.CharField(max_length=25, choices=EDUCATION_LEVELS, default='Basic General')
     degree = models.CharField(max_length=10, choices=DEGREES, blank=True, null=True)
 
     def get_level(self):

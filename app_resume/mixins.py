@@ -52,7 +52,10 @@ class RefreshIfSuccessMixin:
 class ResumeBounderMixin:
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        try:
+            resume = Resume.objects.get(user=self.request.user, slug=self.kwargs['slug'])
+        except Resume.DoesNotExist:
+            raise PermissionDenied
         self.object.resume = resume
 
         return super().form_valid(form)
