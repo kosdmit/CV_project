@@ -56,11 +56,11 @@ class ResumeItemCreateViewTestMixin:
         self.client.login(username=self.user1.username, password='testpassword')
         response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
 
-        obj = self.model.objects.filter(resume=self.resume).all()
+        obj_set = self.model.objects.filter(resume=self.resume).all()
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn(f'modal_id={obj.first().pk}', response.url)
-        self.assertEqual(obj.count(), 1)
+        self.assertIn(f'modal_id={obj_set.first().pk}', response.url)
+        self.assertEqual(obj_set.count(), 1)
 
     def test_with_guest(self):
         self.client.login(username=self.user2.username, password='testpassword')
@@ -140,17 +140,23 @@ class ResumeItemDeleteViewTestMixin:
     def test_with_owner(self):
         self.client.login(username=self.user1.username, password='testpassword')
 
-        initial_rating = self.resume.rating
         obj_count_before = self.model.objects.count()
         response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
         obj_count_after = self.model.objects.count()
-        self.resume.refresh_from_db()
 
         self.assertEqual(response.status_code, 302)
         self.assertNotIn('modal_id=', response.url)
         self.assertEqual(obj_count_before - obj_count_after, 1)
         with self.assertRaises(self.model.DoesNotExist):
             self.model.objects.get(resume=self.resume, title='New Object')
+
+
+    def test_updates_rating(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        initial_rating = self.resume.rating
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        self.resume.refresh_from_db()
+
         self.assertLess(self.resume.rating, initial_rating)
 
     def test_with_guest(self):

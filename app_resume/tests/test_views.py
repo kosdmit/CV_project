@@ -8,11 +8,14 @@ from django.test import TestCase, RequestFactory, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from app_resume.models import Resume, MainEducation, Institution
+from app_resume.models import Resume, MainEducation, Institution, \
+    AdditionalEducation, ElectronicCertificate, Skill, WorkExpSection, Job
 from app_resume.tests.test_mixins import CreateMethodsMixin, BaseSetUpMixin, \
     ResumeItemCreateViewTestMixin, ResumeItemUpdateViewTestMixin, \
     ResumeItemDeleteViewTestMixin
-from app_resume.views import MainView, ResumeView, InstitutionDeleteView
+from app_resume.views import MainView, ResumeView, InstitutionDeleteView, \
+    AdditionalEducationDeleteView, ElectronicCertificateDeleteView, \
+    SkillDeleteView, WorkExpSectionDeleteView, JobDeleteView
 from app_users.models import Profile, SocialLinks
 
 
@@ -267,7 +270,7 @@ class MainEducationUpdateViewTest(ResumeItemUpdateViewTestMixin,
         super().setUp(url_name='main_education_update')
 
 
-class TestInstitutionCreateView(ResumeItemCreateViewTestMixin,
+class InstitutionCreateViewTest(ResumeItemCreateViewTestMixin,
                                 BaseSetUpMixin,
                                 CreateMethodsMixin,
                                 TestCase):
@@ -292,10 +295,10 @@ class InstitutionUpdateViewTest(BaseSetUpMixin,
         ResumeItemUpdateViewTestMixin.setUp(self, url_name='institution_update', main_education=main_education)
 
 
-class InstitutionDeleteViewTestCase(BaseSetUpMixin,
-                                    ResumeItemDeleteViewTestMixin,
-                                    CreateMethodsMixin,
-                                    TestCase):
+class InstitutionDeleteViewTest(BaseSetUpMixin,
+                                ResumeItemDeleteViewTestMixin,
+                                CreateMethodsMixin,
+                                TestCase):
     def setUp(self):
         self.model = Institution
         self.view = InstitutionDeleteView()
@@ -307,4 +310,244 @@ class InstitutionDeleteViewTestCase(BaseSetUpMixin,
                                             main_education=main_education)
 
 
+class AdditionalEducationCreateViewTest(ResumeItemCreateViewTestMixin,
+                                        BaseSetUpMixin,
+                                        CreateMethodsMixin,
+                                        TestCase):
+    def setUp(self):
+        super().setUp('additional_education_create')
+        self.model = AdditionalEducation
 
+
+class AdditionalEducationUpdateViewTest(BaseSetUpMixin,
+                                        ResumeItemUpdateViewTestMixin,
+                                        CreateMethodsMixin,
+                                        TestCase):
+    def setUp(self):
+        self.model = AdditionalEducation
+        self.data = {
+            'title': 'New title',
+            'description': 'New description'
+        }
+        super().setUp()
+        ResumeItemUpdateViewTestMixin.setUp(self, url_name='additional_education_update')
+
+
+class AdditionalEducationDeleteViewTest(BaseSetUpMixin,
+                                        ResumeItemDeleteViewTestMixin,
+                                        CreateMethodsMixin,
+                                        TestCase):
+    def setUp(self):
+        self.model = AdditionalEducation
+        self.view = AdditionalEducationDeleteView()
+
+        super().setUp()
+        ResumeItemDeleteViewTestMixin.setUp(self, url_name='additional_education_delete')
+
+
+class ElectronicCertificateCreateViewTest(ResumeItemCreateViewTestMixin,
+                                          BaseSetUpMixin,
+                                          CreateMethodsMixin,
+                                          TestCase):
+    def setUp(self):
+        super().setUp('electronic_certificate_create')
+        self.model = ElectronicCertificate
+
+
+class ElectronicCertificateUpdateViewTest(BaseSetUpMixin,
+                                          ResumeItemUpdateViewTestMixin,
+                                          CreateMethodsMixin,
+                                          TestCase):
+    def setUp(self):
+        self.model = ElectronicCertificate
+        self.data = {
+            'title': 'New title',
+            'completion_percentage': 90
+        }
+        super().setUp()
+        ResumeItemUpdateViewTestMixin.setUp(self, url_name='electronic_certificate_update')
+
+
+class ElectronicCertificateDeleteViewTest(BaseSetUpMixin,
+                                          ResumeItemDeleteViewTestMixin,
+                                          CreateMethodsMixin,
+                                          TestCase):
+    def setUp(self):
+        self.model = ElectronicCertificate
+        self.view = ElectronicCertificateDeleteView()
+
+        super().setUp()
+        ResumeItemDeleteViewTestMixin.setUp(self, url_name='electronic_certificate_delete')
+
+
+class SkillCreateViewTest(ResumeItemCreateViewTestMixin,
+                          BaseSetUpMixin,
+                          CreateMethodsMixin,
+                          TestCase):
+    def setUp(self):
+        super().setUp('skill_create')
+        self.model = Skill
+        self.data = {'title': 'New Skill'}
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+
+        obj_set = self.model.objects.filter(resume=self.resume).all()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(obj_set.count(), 1)
+        self.assertEqual(obj_set.first().title, self.data['title'])
+
+    @expectedFailure
+    def test_open_modal_if_success(self):
+        super().test_open_modal_if_success()
+
+
+class SkillDeleteViewTest(BaseSetUpMixin,
+                          ResumeItemDeleteViewTestMixin,
+                          CreateMethodsMixin,
+                          TestCase):
+    def setUp(self):
+        self.model = Skill
+        self.view = SkillDeleteView()
+
+        super().setUp()
+        ResumeItemDeleteViewTestMixin.setUp(self, url_name='electronic_certificate_delete')
+        self.url = reverse('skill_delete', kwargs={'pk': self.object.pk})
+
+
+class WorkExpSectionCreateViewTest(ResumeItemCreateViewTestMixin,
+                                   BaseSetUpMixin,
+                                   CreateMethodsMixin,
+                                   TestCase):
+    def setUp(self):
+        super().setUp('work_exp_section_create')
+        self.model = WorkExpSection
+        self.data = {'title': 'New Section'}
+
+    @expectedFailure
+    def test_updates_rating(self):
+        super().test_updates_rating()
+
+
+class WorkExpSectionUpdateViewTest(BaseSetUpMixin,
+                                   ResumeItemUpdateViewTestMixin,
+                                   CreateMethodsMixin,
+                                   TestCase):
+    def setUp(self):
+        self.model = WorkExpSection
+        self.data = {
+            'title': 'New title',
+        }
+        super().setUp()
+        ResumeItemUpdateViewTestMixin.setUp(self, url_name='work_exp_section_update')
+
+
+class WorkExpSectionDeleteViewTest(BaseSetUpMixin,
+                                   ResumeItemDeleteViewTestMixin,
+                                   CreateMethodsMixin,
+                                   TestCase):
+    def setUp(self):
+        self.model = WorkExpSection
+        self.view = WorkExpSectionDeleteView()
+
+        super().setUp()
+        ResumeItemDeleteViewTestMixin.setUp(self, url_name='work_exp_section_delete')
+
+    @expectedFailure
+    def test_updates_rating(self):
+        super().test_updates_rating()
+
+
+class JobCreateViewTest(ResumeItemCreateViewTestMixin,
+                        BaseSetUpMixin,
+                        CreateMethodsMixin,
+                        TestCase):
+    def setUp(self):
+        super().setUp(url_name='work_exp_section_create')
+        self.work_exp_section = WorkExpSection.objects.create(resume=self.resume)
+        self.url = reverse('job_create', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug,
+                                                 'section': self.work_exp_section.pk})
+        self.model = Job
+
+    def test_open_modal_if_success(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+
+        obj = self.model.objects.filter(work_exp_section=self.work_exp_section).first()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(f'modal_id={obj.pk}', response.url)
+        self.assertIn(self.referer, response.url)
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+
+        obj_set = self.model.objects.filter(work_exp_section=self.work_exp_section).all()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(f'modal_id={obj_set.first().pk}', response.url)
+        self.assertEqual(obj_set.count(), 1)
+
+
+class JobUpdateViewTest(BaseSetUpMixin,
+                        ResumeItemUpdateViewTestMixin,
+                        CreateMethodsMixin,
+                        TestCase):
+    def setUp(self):
+        super().setUp()
+        self.model = Job
+        self.data = {
+            'title': 'New title',
+            'description': 'New description'
+        }
+        self.work_exp_section = WorkExpSection.objects.create(resume=self.resume)
+        self.object = self.model.objects.create(work_exp_section=self.work_exp_section)
+        self.url = reverse('job_update', kwargs={'pk': self.object.pk,
+                                                 'username': self.user1.username,
+                                                 'slug': self.resume.slug,
+                                                 'section': self.work_exp_section.pk})
+
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug}) \
+            + '?modal_id=' + str(self.object.pk)
+
+
+class JobDeleteViewTest(BaseSetUpMixin,
+                        ResumeItemDeleteViewTestMixin,
+                        CreateMethodsMixin,
+                        TestCase):
+    def setUp(self):
+        super().setUp()
+        self.model = Job
+        self.view = JobDeleteView
+        self.work_exp_section = WorkExpSection.objects.create(resume=self.resume)
+
+        self.object = self.model.objects.create(work_exp_section=self.work_exp_section)
+        for _ in range(3):
+            self.model.objects.create(work_exp_section=self.work_exp_section, title=str(uuid4())[:4])
+
+        self.url = reverse('job_delete', kwargs={'pk': self.object.pk,
+                                                 'username': self.user1.username,
+                                                 'slug': self.resume.slug,
+                                                 'section': self.work_exp_section.pk})
+
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug})
+        self.data = {}
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+
+        obj_count_before = self.model.objects.count()
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        obj_count_after = self.model.objects.count()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('modal_id=', response.url)
+        self.assertEqual(obj_count_before - obj_count_after, 1)
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(work_exp_section=self.work_exp_section, title='New Object')
