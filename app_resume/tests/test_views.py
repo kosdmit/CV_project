@@ -10,8 +10,9 @@ from django.urls import reverse
 
 from app_resume.models import Resume, MainEducation, Institution
 from app_resume.tests.test_mixins import CreateMethodsMixin, BaseSetUpMixin, \
-    ResumeItemCreateViewTestMixin, ResumeItemUpdateViewTestMixin
-from app_resume.views import MainView, ResumeView
+    ResumeItemCreateViewTestMixin, ResumeItemUpdateViewTestMixin, \
+    ResumeItemDeleteViewTestMixin
+from app_resume.views import MainView, ResumeView, InstitutionDeleteView
 from app_users.models import Profile, SocialLinks
 
 
@@ -289,3 +290,21 @@ class InstitutionUpdateViewTest(BaseSetUpMixin,
         super().setUp()
         main_education = MainEducation.objects.create(resume=self.resume)
         ResumeItemUpdateViewTestMixin.setUp(self, url_name='institution_update', main_education=main_education)
+
+
+class InstitutionDeleteViewTestCase(BaseSetUpMixin,
+                                    ResumeItemDeleteViewTestMixin,
+                                    CreateMethodsMixin,
+                                    TestCase):
+    def setUp(self):
+        self.model = Institution
+        self.view = InstitutionDeleteView()
+
+        super().setUp()
+        main_education = MainEducation.objects.create(resume=self.resume)
+        ResumeItemDeleteViewTestMixin.setUp(self,
+                                            url_name='institution_delete',
+                                            main_education=main_education)
+
+
+

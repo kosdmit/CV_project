@@ -111,6 +111,50 @@ class ResumeItemUpdateViewTestMixin:
 
     def test_with_guest(self):
         self.client.login(username=self.user2.username, password='testpassword')
-        response = self.client.post(self.url, {}, HTTP_REFERER=self.referer)
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+
+        self.assertEqual(response.status_code, 403)
+
+
+class ResumeItemDeleteViewTestMixin:
+    def setUp(self, url_name, **kwargs):
+        super().setUp()
+
+        self.object = self.model.objects.create(resume=self.resume, **kwargs)
+        for _ in range(3):
+            self.model.objects.create(resume=self.resume, title=str(uuid4())[:4], **kwargs)
+
+        self.url = reverse(url_name, kwargs={'pk': self.object.pk,
+                                             'username': self.user1.username,
+                                             'slug': self.resume.slug})
+
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug})
+        self.data = {}
+
+
+
+    def test_model(self):
+        self.assertEqual(self.view.model, self.model)
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+
+        initial_rating = self.resume.rating
+        obj_count_before = self.model.objects.count()
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        obj_count_after = self.model.objects.count()
+        self.resume.refresh_from_db()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('modal_id=', response.url)
+        self.assertEqual(obj_count_before - obj_count_after, 1)
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(resume=self.resume, title='New Object')
+        self.assertLess(self.resume.rating, initial_rating)
+
+    def test_with_guest(self):
+        self.client.login(username=self.user2.username, password='testpassword')
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
 
         self.assertEqual(response.status_code, 403)
