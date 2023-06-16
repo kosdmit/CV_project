@@ -30,6 +30,10 @@ class CreateMethodsMixin:
             self.user.__setattr__(key, value)
 
         self.user.save()
+
+        if 'return_set' in kwargs:
+            return self.user, self.profile, self.social_links
+
         return self.user
 
 
