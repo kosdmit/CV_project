@@ -94,9 +94,11 @@ class CommentDeleteView(OpenCommentModalIfSuccess, OwnerValidatorMixin, DeleteVi
         return self.request.META['HTTP_REFERER']
 
     def form_valid(self, form):
-        resume = get_resume_by_element_uuid(self.object.uuid_key)
-        resume.rating -= RATING_SETTINGS['comment']
-        resume.save()
+        if (self.request.user.is_authenticated and self.object.user == self.request.user) \
+                or self.object.owner_id == self.request.session.session_key:
+            resume = get_resume_by_element_uuid(self.object.uuid_key)
+            resume.rating -= RATING_SETTINGS['comment']
+            resume.save()
 
         return super().form_valid(form)
 

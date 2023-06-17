@@ -6,17 +6,13 @@ from django.urls import reverse
 from CV_project.settings import RATING_SETTINGS
 from app_resume.tests.test_mixins import CreateMethodsMixin
 from app_social.models import Like, Comment
+from app_social.tests.test_mixins import BaseSetUpMixin, CommentTestMixin
 
 
-class ClickLikeViewTests(CreateMethodsMixin, TestCase):
+class ClickLikeViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
-        self.client = Client()
-
-        self.user = self.create_user(username='kosdmit')
-        self.resume = self.create_resume()
-
+        super().setUp()
         self.data = {'pk': self.resume.pk}
-
 
     def test_like_not_exist_with_authenticated_user(self):
         self.client.login(username='kosdmit', password='testpassword')
@@ -87,33 +83,30 @@ class ClickLikeViewTests(CreateMethodsMixin, TestCase):
         self.assertEqual(response_data['likes_count'] - initial_likes_count, -1)
 
 
-class CommentCreateViewTests(CreateMethodsMixin, TestCase):
+class CommentCreateViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = self.create_user(username='kosdmit')
-        self.resume = self.create_resume()
-        self.data = {'message': 'This is a test comment'}
+        super().setUp()
+        self.url = reverse('comment_create', kwargs={'pk': self.resume.pk})
         self.referer = reverse('resume_list')
+        self.data = {'message': 'This is a test comment'}
 
     def test_with_authenticated_user(self):
-        self.client.login(username='kosdmit', password='testpassword')
+        self.client.login(username=self.user.username, password='testpassword')
 
-        initial_resume_rating = self.resume.rating
-        response = self.client.post(reverse('comment_create', kwargs={'pk': self.resume.pk}),
-                                    self.data,
-                                    HTTP_REFERER=self.referer)
+        self.response = self.client.post(self.url, self.data,
+                                         HTTP_REFERER=self.referer)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.response.status_code, 302)
+        self.assertIn(f'modal_id=comments-{self.resume.pk}', self.response.url)
+
+        # Check that the resume rating was updated
+        self.resume.refresh_from_db()
+        self.assertEqual(self.resume.rating - self.initial_resume_rating, RATING_SETTINGS['comment'])
+
         self.assertTrue(Comment.objects.filter(owner_id=self.user.pk,
                                                uuid_key=self.resume.pk,
                                                message='This is a test comment',
                                                is_approved=True).exists())
-
-        self.assertIn(f'modal_id=comments-{self.resume.pk}', response.url)
-
-        # Check that the resume rating was updated
-        self.resume.refresh_from_db()
-        self.assertEqual(self.resume.rating - initial_resume_rating, RATING_SETTINGS['comment'])
 
     def test_with_anonymous_user(self):
         initial_resume_rating = self.resume.rating
@@ -138,3 +131,68 @@ class CommentCreateViewTests(CreateMethodsMixin, TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Ваше сообщение появится после проверки администратором.'
                                             f' <a href="{reverse("signup")}">Зарегистрируйтесь</a>, чтобы сообщения появлялись сразу.')
+
+
+class CommentDeleteViewTests(CommentTestMixin,
+                             BaseSetUpMixin,
+                             CreateMethodsMixin,
+                             TestCase):
+    def setUp(self):
+        super().setUp(url_name='comment_delete')
+        self.data = {}
+
+    def test_with_authenticated_user(self):
+        super().test_with_authenticated_user()
+
+        # Check that the resume rating was updated
+        self.resume.refresh_from_db()
+        self.assertEqual(self.resume.rating - self.initial_resume_rating, -RATING_SETTINGS['comment'])
+
+        self.assertFalse(Comment.objects.filter(pk=self.object.pk).exists())
+        self.assertRedirects(self.response, self.referer, fetch_redirect_response=False)
+
+    def test_with_anonymous_user(self):
+        super().test_with_anonymous_user(url_name='comment_delete')
+
+        # Check that the resume rating was updated
+        self.resume.refresh_from_db()
+        self.assertEqual(self.resume.rating - self.initial_resume_rating, -RATING_SETTINGS['comment'])
+
+        self.assertFalse(Comment.objects.filter(pk=self.object.pk).exists())
+
+    def test_with_wrong_anonymous_user(self):
+        super().test_with_wrong_anonymous_user(url_name='comment_delete')
+
+    def test_with_wrong_authenticated_user(self):
+        super().test_with_wrong_authenticated_user(url_name='comment_delete')
+
+
+class CommentUpdateViewTests(CommentTestMixin,
+                             BaseSetUpMixin,
+                             CreateMethodsMixin,
+                             TestCase):
+    def setUp(self):
+        super().setUp(url_name='comment_update')
+        self.data = {'message': 'This is an updated message'}
+
+    def test_with_authenticated_user(self):
+        super().test_with_authenticated_user()
+        self.assertTrue(Comment.objects.filter(owner_id=self.user.pk,
+                                               uuid_key=self.resume.pk,
+                                               message='This is an updated message').exists())
+
+    def test_with_anonymous_user(self):
+        super().test_with_anonymous_user(url_name='comment_update')
+
+        self.assertTrue(Comment.objects.filter(owner_id=self.client.session._session_key,
+                                               uuid_key=self.resume.pk,
+                                               message='This is an updated message').exists())
+
+    def test_with_wrong_anonymous_user(self):
+        super().test_with_wrong_anonymous_user(url_name='comment_update')
+
+    def test_with_wrong_authenticated_user(self):
+        super().test_with_wrong_authenticated_user(url_name='comment_update')
+
+
+

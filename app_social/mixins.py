@@ -78,7 +78,7 @@ def get_resume_by_element_uuid(uuid):
 
 class OwnerValidatorMixin:
     def form_valid(self, form):
-        if self.request.user.is_authenticated and self.object.user == self.request.user \
+        if (self.request.user.is_authenticated and self.object.user == self.request.user) \
                 or self.object.owner_id == self.request.session.session_key:
             return super().form_valid(form)
         else:
