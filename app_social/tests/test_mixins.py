@@ -1,6 +1,7 @@
 from django.test import Client
 from django.urls import reverse
 
+from app_social.forms import CommentForm
 from app_social.models import Comment
 
 
@@ -90,3 +91,38 @@ class CommentTestMixin:
         # Check that the resume rating was not updated
         self.resume.refresh_from_db()
         self.assertEqual(self.resume.rating, initial_resume_rating)
+
+
+class ListViewTestMixin:
+    def test_without_search_query(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        # Check the context data
+        self.assertIsInstance(response.context['comment_form'], CommentForm)
+        self.assertEqual(response.context['title'], self.title)
+
+        # Check the queryset
+        self.assertQuerysetEqual(response.context['object_list'],
+                                 [self.object1, self.object2, self.matching_object])
+
+    def test_with_search_query(self):
+        response = self.client.get(self.url, self.url_params)
+
+        self.assertEqual(response.status_code, 200)
+
+        # Check the context data
+        self.assertIsInstance(response.context['comment_form'], CommentForm)
+        self.assertEqual(response.context['title'], self.title_with_query)
+
+        # Check the queryset
+        self.assertQuerysetEqual(response.context['object_list'], [self.matching_object])
+
+    def test_without_search_query_authorized_user(self):
+        self.client.login(username=self.user.username, password='testpassword')
+        self.test_without_search_query()
+
+    def test_with_search_query_authorized_user(self):
+        self.client.login(username=self.user.username, password='testpassword')
+        self.test_with_search_query()

@@ -5,8 +5,10 @@ from django.urls import reverse
 
 from CV_project.settings import RATING_SETTINGS
 from app_resume.tests.test_mixins import CreateMethodsMixin
-from app_social.models import Like, Comment
-from app_social.tests.test_mixins import BaseSetUpMixin, CommentTestMixin
+from app_social.forms import CommentForm
+from app_social.models import Like, Comment, Post
+from app_social.tests.test_mixins import BaseSetUpMixin, CommentTestMixin, \
+    ListViewTestMixin
 
 
 class ClickLikeViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
@@ -193,6 +195,41 @@ class CommentUpdateViewTests(CommentTestMixin,
 
     def test_with_wrong_authenticated_user(self):
         super().test_with_wrong_authenticated_user(url_name='comment_update')
+
+
+class ResumeListViewTests(ListViewTestMixin,
+                          BaseSetUpMixin,
+                          CreateMethodsMixin,
+                          TestCase):
+    def setUp(self):
+        super().setUp()
+        self.object1 = self.resume
+        self.object2 = self.create_resume()
+        self.matching_object = self.create_resume(position='Matching test')
+
+        self.url = reverse('resume_list')
+        self.url_params = {'search_query': 'Matching'}
+        self.title = 'Обзор'
+        self.title_with_query = 'Поиск по резюме'
+
+
+class PostListViewTests(ListViewTestMixin,
+                        BaseSetUpMixin,
+                        CreateMethodsMixin,
+                        TestCase):
+    def setUp(self):
+        super().setUp()
+        self.matching_object = Post.objects.create(resume=self.resume, message='Matching object')
+        self.user2 = User.objects.create(username='otheruser', password='testpassword')
+        self.resume2 = self.create_resume(user=self.user2)
+        self.object1 = Post.objects.create(resume=self.resume2, message='Test object')
+        self.object2 = Post.objects.create(resume=self.resume2, message='Test object')
+
+        self.url = reverse('post_list')
+        self.url_params = {'username_search_query': self.user.username}
+        self.title = 'Блоги'
+        self.title_with_query = 'Новости пользователя'
+
 
 
 
