@@ -167,7 +167,8 @@ class ResumeListView(AddLikesIntoContextMixin, ListView):
             return super().get_queryset()
 
 
-class PostCreateView(ResumeBounderMixin,
+class PostCreateView(OpenModalIfSuccessMixin,
+                     ResumeBounderMixin,
                      ResumeValidatorMixin,
                      RefreshIfSuccessMixin,
                      RatingUpdateForCreateViewMixin,

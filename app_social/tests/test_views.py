@@ -1,17 +1,24 @@
+from uuid import uuid4
+
 from django.contrib.messages import get_messages
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 
 from CV_project.settings import RATING_SETTINGS
-from app_resume.tests.test_mixins import CreateMethodsMixin
+from app_resume.tests.test_mixins import CreateMethodsMixin, \
+    ResumeItemCreateViewTestMixin, ResumeItemUpdateViewTestMixin, \
+    ResumeItemDeleteViewTestMixin
 from app_social.forms import CommentForm
 from app_social.models import Like, Comment, Post
 from app_social.tests.test_mixins import BaseSetUpMixin, CommentTestMixin, \
     ListViewTestMixin
 
+from app_resume.tests.test_mixins import BaseSetUpMixin as AppResumeBaseSetUpMixin
+from app_social.views import PostDeleteView
 
-class ClickLikeViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
+
+class ClickLikeViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
         super().setUp()
         self.data = {'pk': self.resume.pk}
@@ -85,7 +92,7 @@ class ClickLikeViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
         self.assertEqual(response_data['likes_count'] - initial_likes_count, -1)
 
 
-class CommentCreateViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
+class CommentCreateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
     def setUp(self):
         super().setUp()
         self.url = reverse('comment_create', kwargs={'pk': self.resume.pk})
@@ -135,7 +142,7 @@ class CommentCreateViewTests(BaseSetUpMixin, CreateMethodsMixin, TestCase):
                                             f' <a href="{reverse("signup")}">Зарегистрируйтесь</a>, чтобы сообщения появлялись сразу.')
 
 
-class CommentDeleteViewTests(CommentTestMixin,
+class CommentDeleteViewTest(CommentTestMixin,
                              BaseSetUpMixin,
                              CreateMethodsMixin,
                              TestCase):
@@ -169,7 +176,7 @@ class CommentDeleteViewTests(CommentTestMixin,
         super().test_with_wrong_authenticated_user(url_name='comment_delete')
 
 
-class CommentUpdateViewTests(CommentTestMixin,
+class CommentUpdateViewTest(CommentTestMixin,
                              BaseSetUpMixin,
                              CreateMethodsMixin,
                              TestCase):
@@ -197,7 +204,7 @@ class CommentUpdateViewTests(CommentTestMixin,
         super().test_with_wrong_authenticated_user(url_name='comment_update')
 
 
-class ResumeListViewTests(ListViewTestMixin,
+class ResumeListViewTest(ListViewTestMixin,
                           BaseSetUpMixin,
                           CreateMethodsMixin,
                           TestCase):
@@ -213,7 +220,7 @@ class ResumeListViewTests(ListViewTestMixin,
         self.title_with_query = 'Поиск по резюме'
 
 
-class PostListViewTests(ListViewTestMixin,
+class PostListViewTest(ListViewTestMixin,
                         BaseSetUpMixin,
                         CreateMethodsMixin,
                         TestCase):
@@ -229,6 +236,63 @@ class PostListViewTests(ListViewTestMixin,
         self.url_params = {'username_search_query': self.user.username}
         self.title = 'Блоги'
         self.title_with_query = 'Новости пользователя'
+
+
+class PostCreateViewTest(ResumeItemCreateViewTestMixin,
+                         AppResumeBaseSetUpMixin,
+                         CreateMethodsMixin,
+                         TestCase):
+    def setUp(self):
+        super().setUp(url_name='post_create')
+        self.data = {'message': 'Test message'}
+        self.model = Post
+
+
+class PostUpdateViewTest(ResumeItemUpdateViewTestMixin,
+                         AppResumeBaseSetUpMixin,
+                         CreateMethodsMixin,
+                         TestCase):
+    def setUp(self):
+        self.model = Post
+        self.data = {'message': 'New message'}
+        super().setUp(url_name='post_update')
+
+
+class PostDeleteViewTest(AppResumeBaseSetUpMixin,
+                         ResumeItemDeleteViewTestMixin,
+                         CreateMethodsMixin,
+                         TestCase):
+    def setUp(self):
+        self.model = Post
+        self.view = PostDeleteView()
+        url_name = 'post_delete'
+
+        super().setUp()
+
+        self.object = self.model.objects.create(resume=self.resume, message='New Object')
+        for _ in range(3):
+            self.model.objects.create(resume=self.resume, message=str(uuid4())[:4])
+
+        self.url = reverse(url_name, kwargs={'pk': self.object.pk,
+                                             'username': self.user1.username,
+                                             'slug': self.resume.slug})
+
+        self.referer = reverse('resume', kwargs={'username': self.user1.username,
+                                                 'slug': self.resume.slug})
+        self.data = {}
+
+    def test_with_owner(self):
+        self.client.login(username=self.user1.username, password='testpassword')
+
+        obj_count_before = self.model.objects.count()
+        response = self.client.post(self.url, self.data, HTTP_REFERER=self.referer)
+        obj_count_after = self.model.objects.count()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('modal_id=', response.url)
+        self.assertEqual(obj_count_before - obj_count_after, 1)
+        with self.assertRaises(self.model.DoesNotExist):
+            self.model.objects.get(resume=self.resume, message='New Object')
 
 
 
