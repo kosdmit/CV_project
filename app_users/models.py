@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 
 from app_social.model_mixins import CompressImageBeforeSaveMixin
 from app_users.validators import phone_number_validator
@@ -30,6 +31,10 @@ class Profile(CompressImageBeforeSaveMixin, models.Model):
 
     def __str__(self):
         return f'{self.user.username}`s Profile object'
+
+    def delete(self, *args, **kwargs):
+        self.image.delete(save=False)
+        super().delete(*args, **kwargs)
 
 
 class SocialLinks(models.Model):
