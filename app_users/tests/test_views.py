@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 from app_resume.models import Resume
 from app_users.forms import SignUpUserForm, UserUpdateForm, CreateProfileForm, \
-    CreateResumeForm
+    CreateResumeForm, CustomAuthenticationForm
 from app_users.models import Profile, SocialLinks
 from app_users.tests.test_mixins import BaseTestMixin
 
@@ -165,6 +165,35 @@ class ProfileViewTest(BaseTestMixin, TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('create_profile'))
+
+
+class LoginViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('login')
+        self.title = 'Вход на сайт'
+        self.breadcrumbs_title = 'Авторизация'
+
+    def test_get_with_anonymous_user(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'app_users/login.html')
+        self.assertListEqual(response.context_data['breadcrumbs'], [('Авторизация', self.url)])
+        self.assertEqual(response.context_data['title'], self.title)
+        self.assertEqual(response.context_data['form'].__class__, CustomAuthenticationForm)
+
+    def test_post_invalid_data_with_anonymous_user(self):
+        response = self.client.post(self.url, {'username': 'wronguser', 'password': 'wrongpass'})
+        messages = list(response.context['messages'])
+        self.assertGreater(len(messages), 0)
+        self.assertEqual(str(messages[0]), 'Неверное имя пользователя или пароль.')
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_success(self):
+        user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
+        response = self.client.post(self.url, {'username': user.username, 'password': 'testpassword'})
+        self.assertRedirects(response, reverse('profile'), fetch_redirect_response=False)
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
 
 
 class SocialLinksUpdateViewTest(BaseTestMixin, TestCase):
