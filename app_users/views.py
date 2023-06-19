@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -40,29 +41,24 @@ class SignUpView(CreateView):
         return response
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     success_url = reverse_lazy('profile')
     template_name = 'app_users/user_update.html'
+    login_url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            self.object = self.request.user
-            return self.render_to_response(self.get_context_data())
-        else:
-            raise PermissionDenied
+        self.object = self.request.user
+        return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            self.object = self.request.user
-            form = self.get_form()
-            if form.is_valid():
-                return self.form_valid(form)
-            else:
-                return self.form_invalid(form)
+        self.object = self.request.user
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
         else:
-            raise PermissionDenied
+            return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,10 +75,11 @@ class UserUpdateView(UpdateView):
         return context
 
 
-class CreateProfileView(CreateView):
+class CreateProfileView(LoginRequiredMixin, CreateView):
     form_class = CreateProfileForm
     success_url = reverse_lazy('profile')
     template_name = 'app_users/create_profile.html'
+    login_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
