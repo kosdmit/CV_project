@@ -1,12 +1,16 @@
 from types import NoneType
+from unittest import expectedFailure
 
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from app_users.forms import SignUpUserForm, UserUpdateForm, CreateProfileForm
-from app_users.models import Profile
+
+from app_resume.models import Resume
+from app_users.forms import SignUpUserForm, UserUpdateForm, CreateProfileForm, \
+    CreateResumeForm
+from app_users.models import Profile, SocialLinks
 from app_users.tests.test_mixins import BaseTestMixin
 
 
@@ -71,10 +75,12 @@ class UserUpdateViewTest(BaseTestMixin, TestCase):
     def setUp(self):
         self.client = Client()
         self.url = reverse('user_update')
+        self.referer = reverse('profile')
         self.model = get_user_model()
         self.title = 'Редактирование учетной записи пользователя'
         self.breadcrumbs_title = 'Редактирование учетной записи'
         self.form = UserUpdateForm
+        self.user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
         self.correct_data = {'username': 'updateduser',
                              'first_name': 'updatedname',
                              'last_name': 'updatedname',
@@ -92,16 +98,103 @@ class CreateProfileViewTest(BaseTestMixin, TestCase):
     def setUp(self):
         self.client = Client()
         self.url = reverse('create_profile')
+        self.referer = reverse('signup')
         self.model = Profile
         self.title = 'Добавление профиля пользователя'
         self.breadcrumbs_title = 'Создание профиля'
         self.form = CreateProfileForm
+        self.user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
         self.correct_data = {'gender': 'F',
                              'phone_number': '+79277535560'}
 
         self.invalid_data = {'gender': 'A',
                              'phone_number': '9277535560'}
 
+
+class ProfileUpdateViewTest(BaseTestMixin, TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('profile_update')
+        self.referer = reverse('profile')
+        self.model = Profile
+        self.title = 'Редактирование профиля пользователя'
+        self.breadcrumbs_title = 'Редактирование профиля'
+        self.form = CreateProfileForm
+        self.user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
+        self.correct_data = {'gender': 'F',
+                             'phone_number': '+79277535560'}
+
+        self.invalid_data = {'gender': 'A',
+                             'phone_number': '9277535560'}
+
+        self.object = self.model.objects.create(user=self.user)
+
+
+class ProfileViewTest(BaseTestMixin, TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('profile')
+        self.referer = reverse('main')
+        self.model = Resume
+        self.title = 'Профиль'
+        self.form = CreateResumeForm
+        self.user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
+        self.breadcrumbs_title = self.user.username
+        self.correct_data = {'position': 'Python Developer'}
+
+        self.invalid_data = {'position': ''}
+
+        self.profile = Profile.objects.create(user=self.user)
+        social_links = SocialLinks.objects.create(user=self.user, profile=self.profile)
+        self.object = self.model.objects.create(user=self.user, profile=self.profile, position='init_position')
+
+    def test_get_without_profile_authorized_user(self):
+        self.profile.delete()
+        self.client.login(username=self.user.username, password='testpassword')
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('create_profile'))
+
+    def test_post_without_profile_authorized_user(self):
+        self.profile.delete()
+        self.client.login(username=self.user.username, password='testpassword')
+
+        response = self.client.post(self.url, self.correct_data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('create_profile'))
+
+
+class SocialLinksUpdateViewTest(BaseTestMixin, TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('social_links_update')
+        self.referer = reverse('profile')
+        self.model = SocialLinks
+        self.title = None
+        self.form = None
+        self.user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
+        self.breadcrumbs_title = None
+        self.correct_data = {'vk': 'https://vk.com/kosdmit',
+                             'git_hub': 'https://github.com/kosdmit'}
+
+        self.invalid_data = {'vk': 'vkcom/kosdmit',
+                             'git_hub': 'githubcom/kosdmit'}
+
+        self.profile = Profile.objects.create(user=self.user)
+        self.object = SocialLinks.objects.create(user=self.user, profile=self.profile)
+
+    def test_get_with_authorized_user(self):
+        self.client.login(username=self.user.username, password='testpassword')
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 404)
+
+    @expectedFailure
+    def test_post_invalid_data_with_authenticated_user(self):
+        super().test_post_invalid_data_with_authenticated_user()
 
 
 

@@ -5,13 +5,12 @@ from django.urls import reverse
 
 class BaseTestMixin:
     def test_get_with_anonymous_user(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, HTTP_REFERER=self.referer)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('login') + f'?next={self.url}', fetch_redirect_response=False)
 
     def test_get_with_authorized_user(self):
-        user = User.objects.create_user(username='kosdmit', password='testpassword')
-        self.client.login(username=user.username, password='testpassword')
+        self.client.login(username=self.user.username, password='testpassword')
 
         response = self.client.get(self.url)
 
@@ -29,10 +28,9 @@ class BaseTestMixin:
         self.assertIsNone(object)
 
     def test_post_correct_data_with_authorized_user(self):
-        user = User.objects.create_user(username='kosdmit', password='testpassword')
-        self.client.login(username=user.username, password='testpassword')
+        self.client.login(username=self.user.username, password='testpassword')
 
-        response = self.client.post(self.url, data=self.correct_data)
+        response = self.client.post(self.url, data=self.correct_data, HTTP_REFERER=self.referer)
 
         object = self.model.objects.filter(**self.correct_data).first()
         self.assertIsNotNone(object)
@@ -42,10 +40,12 @@ class BaseTestMixin:
         self.assertRedirects(response, reverse('profile'), fetch_redirect_response=False)
 
     def test_post_invalid_data_with_authenticated_user(self):
-        user = get_user_model().objects.create_user(username='kosdmit', password='testpassword')
-        self.client.login(username=user.username, password='testpassword')
+        self.client.login(username=self.user.username, password='testpassword')
 
-        response = self.client.post(self.url, data=self.invalid_data, follow=True)
+        response = self.client.post(self.url,
+                                    data=self.invalid_data,
+                                    follow=True,
+                                    HTTP_REFERER=self.referer)
 
         object = self.model.objects.filter(**self.invalid_data).first()
         self.assertIsNone(object)

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView
 
@@ -110,11 +110,12 @@ class CreateProfileView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = CreateProfileForm
     success_url = reverse_lazy('profile')
     template_name = 'app_users/create_profile.html'
+    login_url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
         self.object = self.request.user.profile
@@ -131,8 +132,7 @@ class ProfileUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['page_title'] = 'Редактирование профиля пользователя'
-        context['page_description'] = 'Добавьте недостающие данные профиля.'
+        context['title'] = 'Редактирование профиля пользователя'
 
         breadcrumbs = [
             (self.request.user.username, reverse_lazy('profile')),
@@ -231,9 +231,13 @@ class Logout(LogoutView):
     next_page = 'main'
 
 
-class SocialLinksUpdateView(UpdateView):
+class SocialLinksUpdateView(LoginRequiredMixin, UpdateView):
     model = SocialLinks
     fields = ['twitter', 'facebook', 'linked_in', 'vk', 'instagram', 'hh', 'git_hub']
+    login_url = reverse_lazy('login')
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         self.success_url = self.request.META['HTTP_REFERER']
