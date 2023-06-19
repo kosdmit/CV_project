@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView
@@ -47,16 +47,22 @@ class UserUpdateView(UpdateView):
     template_name = 'app_users/user_update.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = self.request.user
-        return self.render_to_response(self.get_context_data())
+        if request.user.is_authenticated:
+            self.object = self.request.user
+            return self.render_to_response(self.get_context_data())
+        else:
+            raise PermissionDenied
 
     def post(self, request, *args, **kwargs):
-        self.object = self.request.user
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
+        if request.user.is_authenticated:
+            self.object = self.request.user
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
         else:
-            return self.form_invalid(form)
+            raise PermissionDenied
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

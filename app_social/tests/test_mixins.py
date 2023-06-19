@@ -104,8 +104,10 @@ class ListViewTestMixin:
         self.assertEqual(response.context['title'], self.title)
 
         # Check the queryset
-        self.assertQuerysetEqual(response.context['object_list'],
-                                 [self.object1, self.object2, self.matching_object])
+        self.assertQuerysetEqual(
+            sorted(response.context['object_list'], key=lambda x: x.pk),
+            sorted([self.object1, self.object2, self.matching_object], key=lambda x: x.pk)
+        )
 
     def test_with_search_query(self):
         response = self.client.get(self.url, self.url_params)

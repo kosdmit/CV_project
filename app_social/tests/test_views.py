@@ -143,9 +143,9 @@ class CommentCreateViewTest(BaseSetUpMixin, CreateMethodsMixin, TestCase):
 
 
 class CommentDeleteViewTest(CommentTestMixin,
-                             BaseSetUpMixin,
-                             CreateMethodsMixin,
-                             TestCase):
+                            BaseSetUpMixin,
+                            CreateMethodsMixin,
+                            TestCase):
     def setUp(self):
         super().setUp(url_name='comment_delete')
         self.data = {}
@@ -177,9 +177,9 @@ class CommentDeleteViewTest(CommentTestMixin,
 
 
 class CommentUpdateViewTest(CommentTestMixin,
-                             BaseSetUpMixin,
-                             CreateMethodsMixin,
-                             TestCase):
+                            BaseSetUpMixin,
+                            CreateMethodsMixin,
+                            TestCase):
     def setUp(self):
         super().setUp(url_name='comment_update')
         self.data = {'message': 'This is an updated message'}

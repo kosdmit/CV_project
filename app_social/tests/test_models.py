@@ -3,8 +3,6 @@ from django.test import TestCase
 from PIL import Image
 from io import BytesIO
 
-from uuid import UUID
-
 from app_resume.tests.test_mixins import CreateMethodsMixin
 from app_social.models import Post
 from app_social.tests.test_mixins import BaseSetUpMixin
