@@ -1,11 +1,7 @@
 {% block form %}
 
-  <form method="post"
-        {% if path_name == 'create_profile' %}
-          enctype="multipart/form-data"
-        {% elif path_name == 'signup' %}
-          id="signup_form"
-        {% endif %}
+  <form method="post" id="{{ path_name }}_form"
+        {% if path_name == 'create_profile' %}enctype="multipart/form-data"{% endif %}
   >
     {% csrf_token %}
     <div class="container p-0">
