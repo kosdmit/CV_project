@@ -1,7 +1,7 @@
 {% block messages %}
 
   {% if messages or form.errors %}
-    <div class="{% if path_name != 'comment_create' %}col-md-6 col-lg-5{% endif %} pe-0 mt-3">
+    <div class="{% if path_name != 'comment_create' %}messages-block col-md-6 col-lg-5{% endif %} pe-0 mt-3">
       {% for message in messages %}
         <div class="alert {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
           {{ message|safe }}

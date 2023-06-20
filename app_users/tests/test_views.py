@@ -11,7 +11,10 @@ from app_resume.models import Resume
 from app_users.forms import SignUpUserForm, UserUpdateForm, CreateProfileForm, \
     CreateResumeForm, CustomAuthenticationForm
 from app_users.models import Profile, SocialLinks
+from app_users.tests import test_data
 from app_users.tests.test_mixins import BaseTestMixin
+
+
 
 
 class SignUpViewTest(TestCase):
@@ -33,10 +36,7 @@ class SignUpViewTest(TestCase):
         self.assertEqual(response.context['breadcrumbs'], [(self.breadcrumbs_title, self.url)])
 
     def test_post_correct_data_with_anonymous_user(self):
-        data = {'username': 'newuser',
-                'email': 'kosdmit@hotmail.com',
-                'password1': 'testpassword',
-                'password2': 'testpassword'}
+        data = test_data.SIGNUP_CORRECT_DATA
 
         response = self.client.post(self.url, data=data)
         user = self.model.objects.filter(username=data['username']).first()
@@ -51,15 +51,11 @@ class SignUpViewTest(TestCase):
         self.assertRedirects(response, reverse('create_profile'))
 
     def test_post_invalid_data_with_anonymous_user(self):
-        data = {'username': 'newuser',
-                'email': 'kosdmit@hotmail.com',
-                'password1': 't',
-                'password2': 't'}
+        data = test_data.SIGNUP_INVALID_DATA
 
         response = self.client.post(self.url, data=data, follow=True)
+
         user = self.model.objects.filter(username=data['username']).first()
-
-
         self.assertIsNone(user)
 
         # Test that the user is not authenticated
