@@ -81,6 +81,14 @@ class CreateProfileView(LoginRequiredMixin, CreateView):
     template_name = 'app_users/create_profile.html'
     login_url = reverse_lazy('login')
 
+    def get(self, request, *args, **kwargs):
+        profile = Profile.objects.filter(user=self.request.user).first()
+        if profile:
+            return HttpResponseRedirect(reverse_lazy('profile_update'))
+        else:
+            return super().get(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

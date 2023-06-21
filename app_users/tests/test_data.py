@@ -1,3 +1,7 @@
+import os
+
+from CV_project.settings import BASE_DIR
+
 USERNAME = 'kosdmit'
 PASSWORD = 'testpassword'
 
@@ -37,4 +41,18 @@ USER_UPDATE_INVALID_DATA = {
     'first_name': 'dmitry',
     'last_name': 'kosyrkov',
     'email': 'kosdmithotmail.com'
+}
+
+CREATE_PROFILE_CORRECT_DATA = {
+    'birthday_date': '06.08.1993',
+    'gender': 'F',
+    'phone_number': '+79277535560',
+    'image': os.path.join(BASE_DIR, 'media', 'avatars', '1.jpg')
+}
+
+CREATE_PROFILE_INVALID_DATA = {
+    'birthday_date': '06.08.1993',
+    'gender': 'F',
+    'phone_number': '9277535560',
+    'image': os.path.join(BASE_DIR, 'media', 'avatars', '1.jpg')
 }
