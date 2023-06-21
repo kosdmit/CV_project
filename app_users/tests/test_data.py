@@ -56,3 +56,7 @@ CREATE_PROFILE_INVALID_DATA = {
     'phone_number': '9277535560',
     'image': os.path.join(BASE_DIR, 'media', 'avatars', '1.jpg')
 }
+
+CREATE_RESUME_DATA = {
+    'position': 'Python Developer'
+}

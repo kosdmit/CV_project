@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import InvalidElementStateException
+from selenium.webdriver.support.select import Select
 
 from app_users.tests import test_data
 
@@ -19,6 +20,20 @@ class CommonSetUpMethodsMixin:
         self.last_name = self.browser.find_element(By.ID, 'id_last_name')
         self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#signup_form button')
 
+        self.send_form(data=data)
+
+    def create_profile(self, data=test_data.CREATE_PROFILE_CORRECT_DATA):
+        self.birthday_date = self.browser.find_element(By.ID, 'id_birthday_date')
+        self.gender = Select(self.browser.find_element(By.ID, 'id_gender'))
+        self.phone_number = self.browser.find_element(By.ID, 'id_phone_number')
+        self.image = self.browser.find_element(By.ID, 'id_image')
+        self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#create_profile_form button')
+
+        self.send_form(data=data)
+
+    def create_resume(self, data=test_data.CREATE_RESUME_DATA):
+        self.position = self.browser.find_element(By.ID, 'id_position')
+        self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#create_resume_form button')
         self.send_form(data=data)
 
     def login(self):

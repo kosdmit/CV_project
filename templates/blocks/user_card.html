@@ -1,6 +1,6 @@
 {% block user_card %}
 
-  <div class="rounded-3 bg-light bg-gradient pt-5 pb-1 px-3 mb-5 shadow">
+  <div class="user-card rounded-3 bg-light bg-gradient pt-5 pb-1 px-3 mb-5 shadow">
     <div class="hero mb-5">
       {% if object.profile.image %}
         <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
@@ -103,7 +103,7 @@
       </div>
     {% endif %}
     {% if path_name == 'profile' %}
-      <a href="{% url 'user_update' %}" class="text-end d-block mb-2"><small>Редактировать</small></a>
+      <a href="{% url 'user_update' %}" class="text-end d-block mb-2" id="user_update_link" ><small>Редактировать</small></a>
     {% endif %}
   </div>
 

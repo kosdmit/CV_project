@@ -206,7 +206,10 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             if not Resume.objects.filter(user=self.request.user, is_primary=True).first():
                 resume.is_primary = True
             resume.save()
-            return redirect('profile')
+            return HttpResponseRedirect(
+                reverse_lazy('resume', kwargs={'username': self.request.user.username,
+                                               'slug': resume.slug})
+            )
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = create_resume_form

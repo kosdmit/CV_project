@@ -46,7 +46,7 @@
             {% if user.resume_set.all %}
               <form method="post" action="{% url 'resume_is_primary_update' username=user.username %}">
                 {% csrf_token %}
-                <div class="list-group my-3 shadow">
+                <div class="list-group my-3 shadow" id="resume_list">
                   {% for resume, radio in user.resume_set.all|zip:primary_resume_select_form.is_primary %}
                     <a href="{% url 'resume' username=user.username slug=resume.slug %}"
                        class="list-group-item list-group-item-action
@@ -65,7 +65,7 @@
             {% else %}
               <p class="ps-3">Вы еще не добавляли резюме, создайте новое резюме сейчас!</p>
             {% endif %}
-            <form method="post">
+            <form method="post" id="create_resume_form">
               {% csrf_token %}
               <div class="d-flex flex-column flex-sm-row w-100 gap-2">
                 {{ form.position }}
