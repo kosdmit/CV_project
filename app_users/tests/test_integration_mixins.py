@@ -82,3 +82,8 @@ class CommonAssertMethodsMixin:
     def assert_object_exists(self, data):
         object = self.model.objects.filter(**data).first()
         self.assertIsNotNone(object)
+
+
+class TearDownMixin:
+    def tearDown(self):
+        self.browser.quit()

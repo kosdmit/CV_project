@@ -14,17 +14,15 @@ from app_resume.models import Resume
 from app_users.models import Profile
 from app_users.tests import test_data
 from app_users.tests.test_integration_mixins import CommonSetUpMethodsMixin, \
-    CommonAssertMethodsMixin
+    CommonAssertMethodsMixin, TearDownMixin
 
 
 class SignUpTest(CommonAssertMethodsMixin,
                  CommonSetUpMethodsMixin,
+                 TearDownMixin,
                  LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
-
-    def tearDown(self):
-        self.browser.quit()
 
     def test_post_correct_data_with_anonymous_user(self):
         self.signup()
@@ -42,6 +40,7 @@ class SignUpTest(CommonAssertMethodsMixin,
 
 class UserUpdateTest(CommonAssertMethodsMixin,
                      CommonSetUpMethodsMixin,
+                     TearDownMixin,
                      LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -55,10 +54,6 @@ class UserUpdateTest(CommonAssertMethodsMixin,
         self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#user_update_form button')
 
         self.model = get_user_model()
-
-
-    def tearDown(self):
-        self.browser.quit()
 
     def test_post_correct_data_with_authorized_user(self):
         data = test_data.USER_UPDATE_CORRECT_DATA
@@ -78,12 +73,10 @@ class UserUpdateTest(CommonAssertMethodsMixin,
 
 class LoginTest(CommonAssertMethodsMixin,
                 CommonSetUpMethodsMixin,
+                TearDownMixin,
                 LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
-
-    def tearDown(self):
-        self.browser.quit()
 
     def test_post_correct_data_with_anonymous_user(self):
         self.login()
@@ -103,14 +96,12 @@ class LoginTest(CommonAssertMethodsMixin,
 
 class CreateProfileTest(CommonSetUpMethodsMixin,
                         CommonAssertMethodsMixin,
+                        TearDownMixin,
                         LiveServerTestCase):
     def setUp(self):
         self.model = Profile
         self.browser = webdriver.Chrome()
         self.signup()
-
-    def tearDown(self):
-        self.browser.quit()
 
     def test_post_correct_data_with_authorized_user(self):
         data = test_data.CREATE_PROFILE_CORRECT_DATA
@@ -132,15 +123,13 @@ class CreateProfileTest(CommonSetUpMethodsMixin,
 
 class ProfileTest(CommonAssertMethodsMixin,
                   CommonSetUpMethodsMixin,
+                  TearDownMixin,
                   LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.signup()
         self.create_profile()
         self.model = Resume
-
-    def tearDown(self):
-        self.browser.quit()
 
     def test_get_with_authorized_user(self):
         breadcrumbs = self.browser.find_element(By.CSS_SELECTOR, 'ol.breadcrumb')
@@ -199,3 +188,63 @@ class ProfileTest(CommonAssertMethodsMixin,
 
         self.assert_object_not_exists(data=data)
         self.assertEqual(self.browser.current_url, self.live_server_url + reverse('profile'))
+
+
+class ProfileUpdateTest(CommonAssertMethodsMixin,
+                        CommonSetUpMethodsMixin,
+                        TearDownMixin,
+                        LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+        self.signup()
+        self.create_profile()
+        self.browser.get(self.live_server_url + reverse('profile_update'))
+        self.model = Profile
+
+
+    def test_post_correct_data(self):
+        data = copy(test_data.CREATE_PROFILE_CORRECT_DATA)
+        data['phone_number'] = '+79111111111'
+        self.create_profile(data=data)
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + reverse('profile'))
+
+        profile_info_block = self.browser.find_element(By.CSS_SELECTOR, 'div.profile-info')
+        self.assertIn(data['phone_number'], profile_info_block.text)
+
+        object_set = self.model.objects.all()
+        self.assertEqual(len(object_set), 1)
+
+    def test_post_invalid_data(self):
+        data = copy(test_data.CREATE_PROFILE_CORRECT_DATA)
+        data['phone_number'] = '+7'
+        self.create_profile(data=data)
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + reverse('profile_update'))
+
+        object_set = self.model.objects.all()
+        self.assertEqual(len(object_set), 1)
+
+        object = self.model.objects.filter(user__username=test_data.SIGNUP_CORRECT_DATA['username'],
+                                           phone_number=data['phone_number']).first()
+        self.assertIsNone(object)
+
+        self.assert_messages()
+
+
+class LogoutTest(CommonAssertMethodsMixin,
+                 CommonSetUpMethodsMixin,
+                 TearDownMixin,
+                 LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+        self.signup()
+
+    def test(self):
+        dropdown_button = self.browser.find_element(By.CSS_SELECTOR, 'header #user_dropdown_button')
+        dropdown_button.click()
+
+        logout_link = self.browser.find_element(By.CSS_SELECTOR, 'header #logout_link')
+        logout_link.click()
+
+        self.assert_not_authorized()

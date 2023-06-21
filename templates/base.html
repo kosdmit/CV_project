@@ -53,17 +53,17 @@
         <div class="text-end">
           {% if user.is_authenticated %}
             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <button class="btn btn-secondary dropdown-toggle" id="user_dropdown_button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ user.username }}
               </button>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
-                <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                <li><a class="dropdown-item" id="profile_link" href="{% url 'profile' %}">Профиль</a></li>
+                <li><a class="dropdown-item" id="logout_link" href="{% url 'logout' %}">Выйти</a></li>
               </ul>
             </div>
           {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline me-2">Войти</a>
-            <a href="{% url 'signup' %}" class="btn btn-warning">Регистрация</a>
+            <a href="{% url 'login' %}" class="btn btn-outline me-2" >Войти</a>
+            <a href="{% url 'signup' %}" class="btn btn-warning" >Регистрация</a>
           {% endif %}
         </div>
       </div>
