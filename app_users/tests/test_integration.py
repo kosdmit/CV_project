@@ -7,6 +7,7 @@ from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.expected_conditions import url_contains
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -156,9 +157,7 @@ class ProfileTest(CommonAssertMethodsMixin,
             data['position'] = data['position'] + ' ' + str(i+1)
             self.create_resume(data=data)
             self.browser.get(self.live_server_url + reverse('profile'))
-            WebDriverWait(self.browser, timeout=10).until(
-                lambda b: b.find_element(By.ID, 'resume_list')
-            )
+            WebDriverWait(self.browser, timeout=10).until(url_contains(reverse('profile')))
         resume_list = self.browser.find_element(By.ID, 'resume_list')
         primary_resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item.active')
         self.assertEqual(len(primary_resumes), 1)

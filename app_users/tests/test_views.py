@@ -162,6 +162,23 @@ class ProfileViewTest(BaseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('create_profile'))
 
+    def test_post_correct_data_with_authorized_user(self):
+        self.client.login(username=self.user.username, password='testpassword')
+
+        response = self.client.post(self.url, data=self.correct_data, HTTP_REFERER=self.referer)
+
+        object = self.model.objects.filter(**self.correct_data).first()
+        self.assertIsNotNone(object)
+
+        # Test that the user was redirected to the success_url
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse('resume', kwargs={'username': self.user.username,
+                                      'slug': object.slug}),
+            fetch_redirect_response=False,
+        )
+
 
 class LoginViewTests(TestCase):
     def setUp(self):
