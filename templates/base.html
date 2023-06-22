@@ -33,7 +33,7 @@
           <li><a href="{% url 'resume_list' %}" class="nav-link px-2 text-body fw-semibold">Обзор</a></li>
           <li><a href="{% url 'post_list' %}" class="nav-link px-2 text-body fw-semibold">Блоги</a></li>
           <li>
-            <a class="nav-link px-2 {% if not user.is_authenticated or not user.profile.resume_set.all %}text-body-tertiary disabled"{% else %}
+            <a id="your_resume_header_link" class="nav-link px-2 {% if not user.is_authenticated or not user.profile.resume_set.all %}text-body-tertiary disabled"{% else %}
                 text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
               Ваше резюме
             </a>
@@ -62,8 +62,8 @@
               </ul>
             </div>
           {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline me-2" >Войти</a>
-            <a href="{% url 'signup' %}" class="btn btn-warning" >Регистрация</a>
+            <a href="{% url 'login' %}" class="btn btn-outline me-2" id="login_link">Войти</a>
+            <a href="{% url 'signup' %}" class="btn btn-warning" id="signup_link">Регистрация</a>
           {% endif %}
         </div>
       </div>
@@ -90,13 +90,13 @@
             <h5 class="invisible">CV Project</h5>
             <ul class="nav flex-column">
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
+                <a id="your_resume_footer_link" class="nav-link p-0 {% if not user.resume_set.all %}text-body-tertiary disabled"{% else %}
                     text-body" href="{% url 'primary_resume' username=user.username %}"{% endif %}>
                   Ваше резюме
                 </a>
               </li>
               <li class="nav-item mb-2">
-                <a class="nav-link p-0 {% if not user.profile %}text-body-tertiary disabled"{% else %}
+                <a id="your_profile_footer_link" class="nav-link p-0 {% if not user.profile %}text-body-tertiary disabled"{% else %}
                     text-body" href="{% url 'profile' %}"{% endif %}>
                   Ваш профиль
                 </a>

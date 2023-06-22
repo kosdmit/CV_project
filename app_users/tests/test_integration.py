@@ -15,15 +15,26 @@ from app_resume.models import Resume
 from app_users.models import Profile
 from app_users.tests import test_data
 from app_users.tests.test_integration_mixins import CommonSetUpMethodsMixin, \
-    CommonAssertMethodsMixin, TearDownMixin
+    CommonAssertMethodsMixin, TearDownMixin, TestGetWithAuthorizedUserMixin, \
+    TestGetWithAnonymousUserMixin
+
+from selenium.webdriver.chrome.options import Options
+
+chrome_options = Options()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--ignore-certificate-errors')
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
 
-class SignUpTest(CommonAssertMethodsMixin,
-                 CommonSetUpMethodsMixin,
-                 TearDownMixin,
-                 LiveServerTestCase):
+class SignUpPageTest(CommonAssertMethodsMixin,
+                     CommonSetUpMethodsMixin,
+                     TearDownMixin,
+                     TestGetWithAnonymousUserMixin,
+                     LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
+        self.url_name = 'signup'
 
     def test_post_correct_data_with_anonymous_user(self):
         self.signup()
@@ -34,15 +45,16 @@ class SignUpTest(CommonAssertMethodsMixin,
     def test_post_invalid_data_with_anonymous_user(self):
         self.signup(data=test_data.SIGNUP_INVALID_DATA)
 
-        self.assertEqual(self.browser.current_url, self.live_server_url + reverse('signup'))
+        self.assertEqual(self.browser.current_url, self.live_server_url + reverse(self.url_name))
         self.assert_messages()
         self.assert_not_authorized(username=test_data.SIGNUP_INVALID_DATA['username'])
 
 
-class UserUpdateTest(CommonAssertMethodsMixin,
-                     CommonSetUpMethodsMixin,
-                     TearDownMixin,
-                     LiveServerTestCase):
+class UserUpdatePageTest(CommonAssertMethodsMixin,
+                         CommonSetUpMethodsMixin,
+                         TearDownMixin,
+                         TestGetWithAuthorizedUserMixin,
+                         LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.login()
@@ -55,6 +67,7 @@ class UserUpdateTest(CommonAssertMethodsMixin,
         self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#user_update_form button')
 
         self.model = get_user_model()
+        self.url_name = 'user_update'
 
     def test_post_correct_data_with_authorized_user(self):
         data = test_data.USER_UPDATE_CORRECT_DATA
@@ -68,16 +81,20 @@ class UserUpdateTest(CommonAssertMethodsMixin,
         data = test_data.USER_UPDATE_INVALID_DATA
         self.send_form(data=data)
 
-        self.assertEqual(self.browser.current_url, self.live_server_url + reverse('user_update'))
+        self.assertEqual(self.browser.current_url, self.live_server_url + reverse(self.url_name))
         self.assert_object_not_exists(data=data)
 
 
-class LoginTest(CommonAssertMethodsMixin,
-                CommonSetUpMethodsMixin,
-                TearDownMixin,
-                LiveServerTestCase):
+class LoginPageTest(CommonAssertMethodsMixin,
+                    CommonSetUpMethodsMixin,
+                    TearDownMixin,
+                    TestGetWithAnonymousUserMixin,
+                    LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
+
+        self.url_name = 'login'
+        self.model = get_user_model()
 
     def test_post_correct_data_with_anonymous_user(self):
         self.login()
@@ -98,9 +115,11 @@ class LoginTest(CommonAssertMethodsMixin,
 class CreateProfileTest(CommonSetUpMethodsMixin,
                         CommonAssertMethodsMixin,
                         TearDownMixin,
+                        TestGetWithAuthorizedUserMixin,
                         LiveServerTestCase):
     def setUp(self):
         self.model = Profile
+        self.url_name = 'create_profile'
         self.browser = webdriver.Chrome()
         self.signup()
 
@@ -122,12 +141,13 @@ class CreateProfileTest(CommonSetUpMethodsMixin,
         self.assert_messages()
 
 
-class ProfileTest(CommonAssertMethodsMixin,
-                  CommonSetUpMethodsMixin,
-                  TearDownMixin,
-                  LiveServerTestCase):
+class ProfilePageTest(CommonAssertMethodsMixin,
+                      CommonSetUpMethodsMixin,
+                      TearDownMixin,
+                      LiveServerTestCase):
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Chrome(options=chrome_options)
+        self.browser.implicitly_wait(10)
         self.signup()
         self.create_profile()
         self.model = Resume
@@ -157,7 +177,6 @@ class ProfileTest(CommonAssertMethodsMixin,
             data['position'] = data['position'] + ' ' + str(i+1)
             self.create_resume(data=data)
             self.browser.get(self.live_server_url + reverse('profile'))
-            WebDriverWait(self.browser, timeout=10).until(url_contains(reverse('profile')))
         resume_list = self.browser.find_element(By.ID, 'resume_list')
         primary_resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item.active')
         self.assertEqual(len(primary_resumes), 1)
@@ -189,16 +208,19 @@ class ProfileTest(CommonAssertMethodsMixin,
         self.assertEqual(self.browser.current_url, self.live_server_url + reverse('profile'))
 
 
-class ProfileUpdateTest(CommonAssertMethodsMixin,
-                        CommonSetUpMethodsMixin,
-                        TearDownMixin,
-                        LiveServerTestCase):
+class ProfileUpdatePageTest(CommonAssertMethodsMixin,
+                            CommonSetUpMethodsMixin,
+                            TearDownMixin,
+                            TestGetWithAuthorizedUserMixin,
+                            LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome()
+        self.browser.implicitly_wait(10)
         self.signup()
         self.create_profile()
         self.browser.get(self.live_server_url + reverse('profile_update'))
         self.model = Profile
+        self.url_name = 'profile_update'
 
 
     def test_post_correct_data(self):
@@ -229,6 +251,10 @@ class ProfileUpdateTest(CommonAssertMethodsMixin,
         self.assertIsNone(object)
 
         self.assert_messages()
+
+    def test_get_with_authorized_user(self):
+        self.url_name = 'create_profile'
+        super().test_get_with_authorized_user()
 
 
 class LogoutTest(CommonAssertMethodsMixin,

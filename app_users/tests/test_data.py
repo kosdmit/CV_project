@@ -4,17 +4,23 @@ from CV_project.settings import BASE_DIR
 
 USERNAME = 'kosdmit'
 PASSWORD = 'testpassword'
+EMAIL = 'kosdmit@hotmail.com'
+FIRST_NAME = 'Dmitry'
+LAST_NAME = 'Kosyrkov'
+PHONE_NUMBER = '+79277535560'
+BIRTHDAY_DATE = '06.08.1993'
+POSITION = 'Python Developer'
 
 SIGNUP_CORRECT_DATA = {
-    'username': 'newuser',
-    'email': 'kosdmit@hotmail.com',
-    'password1': 'testpassword',
-    'password2': 'testpassword'
+    'username': USERNAME,
+    'email': EMAIL,
+    'password1': PASSWORD,
+    'password2': PASSWORD
 }
 
 SIGNUP_INVALID_DATA = {
-    'username': 'newuser',
-    'email': 'kosdmit@hotmail.com',
+    'username': USERNAME,
+    'email': EMAIL,
     'password1': 't',
     'password2': 't'
 }
@@ -31,32 +37,32 @@ LOGIN_INVALID_DATA = {
 
 USER_UPDATE_CORRECT_DATA = {
     'username': 'updated_username',
-    'first_name': 'dmitry',
-    'last_name': 'kosyrkov',
-    'email': 'kosdmit@hotmail.com'
+    'first_name': FIRST_NAME,
+    'last_name': LAST_NAME,
+    'email': EMAIL
 }
 
 USER_UPDATE_INVALID_DATA = {
     'username': 'invalid_username',
-    'first_name': 'dmitry',
-    'last_name': 'kosyrkov',
+    'first_name': FIRST_NAME,
+    'last_name': LAST_NAME,
     'email': 'kosdmithotmail.com'
 }
 
 CREATE_PROFILE_CORRECT_DATA = {
-    'birthday_date': '06.08.1993',
+    'birthday_date': BIRTHDAY_DATE,
     'gender': 'F',
-    'phone_number': '+79277535560',
+    'phone_number': PHONE_NUMBER,
     'image': os.path.join(BASE_DIR, 'media', 'avatars', '1.jpg')
 }
 
 CREATE_PROFILE_INVALID_DATA = {
-    'birthday_date': '06.08.1993',
+    'birthday_date': BIRTHDAY_DATE,
     'gender': 'F',
     'phone_number': '9277535560',
     'image': os.path.join(BASE_DIR, 'media', 'avatars', '1.jpg')
 }
 
 CREATE_RESUME_DATA = {
-    'position': 'Python Developer'
+    'position': POSITION
 }
