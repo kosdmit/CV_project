@@ -57,7 +57,7 @@ class UserUpdatePageTest(CommonAssertMethodsMixin,
                          TestGetWithAuthorizedUserMixin,
                          LiveServerTestCase):
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Chrome(options=chrome_options)
         self.login()
         self.browser.get(self.live_server_url + reverse('user_update'))
 
@@ -258,7 +258,7 @@ class ProfileUpdatePageTest(CommonAssertMethodsMixin,
                             TestGetWithAuthorizedUserMixin,
                             LiveServerTestCase):
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Chrome(options=chrome_options)
         self.browser.implicitly_wait(10)
         self.signup()
         self.create_profile()
