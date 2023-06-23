@@ -10,6 +10,8 @@ LAST_NAME = 'Kosyrkov'
 PHONE_NUMBER = '+79277535560'
 BIRTHDAY_DATE = '06.08.1993'
 POSITION = 'Python Developer'
+VK_URL = 'https://vk.com/kosdmit/'
+GITHUB_URL = 'https://github.com/kosdmit/'
 
 SIGNUP_CORRECT_DATA = {
     'username': USERNAME,

@@ -8,11 +8,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.expected_conditions import url_contains
+from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app_resume.models import Resume
-from app_users.models import Profile
+from app_users.models import Profile, SocialLinks
 from app_users.tests import test_data
 from app_users.tests.test_integration_mixins import CommonSetUpMethodsMixin, \
     CommonAssertMethodsMixin, TearDownMixin, TestGetWithAuthorizedUserMixin, \
@@ -144,6 +145,7 @@ class CreateProfileTest(CommonSetUpMethodsMixin,
 class ProfilePageTest(CommonAssertMethodsMixin,
                       CommonSetUpMethodsMixin,
                       TearDownMixin,
+                      TestGetWithAuthorizedUserMixin,
                       LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome(options=chrome_options)
@@ -153,6 +155,10 @@ class ProfilePageTest(CommonAssertMethodsMixin,
         self.model = Resume
 
     def test_get_with_authorized_user(self):
+        self.check_header_for_authorized_user()
+        self.check_breadcrumbs()
+        self.check_footer_for_authorized_user()
+
         breadcrumbs = self.browser.find_element(By.CSS_SELECTOR, 'ol.breadcrumb')
         user_link = breadcrumbs.find_element(By.LINK_TEXT, test_data.SIGNUP_CORRECT_DATA['username'])
         self.assertIsNotNone(user_link)
@@ -170,18 +176,6 @@ class ProfilePageTest(CommonAssertMethodsMixin,
 
         user_update_href = self.browser.find_element(By.ID, 'user_update_link').get_attribute('href')
         self.assertEqual(user_update_href, self.live_server_url + reverse('user_update'))
-
-        # Checking resume list
-        for i in range(3):
-            data = copy(test_data.CREATE_RESUME_DATA)
-            data['position'] = data['position'] + ' ' + str(i+1)
-            self.create_resume(data=data)
-            self.browser.get(self.live_server_url + reverse('profile'))
-        resume_list = self.browser.find_element(By.ID, 'resume_list')
-        primary_resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item.active')
-        self.assertEqual(len(primary_resumes), 1)
-        resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item')
-        self.assertEqual(len(resumes), i+1)
 
         profile_update_href = self.browser.find_element(By.CSS_SELECTOR, 'div.profile-info a.btn').get_attribute('href')
         self.assertEqual(profile_update_href, self.live_server_url + reverse('profile_update'))
@@ -207,6 +201,56 @@ class ProfilePageTest(CommonAssertMethodsMixin,
         self.assert_object_not_exists(data=data)
         self.assertEqual(self.browser.current_url, self.live_server_url + reverse('profile'))
 
+    def test_social_link_add(self):
+        vk_button = self.browser.find_element(By.CSS_SELECTOR, 'button.social-link.vk')
+        vk_button.click()
+        vk_url_input = self.browser.find_element(By.ID, 'id_vk')
+        vk_url_input.send_keys(test_data.VK_URL)
+        vk_url_input.submit()
+
+        github_button = self.browser.find_element(By.CSS_SELECTOR, 'button.social-link.github')
+        github_button.click()
+        github_url_input = self.browser.find_element(By.ID, 'id_git_hub')
+        github_url_input.send_keys(test_data.GITHUB_URL)
+        github_url_input.submit()
+
+        object = SocialLinks.objects.filter(user__username=test_data.SIGNUP_CORRECT_DATA['username']).first()
+        self.assertEqual(object.vk, test_data.VK_URL)
+        self.assertEqual(object.git_hub, test_data.GITHUB_URL)
+
+        social_links = self.browser.find_elements(By.CSS_SELECTOR, 'div.sharebuttons a.btn')
+        social_links_hrefs = [link.get_attribute('href') for link in social_links]
+        self.assertIn(test_data.VK_URL, social_links_hrefs)
+        self.assertIn(test_data.GITHUB_URL, social_links_hrefs)
+
+    def test_primary_resume_update(self):
+        # Checking resume list
+        for i in range(3):
+            data = copy(test_data.CREATE_RESUME_DATA)
+            data['position'] = data['position'] + ' ' + str(i+1)
+            self.create_resume(data=data)
+            self.browser.get(self.live_server_url + reverse('profile'))
+        resume_list = self.browser.find_element(By.ID, 'resume_list')
+        primary_resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item.active')
+        self.assertEqual(len(primary_resumes), 1)
+        resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item')
+        self.assertEqual(len(resumes), i+1)
+
+        last_resume = resumes[-1]
+        self.assertNotIn('active', last_resume.get_attribute('class'))
+        radio_button = last_resume.find_element(By.TAG_NAME, 'input')
+        radio_button.click()
+
+        primary_resume = self.browser.find_element(By.CSS_SELECTOR, '#resume_list a.list-group-item.active')
+        self.assertIn('active', primary_resume.get_attribute('class'))
+        self.assertIn(test_data.CREATE_RESUME_DATA['position'] + ' ' + str(i+1), primary_resume.text)
+
+        object = self.model.objects.filter(
+            position=test_data.CREATE_RESUME_DATA['position'] + ' ' + str(i+1),
+            is_primary=True
+        )
+        self.assertIsNotNone(object)
+
 
 class ProfileUpdatePageTest(CommonAssertMethodsMixin,
                             CommonSetUpMethodsMixin,
@@ -221,7 +265,6 @@ class ProfileUpdatePageTest(CommonAssertMethodsMixin,
         self.browser.get(self.live_server_url + reverse('profile_update'))
         self.model = Profile
         self.url_name = 'profile_update'
-
 
     def test_post_correct_data(self):
         data = copy(test_data.CREATE_PROFILE_CORRECT_DATA)
