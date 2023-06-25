@@ -26,7 +26,7 @@
         <p class="text-center">
           Вы не указали ваше имя или фамилию
           <br>
-          <a href="{% url 'user_update' %}">Редактировать</a>
+          <a href="{% url 'user_update' %}?next={{ request.path }}">Редактировать</a>
         </p>
       {% else %}
         <h1 class="text-uppercase text-center">

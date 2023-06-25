@@ -206,8 +206,12 @@ class ElectronicCertificateForm(forms.ModelForm):
 
 
 class SkillCreateForm(forms.Form):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                          'placeholder': "Добавить навык"}))
+    title = forms.CharField(
+
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': "Добавить навык",
+                                      'id': 'id_skill'})
+    )
 
 
 class WorkExpSectionForm(forms.ModelForm):

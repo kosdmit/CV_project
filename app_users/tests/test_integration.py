@@ -1,4 +1,3 @@
-import time
 from copy import copy
 
 from django.contrib.auth import get_user_model
@@ -6,11 +5,6 @@ from django.test import LiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.expected_conditions import url_contains
-from selenium.webdriver.support.relative_locator import locate_with
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
@@ -61,14 +55,17 @@ class UserUpdatePageTest(CommonAssertMethodsMixin,
         self.login()
         self.browser.get(self.live_server_url + reverse('user_update'))
 
+        self.find_form_elements()
+
+        self.model = get_user_model()
+        self.url_name = 'user_update'
+
+    def find_form_elements(self):
         self.username = self.browser.find_element(By.ID, 'id_username')
         self.first_name = self.browser.find_element(By.ID, 'id_first_name')
         self.last_name = self.browser.find_element(By.ID, 'id_last_name')
         self.email = self.browser.find_element(By.ID, 'id_email')
         self.submit_button = self.browser.find_element(By.CSS_SELECTOR, '#user_update_form button')
-
-        self.model = get_user_model()
-        self.url_name = 'user_update'
 
     def test_post_correct_data_with_authorized_user(self):
         data = test_data.USER_UPDATE_CORRECT_DATA

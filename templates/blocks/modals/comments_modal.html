@@ -25,7 +25,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <ul class="list-group list-group-flush mb-4">
+          <ul class="list-group list-group-flush mb-4 comments-list">
             {% if not comments|get_value_from_dict:uuid_key %}
               <p>Комментариев пока нет, но вы можете оставить свой!</p>
             {% endif %}

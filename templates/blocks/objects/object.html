@@ -3,7 +3,7 @@
 {% block item %}
 
   <li class="list-group-item item shadow bg-light bg-gradient mb-2 rounded-3 px-3 py-2
-      {% if modal %}item-in-modal{% else %} clickable-item{% endif %}"
+      {% if modal %}item-in-modal{% else %} clickable-item {{ name }}-item{% endif %}"
       {% if not modal %}data-id="{{ object.pk }}"{% endif %}
   >
     {% if update_path_name == 'electronic_certificate_update' %}

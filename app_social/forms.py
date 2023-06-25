@@ -8,7 +8,8 @@ class CommentForm(forms.ModelForm):
         label="Добавить комментарий:",
         widget=forms.Textarea(attrs={'class': 'form-control',
                                      'rows': '3',
-                                     'placeholder': "Введите текст комментария"}),
+                                     'placeholder': "Введите текст комментария",
+                                     'id': 'comment_create_input'}),
     )
 
     class Meta:

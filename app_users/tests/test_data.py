@@ -68,3 +68,11 @@ CREATE_PROFILE_INVALID_DATA = {
 CREATE_RESUME_DATA = {
     'position': POSITION
 }
+
+RESUME_DATA = {
+    'position': 'updated_position',
+    'about_me': 'test about me information',
+    'soft_skills': 'test soft skills information',
+    'message': 'test micro blog',
+    'skill': 'Python',  # TODO it is used for create skill item, refactoring is needed
+}

@@ -44,7 +44,6 @@ class SignUpView(CreateView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
-    success_url = reverse_lazy('profile')
     template_name = 'app_users/user_update.html'
     login_url = reverse_lazy('login')
 
@@ -73,6 +72,13 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         context['breadcrumbs'] = breadcrumbs
 
         return context
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', '')
+        if next_url:
+            return next_url
+        else:
+            return reverse_lazy('profile')
 
 
 class CreateProfileView(LoginRequiredMixin, CreateView):

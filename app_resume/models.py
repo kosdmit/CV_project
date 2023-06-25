@@ -131,7 +131,7 @@ class WorkExpSection(RepresentationForResumesObjectMixin, models.Model):
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE, editable=False)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=True, null=False, default='New Object')
     start_date = models.DateField(blank=True, null=True)
     finish_date = models.DateField(blank=True, null=True)
 

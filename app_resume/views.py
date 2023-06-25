@@ -137,7 +137,8 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 
         breadcrumbs = [
             (owner.username, profile_url),
-            (resume.position, ''),
+            (resume.position, reverse_lazy('resume', kwargs={'username': owner.username,
+                                                             'slug': resume.slug})),
         ]
         context['breadcrumbs'] = breadcrumbs
 
