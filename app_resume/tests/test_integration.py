@@ -58,8 +58,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
         TestGetWithAuthorizedUserMixin.check_footer_for_authorized_user(self)
 
         # Test user update link
-        hero = self.browser.find_element(By.CSS_SELECTOR, 'div.user-card div.hero')
-        user_update_link = hero.find_element(By.CSS_SELECTOR, 'a')
+        user_update_link = self.browser.find_element(By.CSS_SELECTOR, 'div.user-card div.hero a')
         self.assertEqual(
             user_update_link.get_attribute('href'),
             self.live_server_url + reverse('user_update') + '?next=/resume/kosdmit/python-developer/'
@@ -70,20 +69,19 @@ class ResumePageTest(CommonAssertMethodsMixin,
         CommonSetUpMethodsMixin.send_form(self, data=self.data)
 
         self.assertEqual(self.browser.current_url, self.url)
-        hero = self.browser.find_element(By.CSS_SELECTOR, 'div.user-card div.hero')
-        full_name = hero.find_element(By.CSS_SELECTOR, 'h1')
+        full_name = self.browser.find_element(By.CSS_SELECTOR, 'div.user-card div.hero h1')
         self.assertEqual(full_name.text,
                          test_data.USER_UPDATE_CORRECT_DATA['first_name'].upper() + \
                          '\n' + test_data.USER_UPDATE_CORRECT_DATA['last_name'].upper())
 
         # Test position item
-        position_item = hero.find_element(By.CSS_SELECTOR, 'div.resume-position-item')
+        position_item = self.browser.find_element(By.CSS_SELECTOR, 'div.user-card div.hero div.resume-position-item')
         position_text = position_item.find_element(By.CSS_SELECTOR, 'p strong').text
         self.assertEqual(position_text, test_data.CREATE_RESUME_DATA['position'].upper())
 
         update_position_button = position_item.find_element(By.CSS_SELECTOR, 'button')
         update_position_button.click()
-        self.check_update_modal_is_works(prefix='position-update-')
+        self.send_update_modal_form(prefix='position-update-')
         position_text = self.browser.find_element(By.CSS_SELECTOR, 'div.resume-position-item p strong').text
         self.assertEqual(position_text, test_data.CREATE_RESUME_DATA['position'].upper() + '1')
 
@@ -106,44 +104,25 @@ class ResumePageTest(CommonAssertMethodsMixin,
         # Test blog
         # Post Creating test
         field_name = 'message'
+        name = 'post'
         self.create_resume_object(field_name=field_name)
         update_modal = self.check_update_modal_is_opened(model=Post, field_name=field_name)
         self.close_modal(update_modal)
 
         object = Post.objects.get(resume__user__username=test_data.SIGNUP_CORRECT_DATA['username'],
                                   message=test_data.RESUME_DATA['message'])
-
-        items = self.browser.find_elements(By.CSS_SELECTOR, 'div.blog div.clickable-item')
-        self.wait.until(expected_conditions.visibility_of(items[0]))
-        item = self.get_item_by_object(items, object)
-        self.assertIn(object.message, item.text)
+        item = self.get_item_by_object(object, name=name)
         self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
-
-        # Post Comments modal test
-        try:
-            item.click()
-        except ElementClickInterceptedException as e:
-            self.browser.execute_script("arguments[0].click();", item)
-            print(e)
-        comments_modal = self.get_modal_window(object, id_prefix='comments-')
-        item = comments_modal.find_element(By.CSS_SELECTOR, 'div.item-in-modal')
-        self.assertIn(object.message, item.text)
-        self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
-        comments_modal = self.get_modal_window(object, id_prefix='comments-')
-        self.send_comment(comments_modal)
-        self.check_comment_item(comments_modal, object)
-        self.check_comment_updating(object)
-        self.check_comment_deleting(object, message='Test comment #2_updated')
-        self.check_comment_liking(object, message='Test comment')
-
-        comments_modal = self.get_modal_window(object, id_prefix='comments-')
-        self.close_modal(comments_modal)
+        self.check_comment_modal(object, item)
 
         # Main Education Create test
         self.create_resume_object_without_input(model=MainEducation, name='main_education')
 
         # Institution Create test
-        self.create_resume_object_without_input(model=Institution, name='institution')
+        name = 'institution'
+        object = self.create_resume_object_without_input(model=Institution, name=name)
+        item = self.get_item_by_object(object, name=name)
+        self.check_comment_modal(object, item)
 
         # Additional Education Create test
         self.create_resume_object_without_input(model=AdditionalEducation, name='additional_education')
@@ -162,9 +141,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
         self.create_resume_object_without_input(model=Job, name='job')
 
 
-
-
-    def check_update_modal_is_works(self, prefix=''):
+    def send_update_modal_form(self, prefix=''):
         update_modal = self.browser.find_element(By.ID, prefix + str(self.object.pk))
         self.wait.until(expected_conditions.visibility_of(update_modal))
         self.assertIn('show', update_modal.get_attribute('class'))
@@ -186,7 +163,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
         except ElementClickInterceptedException as e:
             self.browser.execute_script("arguments[0].click();", update_field_button)
             print(e)
-        self.check_update_modal_is_works(prefix=f'{class_name}-update-')
+        self.send_update_modal_form(prefix=f'{class_name}-update-')
         about_me_item = self.browser.find_element(By.CSS_SELECTOR, f'div.resume-{class_name}-item p')
         self.assertEqual(about_me_item.text, test_data.RESUME_DATA[field_name] + '1')
 
@@ -226,14 +203,26 @@ class ResumePageTest(CommonAssertMethodsMixin,
         update_modal = self.check_update_modal_is_opened(model=model)
         self.close_modal(update_modal)
 
+        if model == MainEducation:
+            object = model.objects.get(resume=self.object)
+        elif model == Job:
+            object = model.objects.get(work_exp_section__resume=self.object)
+        else:
+            object = model.objects.get(resume=self.object, title='New Object')
+
+        return object
+
     def check_resume_objects_count(self, name, count=1):
         # TODO Refactoring needed for variables setting item`s classes in resume template
         items = self.browser.find_elements(By.CSS_SELECTOR, f'.{name.replace("_", "-")}-item')
         self.assertEqual(len(items), count)
 
-    def get_item_by_object(self, items, object):
+    def get_item_by_object(self, object, name):
+        items = self.browser.find_elements(By.CSS_SELECTOR, f'ul.{name}-list .clickable-item')
+        self.wait.until(expected_conditions.visibility_of(items[0]))
         for item in items:
             if str(object.pk) == item.get_attribute('data-id'):
+                self.check_text_in_item(object, item)
                 return item
         raise NoSuchElementException(msg=f'Item for {object} has not been founded')
 
@@ -244,6 +233,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
             if item_id == str(object.pk):
                 return item
         raise NoSuchElementException(f'Item for {object} has not been founded')
+
     def send_comment(self, comments_modal, message='Test comment'):
         comment_input = comments_modal.find_element(By.ID, 'comment_create_input')
         comment_input.send_keys(message)
@@ -311,7 +301,30 @@ class ResumePageTest(CommonAssertMethodsMixin,
             like_object = Like.objects.get(owner_id=self.object.user.pk,
                                            uuid_key=comment_object.pk)
 
+    def check_comment_modal(self, object, item):
+        try:
+            item.click()
+        except ElementClickInterceptedException as e:
+            self.browser.execute_script("arguments[0].click();", item)
+            print(e)
+        comments_modal = self.get_modal_window(object, id_prefix='comments-')
+        item = comments_modal.find_element(By.CSS_SELECTOR, '.item-in-modal')
+        self.check_text_in_item(object, item)
+        if object.__class__ == Post:
+            self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
+        comments_modal = self.get_modal_window(object, id_prefix='comments-')
+        self.send_comment(comments_modal)
+        self.check_comment_item(comments_modal, object)
+        self.check_comment_updating(object)
+        self.check_comment_deleting(object, message='Test comment #2_updated')
+        self.check_comment_liking(object, message='Test comment')
 
+        comments_modal = self.get_modal_window(object, id_prefix='comments-')
+        self.close_modal(comments_modal)
 
-
-
+    def check_text_in_item(self, object, item):
+        # TODO: bring the attributes of objects to a single standard
+        if object.__class__ == Post:
+            self.assertIn(object.message.lower(), item.text.lower())
+        else:
+            self.assertIn(object.title.lower(), item.text.lower())

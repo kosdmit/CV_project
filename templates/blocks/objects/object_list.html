@@ -3,7 +3,7 @@
 {% block object_list %}
 
   {% if object_set %}
-    <ul class="list-group list-group-flush mb-3">
+    <ul class="list-group list-group-flush mb-3 {{ name }}-list">
       {% for object in object_set %}
         {% if update_path_name == 'post_update' %}
           {% include 'blocks/objects/post_object.html' %}
