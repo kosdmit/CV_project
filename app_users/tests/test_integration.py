@@ -5,6 +5,8 @@ from django.test import LiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
@@ -18,7 +20,7 @@ from selenium.webdriver.chrome.options import Options
 chrome_options = Options()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-dev-shm-usage')
 
 
@@ -147,6 +149,7 @@ class ProfilePageTest(CommonAssertMethodsMixin,
     def setUp(self):
         self.browser = webdriver.Chrome(options=chrome_options)
         self.browser.implicitly_wait(10)
+        self.wait = WebDriverWait(self.browser, timeout=10)
         self.signup()
         self.create_profile()
         self.model = Resume
@@ -226,6 +229,7 @@ class ProfilePageTest(CommonAssertMethodsMixin,
             data = copy(test_data.CREATE_RESUME_DATA)
             data['position'] = data['position'] + ' ' + str(i+1)
             self.create_resume(data=data)
+            self.wait.until(expected_conditions.url_contains('resume'))
             self.browser.get(self.live_server_url + reverse('profile'))
         resume_list = self.browser.find_element(By.ID, 'resume_list')
         primary_resumes = resume_list.find_elements(By.CSS_SELECTOR, 'a.list-group-item.active')

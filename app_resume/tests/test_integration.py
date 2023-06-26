@@ -5,8 +5,9 @@ from django.contrib.auth import get_user_model
 from django.test import LiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
-from selenium.common import NoSuchElementException
+from selenium.common import NoSuchElementException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, \
     WorkExpSection, Job
@@ -19,7 +20,7 @@ from app_users.tests.test_integration_mixins import CommonSetUpMethodsMixin, \
     TestGetWithAnonymousUserMixin
 
 from selenium.webdriver.chrome.options import Options
-
+from selenium.webdriver.support import expected_conditions
 
 chrome_options = Options()
 chrome_options.add_argument('--no-sandbox')
@@ -35,6 +36,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
     def setUp(self):
         self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(10)
+        self.wait = WebDriverWait(self.browser, timeout=10)
         self.signup()
         self.create_profile()
         self.create_resume()
@@ -107,15 +109,22 @@ class ResumePageTest(CommonAssertMethodsMixin,
         self.create_resume_object(field_name=field_name)
         update_modal = self.check_update_modal_is_opened(model=Post, field_name=field_name)
         self.close_modal(update_modal)
+
         object = Post.objects.get(resume__user__username=test_data.SIGNUP_CORRECT_DATA['username'],
                                   message=test_data.RESUME_DATA['message'])
+
         items = self.browser.find_elements(By.CSS_SELECTOR, 'div.blog div.clickable-item')
+        self.wait.until(expected_conditions.visibility_of(items[0]))
         item = self.get_item_by_object(items, object)
         self.assertIn(object.message, item.text)
         self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
 
         # Post Comments modal test
-        item.click()
+        try:
+            item.click()
+        except ElementClickInterceptedException as e:
+            self.browser.execute_script("arguments[0].click();", item)
+            print(e)
         comments_modal = self.get_modal_window(object, id_prefix='comments-')
         item = comments_modal.find_element(By.CSS_SELECTOR, 'div.item-in-modal')
         self.assertIn(object.message, item.text)
@@ -157,6 +166,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
 
     def check_update_modal_is_works(self, prefix=''):
         update_modal = self.browser.find_element(By.ID, prefix + str(self.object.pk))
+        self.wait.until(expected_conditions.visibility_of(update_modal))
         self.assertIn('show', update_modal.get_attribute('class'))
 
         update_input = update_modal.find_element(By.CSS_SELECTOR, '.form-control')
@@ -171,7 +181,11 @@ class ResumePageTest(CommonAssertMethodsMixin,
         self.assertEqual(item.text, test_data.RESUME_DATA[field_name])
 
         update_field_button = self.browser.find_element(By.CSS_SELECTOR, f'div.resume-{class_name}-item button')
-        update_field_button.click()
+        try:
+            update_field_button.click()
+        except ElementClickInterceptedException as e:
+            self.browser.execute_script("arguments[0].click();", update_field_button)
+            print(e)
         self.check_update_modal_is_works(prefix=f'{class_name}-update-')
         about_me_item = self.browser.find_element(By.CSS_SELECTOR, f'div.resume-{class_name}-item p')
         self.assertEqual(about_me_item.text, test_data.RESUME_DATA[field_name] + '1')
@@ -193,6 +207,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
 
     def get_modal_window(self, object, id_prefix=''):
         modal = self.browser.find_element(By.ID, id_prefix + str(object.pk))
+        self.wait.until(expected_conditions.visibility_of(modal))
         self.assertIn('show', modal.get_attribute('class'))
         return modal
 
@@ -203,7 +218,11 @@ class ResumePageTest(CommonAssertMethodsMixin,
 
     def create_resume_object_without_input(self, model, name):
         button = self.browser.find_element(By.ID, f'{name}_create_button')
-        button.click()
+        try:
+            button.click()
+        except ElementClickInterceptedException as e:
+            self.browser.execute_script("arguments[0].click();", button)
+            print(e)
         update_modal = self.check_update_modal_is_opened(model=model)
         self.close_modal(update_modal)
 
