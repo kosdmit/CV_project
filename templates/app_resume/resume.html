@@ -100,7 +100,7 @@
                   </div>
                   <!-- Modal -->
                   {% include 'blocks/modals/update_modal.html' with path_name='work_exp_section_update' object=section form=work_exp_section_update_forms|get_value_from_dict:section %}
-                  <ul class="list-group list-group-flush mb-3">
+                  <ul class="list-group list-group-flush mb-3 job-list">
                     {% for object_dict in jobs_in_sections|get_value_from_dict:section %}
                       {% include 'blocks/objects/job_object.html' with section=section object=object_dict.job update_form=object_dict.job_update_form %}
                     {% endfor %}

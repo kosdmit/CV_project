@@ -9,8 +9,9 @@ from selenium.common import NoSuchElementException, ElementClickInterceptedExcep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, ElectronicCertificate, \
-    WorkExpSection, Job
+from app_resume.models import Resume, MainEducation, Institution, \
+    AdditionalEducation, ElectronicCertificate, \
+    WorkExpSection, Job, Skill
 from app_social.models import Post, Comment, Like
 from app_users.models import Profile, SocialLinks
 from app_users.tests import test_data
@@ -105,12 +106,9 @@ class ResumePageTest(CommonAssertMethodsMixin,
         # Post Creating test
         field_name = 'message'
         name = 'post'
-        self.create_resume_object(field_name=field_name)
+        object = self.create_resume_object_with_input(model=Post, field_name=field_name)
         update_modal = self.check_update_modal_is_opened(model=Post, field_name=field_name)
         self.close_modal(update_modal)
-
-        object = Post.objects.get(resume__user__username=test_data.SIGNUP_CORRECT_DATA['username'],
-                                  message=test_data.RESUME_DATA['message'])
         item = self.get_item_by_object(object, name=name)
         self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
         self.check_comment_modal(object, item)
@@ -125,20 +123,43 @@ class ResumePageTest(CommonAssertMethodsMixin,
         self.check_comment_modal(object, item)
 
         # Additional Education Create test
-        self.create_resume_object_without_input(model=AdditionalEducation, name='additional_education')
+        name = 'additional_education'
+        object = self.create_resume_object_without_input(model=AdditionalEducation, name=name)
+        item = self.get_item_by_object(object, name=name)
+        self.check_comment_modal(object, item)
 
         # Electronic Certificate Create test
-        self.create_resume_object_without_input(model=ElectronicCertificate, name='electronic_certificate')
+        name = 'electronic_certificate'
+        object = self.create_resume_object_without_input(model=ElectronicCertificate, name=name)
+        item = self.get_item_by_object(object, name=name)
+        self.check_comment_modal(object, item)
 
         # Skill Create test
-        self.create_resume_object(field_name='skill')
+        def get_item_by_object(object, name=name):
+            items = self.browser.find_elements(By.CSS_SELECTOR, 'button.skill-item')
+
+            self.wait.until(expected_conditions.visibility_of(items[0]))
+            for item in items:
+                if str(object.pk) == item.get_attribute('id'):
+                    self.check_text_in_item(object, item)
+                    return item
+            raise NoSuchElementException(
+                msg=f'Item for {object} has not been founded')
+
+        name = 'skill'
+        object = self.create_resume_object_with_input(model=Skill, field_name=name)
         self.check_resume_objects_count(name='skill', count=1)
+        item = get_item_by_object(object, name=name)
+        self.check_comment_modal(object, item)
 
         # Work Exp Section Create test
         self.create_resume_object_without_input(model=WorkExpSection, name='work_exp_section')
 
         # Job Create test
-        self.create_resume_object_without_input(model=Job, name='job')
+        name = 'job'
+        object = self.create_resume_object_without_input(model=Job, name='job')
+        item = self.get_item_by_object(object, name=name)
+        self.check_comment_modal(object, item)
 
 
     def send_update_modal_form(self, prefix=''):
@@ -153,7 +174,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
     def check_resume_field(self, field_name):
         class_name = field_name.replace('_', '-')
 
-        self.create_resume_object(field_name=field_name)
+        self.create_resume_field_with_input(field_name=field_name)
         item = self.browser.find_element(By.CSS_SELECTOR, f'div.resume-{class_name}-item p')
         self.assertEqual(item.text, test_data.RESUME_DATA[field_name])
 
@@ -167,10 +188,14 @@ class ResumePageTest(CommonAssertMethodsMixin,
         about_me_item = self.browser.find_element(By.CSS_SELECTOR, f'div.resume-{class_name}-item p')
         self.assertEqual(about_me_item.text, test_data.RESUME_DATA[field_name] + '1')
 
-    def create_resume_object(self, field_name):
+    def create_resume_field_with_input(self, field_name):
         input_field = self.browser.find_element(By.ID, 'id_' + field_name)
         input_field.send_keys(test_data.RESUME_DATA[field_name])
         input_field.submit()
+
+    def create_resume_object_with_input(self, model, field_name):
+        self.create_resume_field_with_input(field_name)
+        return self.get_resume_object(model, field_name)
 
     def check_update_modal_is_opened(self, model, field_name=None):
         if model == Job:
@@ -203,10 +228,19 @@ class ResumePageTest(CommonAssertMethodsMixin,
         update_modal = self.check_update_modal_is_opened(model=model)
         self.close_modal(update_modal)
 
+        return self.get_resume_object(model)
+
+    def get_resume_object(self, model, field_name=None):
         if model == MainEducation:
             object = model.objects.get(resume=self.object)
         elif model == Job:
             object = model.objects.get(work_exp_section__resume=self.object)
+        elif model == Post:
+            object = model.objects.get(resume=self.object,
+                                       message=test_data.RESUME_DATA[field_name])
+        elif model == Skill:
+            object = model.objects.get(resume=self.object,
+                                       title=test_data.RESUME_DATA[field_name])
         else:
             object = model.objects.get(resume=self.object, title='New Object')
 
@@ -218,7 +252,7 @@ class ResumePageTest(CommonAssertMethodsMixin,
         self.assertEqual(len(items), count)
 
     def get_item_by_object(self, object, name):
-        items = self.browser.find_elements(By.CSS_SELECTOR, f'ul.{name}-list .clickable-item')
+        items = self.browser.find_elements(By.CSS_SELECTOR, f'ul.{name.replace("_", "-")}-list .clickable-item')
         self.wait.until(expected_conditions.visibility_of(items[0]))
         for item in items:
             if str(object.pk) == item.get_attribute('data-id'):
