@@ -18,7 +18,8 @@ from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
     RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, \
     ResumeValidatorMixin, \
     WorkExpSectionValidatorMixin, GetResumeObjMixin, \
-    remove_parameters_from_url, AddErrorMessagesToFormMixin
+    remove_parameters_from_url, AddErrorMessagesToFormMixin, \
+    Http404IfGetRequestMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, \
     ElectronicCertificate, Skill, WorkExpSection, Job
 
@@ -54,14 +55,19 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        owner = User.objects.get(username=kwargs['username'])
-        context['owner'] = owner
+        try:
+            owner = User.objects.get(username=kwargs['username'])
+            context['owner'] = owner
+        except User.DoesNotExist:
+            raise Http404
 
         try:
             slug = kwargs['slug']
             resume = Resume.objects.get(slug=slug, profile=owner.profile)
         except KeyError:
             resume = Resume.objects.get(profile=owner.profile, is_primary=True)
+        except Resume.DoesNotExist:
+            raise Http404
         context['resume'] = resume
 
         context['post_set'] = resume.post_set.order_by('-created_date')[:2]
@@ -202,6 +208,7 @@ class ResumeView(AddLikesIntoContextMixin, TemplateView):
 class ResumeUpdateView(UserValidatorMixin,
                        GetResumeObjMixin,
                        RefreshIfSuccessMixin,
+                       Http404IfGetRequestMixin,
                        UpdateView):
     model = Resume
     fields = ['position', 'about_me', 'soft_skills']
@@ -238,7 +245,10 @@ class ResumeUpdateView(UserValidatorMixin,
         )
 
 
-class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
+class ResumeIsPrimaryUpdateView(UserValidatorMixin,
+                                RefreshIfSuccessMixin,
+                                Http404IfGetRequestMixin,
+                                UpdateView):
     model = Resume
     fields = ['is_primary']
 
@@ -255,11 +265,15 @@ class MainEducationCreateView(OpenModalIfSuccessMixin,
                               ResumeValidatorMixin,
                               RefreshIfSuccessMixin,
                               RatingUpdateForCreateViewMixin,
+                              Http404IfGetRequestMixin,
                               CreateView):
     form_class = MainEducationForm
 
 
-class MainEducationUpdateView(ResumeValidatorMixin, RefreshIfSuccessMixin, UpdateView):
+class MainEducationUpdateView(ResumeValidatorMixin,
+                              RefreshIfSuccessMixin,
+                              Http404IfGetRequestMixin,
+                              UpdateView):
     form_class = MainEducationForm
     model = MainEducation
 
@@ -269,6 +283,7 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
                             ResumeValidatorMixin,
                             RefreshIfSuccessMixin,
                             RatingUpdateForCreateViewMixin,
+                            Http404IfGetRequestMixin,
                             CreateView):
     model = Institution
     fields = ['title']
@@ -288,6 +303,7 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
 class InstitutionUpdateView(ResumeValidatorMixin,
                             RefreshIfSuccessMixin,
                             AddErrorMessagesToFormMixin,
+                            Http404IfGetRequestMixin,
                             UpdateView):
     model = Institution
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date',
@@ -298,6 +314,7 @@ class InstitutionUpdateView(ResumeValidatorMixin,
 class InstitutionDeleteView(ResumeValidatorMixin,
                             RefreshIfSuccessMixin,
                             RatingUpdateForDeleteViewMixin,
+                            Http404IfGetRequestMixin,
                             DeleteView):
     model = Institution
 
@@ -307,6 +324,7 @@ class AdditionalEducationCreateView(OpenModalIfSuccessMixin,
                                     ResumeValidatorMixin,
                                     RefreshIfSuccessMixin,
                                     RatingUpdateForCreateViewMixin,
+                                    Http404IfGetRequestMixin,
                                     CreateView):
     model = AdditionalEducation
     fields = ['title']
@@ -315,6 +333,7 @@ class AdditionalEducationCreateView(OpenModalIfSuccessMixin,
 class AdditionalEducationDeleteView(ResumeValidatorMixin,
                                     RatingUpdateForDeleteViewMixin,
                                     RefreshIfSuccessMixin,
+                                    Http404IfGetRequestMixin,
                                     DeleteView):
     model = AdditionalEducation
 
@@ -322,6 +341,7 @@ class AdditionalEducationDeleteView(ResumeValidatorMixin,
 class AdditionalEducationUpdateView(ResumeValidatorMixin,
                                     RefreshIfSuccessMixin,
                                     AddErrorMessagesToFormMixin,
+                                    Http404IfGetRequestMixin,
                                     UpdateView):
     model = AdditionalEducation
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
@@ -333,6 +353,7 @@ class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
                                       ResumeValidatorMixin,
                                       RefreshIfSuccessMixin,
                                       RatingUpdateForCreateViewMixin,
+                                      Http404IfGetRequestMixin,
                                       CreateView):
     model = ElectronicCertificate
     fields = ['title']
@@ -341,6 +362,7 @@ class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
 class ElectronicCertificateUpdateView(ResumeValidatorMixin,
                                       RefreshIfSuccessMixin,
                                       AddErrorMessagesToFormMixin,
+                                      Http404IfGetRequestMixin,
                                       UpdateView):
     model = ElectronicCertificate
     fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
@@ -350,6 +372,7 @@ class ElectronicCertificateUpdateView(ResumeValidatorMixin,
 class ElectronicCertificateDeleteView(ResumeValidatorMixin,
                                       RatingUpdateForDeleteViewMixin,
                                       RefreshIfSuccessMixin,
+                                      Http404IfGetRequestMixin,
                                       DeleteView):
     model = ElectronicCertificate
 
@@ -358,6 +381,7 @@ class SkillCreateView(ResumeBounderMixin,
                       ResumeValidatorMixin,
                       RefreshIfSuccessMixin,
                       RatingUpdateForCreateViewMixin,
+                      Http404IfGetRequestMixin,
                       CreateView):
     model = Skill
     fields = ['title']
@@ -374,6 +398,7 @@ class SkillCreateView(ResumeBounderMixin,
 class SkillDeleteView(ResumeValidatorMixin,
                       RefreshIfSuccessMixin,
                       RatingUpdateForDeleteViewMixin,
+                      Http404IfGetRequestMixin,
                       DeleteView):
     model = Skill
 
@@ -382,6 +407,7 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
                                ResumeBounderMixin,
                                ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
+                               Http404IfGetRequestMixin,
                                CreateView):
     model = WorkExpSection
     fields = ['title']
@@ -390,6 +416,7 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
 class WorkExpSectionUpdateView(ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
                                AddErrorMessagesToFormMixin,
+                               Http404IfGetRequestMixin,
                                UpdateView):
     form_class = WorkExpSectionForm
     model = WorkExpSection
@@ -398,6 +425,7 @@ class WorkExpSectionUpdateView(ResumeValidatorMixin,
 
 class WorkExpSectionDeleteView(ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
+                               Http404IfGetRequestMixin,
                                DeleteView):
     model = WorkExpSection
 
@@ -406,6 +434,7 @@ class JobCreateView(OpenModalIfSuccessMixin,
                     WorkExpSectionValidatorMixin,
                     RefreshIfSuccessMixin,
                     RatingUpdateForCreateViewMixin,
+                    Http404IfGetRequestMixin,
                     CreateView):
     model = Job
     fields = ['title']
@@ -414,6 +443,7 @@ class JobCreateView(OpenModalIfSuccessMixin,
 class JobUpdateView(WorkExpSectionValidatorMixin,
                     RefreshIfSuccessMixin,
                     AddErrorMessagesToFormMixin,
+                    Http404IfGetRequestMixin,
                     UpdateView):
     form_class = JobForm
     model = Job
@@ -423,6 +453,7 @@ class JobUpdateView(WorkExpSectionValidatorMixin,
 class JobDeleteView(WorkExpSectionValidatorMixin,
                     RatingUpdateForDeleteViewMixin,
                     RefreshIfSuccessMixin,
+                    Http404IfGetRequestMixin,
                     DeleteView):
     model = Job
 

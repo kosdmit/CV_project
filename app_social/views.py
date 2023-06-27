@@ -9,8 +9,10 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
 from CV_project.settings import RATING_SETTINGS
-from app_resume.mixins import ResumeBounderMixin, ResumeValidatorMixin, RefreshIfSuccessMixin, \
-    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin, OpenModalIfSuccessMixin
+from app_resume.mixins import ResumeBounderMixin, ResumeValidatorMixin, \
+    RefreshIfSuccessMixin, \
+    RatingUpdateForCreateViewMixin, RatingUpdateForDeleteViewMixin, \
+    OpenModalIfSuccessMixin, Http404IfGetRequestMixin
 from app_resume.models import Resume
 from app_social.forms import CommentForm, CommentUpdateForm, PostForm
 from app_social.mixins import OpenCommentModalIfSuccess, AddLikesIntoContextMixin,\
@@ -19,7 +21,7 @@ from app_social.models import Like, Comment, Post
 
 
 # Create your views here.
-class ClickLike(View):
+class ClickLike(Http404IfGetRequestMixin, View):
     def post(self, form):
         request_body_data = json.loads(self.request.body.decode('utf-8'))
 
@@ -64,7 +66,9 @@ class ClickLike(View):
                                  'likes_count': likes_count + 1})
 
 
-class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
+class CommentCreateView(Http404IfGetRequestMixin,
+                        OpenCommentModalIfSuccess,
+                        CreateView):
     form_class = CommentForm
 
     def form_valid(self, form):
@@ -87,7 +91,10 @@ class CommentCreateView(OpenCommentModalIfSuccess, CreateView):
         return super().form_valid(form)
 
 
-class CommentDeleteView(OpenCommentModalIfSuccess, OwnerValidatorMixin, DeleteView):
+class CommentDeleteView(Http404IfGetRequestMixin,
+                        OpenCommentModalIfSuccess,
+                        OwnerValidatorMixin,
+                        DeleteView):
     model = Comment
 
     def get_success_url(self):
@@ -103,7 +110,10 @@ class CommentDeleteView(OpenCommentModalIfSuccess, OwnerValidatorMixin, DeleteVi
         return super().form_valid(form)
 
 
-class CommentUpdateView(OwnerValidatorMixin, OpenCommentModalIfSuccess, UpdateView):
+class CommentUpdateView(Http404IfGetRequestMixin,
+                        OwnerValidatorMixin,
+                        OpenCommentModalIfSuccess,
+                        UpdateView):
     model = Comment
     fields = ['message']
 
@@ -172,6 +182,7 @@ class PostCreateView(OpenModalIfSuccessMixin,
                      ResumeValidatorMixin,
                      RefreshIfSuccessMixin,
                      RatingUpdateForCreateViewMixin,
+                     Http404IfGetRequestMixin,
                      CreateView):
     model = Post
     fields = ['message', 'image']
@@ -179,6 +190,7 @@ class PostCreateView(OpenModalIfSuccessMixin,
 
 class PostUpdateView(ResumeValidatorMixin,
                      RefreshIfSuccessMixin,
+                     Http404IfGetRequestMixin,
                      UpdateView):
     model = Post
     fields = ['message', 'image']
@@ -187,6 +199,7 @@ class PostUpdateView(ResumeValidatorMixin,
 class PostDeleteView(ResumeValidatorMixin,
                      RefreshIfSuccessMixin,
                      RatingUpdateForDeleteViewMixin,
+                     Http404IfGetRequestMixin,
                      DeleteView):
     model = Post
 

@@ -8,15 +8,21 @@
             <span class="visually-hidden">Home</span>
           </a>
         </li>
-        {% for text, url in breadcrumbs %}
+        {% if breadcrumbs %}
+          {% for text, url in breadcrumbs %}
+            <li class="breadcrumb-item">
+              {% if url %}
+                <a class="link-body-emphasis fw-semibold text-decoration-none" href="{{ url }}">{{ text }}</a>
+              {% else %}
+                <p class="fw-semibold text-decoration-none d-inline">{{ text }}</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        {% else %}
           <li class="breadcrumb-item">
-            {% if url %}
-              <a class="link-body-emphasis fw-semibold text-decoration-none" href="{{ url }}">{{ text }}</a>
-            {% else %}
-              <p class="fw-semibold text-decoration-none d-inline">{{ text }}</p>
-            {% endif %}
+            <p class="fw-semibold text-decoration-none d-inline">404 - Страница не найдена</p>
           </li>
-        {% endfor %}
+        {% endif %}
       </ol>
     </nav>
   </div>

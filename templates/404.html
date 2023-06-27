@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница не найдена{% endblock %}
+
+{% block content %}
+  {% include 'blocks/navigation/breadcrumbs.html' %}
+  {% block main_content %}
+
+    <div class="container">
+      {% include 'blocks/page_header.html' with path_name='404' title='Страница не найдена' %}
+      <h1 class="display-1 text-center my-5">404</h1>
+      <p class="my-5 pb-5 col-lg-6">Проверьте правильность url адреса в адресной строке браузера или напишите Issue
+        на странице проекта в Github -
+        <a href="https://github.com/kosdmit/CV_project/issues" target="_blank">
+          Issues - CV_project
+        </a>
+      </p>
+    </div>
+
+  {% endblock %}
+
+{% endblock %}

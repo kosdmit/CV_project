@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView
 
+from app_resume.mixins import Http404IfGetRequestMixin
 from app_resume.models import Resume
 from app_users.models import Profile, SocialLinks
 from .forms import SignUpUserForm, CreateProfileForm, CustomAuthenticationForm, CreateResumeForm, \
@@ -251,13 +252,10 @@ class Logout(LogoutView):
     next_page = 'main'
 
 
-class SocialLinksUpdateView(LoginRequiredMixin, UpdateView):
+class SocialLinksUpdateView(LoginRequiredMixin, Http404IfGetRequestMixin, UpdateView):
     model = SocialLinks
     fields = ['twitter', 'facebook', 'linked_in', 'vk', 'instagram', 'hh', 'git_hub']
     login_url = reverse_lazy('login')
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
 
     def post(self, request, *args, **kwargs):
         self.success_url = self.request.META['HTTP_REFERER']

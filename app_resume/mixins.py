@@ -3,7 +3,7 @@ from urllib.parse import urlparse, urlunparse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 
 from CV_project.settings import RATING_SETTINGS
 from app_resume.models import Resume, WorkExpSection
@@ -125,3 +125,8 @@ class AddErrorMessagesToFormMixin:
             + '?modal_id='
             + str(self.object.pk)
         )
+
+
+class Http404IfGetRequestMixin:
+    def get(self, request, *args, **kwargs):
+        raise Http404
