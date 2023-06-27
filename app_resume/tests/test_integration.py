@@ -319,21 +319,23 @@ class ResumePageTest(CommonAssertMethodsMixin,
                                              message=message,
                                              uuid_key=object.pk)
         comment_item = self.check_comment_item(comments_modal, object, message=message)
-        like_button = comment_item.find_element(By.CSS_SELECTOR, 'button.like-button')
+        self.check_object_liking(object=comment_object, item=comment_item)
+
+    def check_object_liking(self, object, item):
+        like_button = item.find_element(By.CSS_SELECTOR, 'button.like-button')
         like_count = int(like_button.text)
         like_button.click()
         time.sleep(1)
         new_like_count = int(like_button.text)
         self.assertEqual(new_like_count - like_count, 1)
-        like_object = Like.objects.get(owner_id=self.object.user.pk,
-                                       uuid_key=comment_object.pk)
+        like_object = Like.objects.get(owner_id=self.object.user.pk, uuid_key=object.pk)
         like_button.click()
         time.sleep(1)
         new_like_count = int(like_button.text)
         self.assertEqual(new_like_count - like_count, 0)
         with self.assertRaises(Like.DoesNotExist):
             like_object = Like.objects.get(owner_id=self.object.user.pk,
-                                           uuid_key=comment_object.pk)
+                                           uuid_key=object.pk)
 
     def check_comment_modal(self, object, item):
         try:
@@ -342,11 +344,12 @@ class ResumePageTest(CommonAssertMethodsMixin,
             self.browser.execute_script("arguments[0].click();", item)
             print(e)
         comments_modal = self.get_modal_window(object, id_prefix='comments-')
-        item = comments_modal.find_element(By.CSS_SELECTOR, '.item-in-modal')
-        self.check_text_in_item(object, item)
+        in_modal_item = comments_modal.find_element(By.CSS_SELECTOR, '.item-in-modal')
+        self.check_text_in_item(object, in_modal_item)
         if object.__class__ == Post:
-            self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], item.text)
+            self.assertIn(test_data.USER_UPDATE_CORRECT_DATA['first_name'], in_modal_item.text)
         comments_modal = self.get_modal_window(object, id_prefix='comments-')
+        self.check_object_liking(object, in_modal_item)
         self.send_comment(comments_modal)
         self.check_comment_item(comments_modal, object)
         self.check_comment_updating(object)
