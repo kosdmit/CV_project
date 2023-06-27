@@ -1,6 +1,7 @@
 {% block new_create_form %}
 
   {% if owner == user %}
+    {% include 'blocks/messages.html' with resume_page='True' %}
     <form method="post" {% if enctype == 'multipart' %}enctype="multipart/form-data"{% endif %}
           action="
             {% if path_name == 'job_create' %}

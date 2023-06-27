@@ -1,11 +1,14 @@
 {% block messages %}
 
   {% if messages or form.errors %}
-    <div class="{% if path_name != 'comment_create' %}messages-block col-md-6 col-lg-5{% endif %} mt-3">
+    <div class="{% if not resume_page and not modal %}
+        messages-block col-md-6 col-lg-5{% endif %} mt-3">
       {% for message in messages %}
-        <div class="alert {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
-          {{ message|safe }}
-        </div>
+        {% if path_name in message.tags or message.tags|wordcount == 1 %}
+          <div class="alert {% if message.tags %}{{ message.tags }}{% else %}alert-warning{% endif %}" role="alert">
+            {{ message|safe }}
+          </div>
+        {% endif %}
       {% endfor %}
       {% if form.errors %}
         {% for field in form %}

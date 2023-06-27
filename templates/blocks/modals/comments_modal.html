@@ -32,7 +32,7 @@
             {% for comment in comments|get_value_from_dict:uuid_key %}
               {% include 'blocks/objects/comment_object.html' %}
             {% endfor %}
-            {% include 'blocks/messages.html' with path_name='comment_create' %}
+            {% include 'blocks/messages.html' with path_name='comment_create' modal='True' %}
           </ul>
           <form method="post" action="{% url 'comment_create' pk=uuid_key %}">
             {% csrf_token %}

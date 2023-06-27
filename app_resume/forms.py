@@ -1,7 +1,8 @@
 from django import forms
 
-from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation,\
-    ElectronicCertificate, WorkExpSection, Job
+from app_resume.models import Resume, MainEducation, Institution, \
+    AdditionalEducation, \
+    ElectronicCertificate, WorkExpSection, Job, Skill
 
 
 class ResumeForm(forms.ModelForm):
@@ -205,13 +206,16 @@ class ElectronicCertificateForm(forms.ModelForm):
         fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
 
 
-class SkillCreateForm(forms.Form):
+class SkillCreateForm(forms.ModelForm):
     title = forms.CharField(
-
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'placeholder': "Добавить навык",
                                       'id': 'id_skill'})
     )
+
+    class Meta:
+        model = Skill
+        fields = ['title']
 
 
 class WorkExpSectionForm(forms.ModelForm):

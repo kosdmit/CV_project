@@ -1,5 +1,6 @@
 from urllib.parse import urlparse, urlunparse
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import HttpResponseRedirect
@@ -110,3 +111,17 @@ class GetResumeObjMixin:
         user = User.objects.get(username=self.kwargs['username'])
         obj = Resume.objects.get(slug=self.kwargs['slug'], user=user)
         return obj
+
+
+class AddErrorMessagesToFormMixin:
+    def form_invalid(self, form):
+        for error in form.errors:
+            messages.warning(self.request,
+                             f"{error}: {form.errors[error]}",
+                             extra_tags=self.url_name)
+
+        return HttpResponseRedirect(
+            remove_parameters_from_url(self.request.META['HTTP_REFERER'], 'modal_id')
+            + '?modal_id='
+            + str(self.object.pk)
+        )

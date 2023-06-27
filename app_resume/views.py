@@ -1,8 +1,9 @@
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import OperationalError
 from django.db.models import Count
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, RedirectView, DeleteView
 
@@ -16,7 +17,8 @@ from app_resume.mixins import ResumeBounderMixin, OpenModalIfSuccessMixin, \
     RatingUpdateForCreateViewMixin, \
     RatingUpdateForDeleteViewMixin, UserValidatorMixin, RefreshIfSuccessMixin, \
     ResumeValidatorMixin, \
-    WorkExpSectionValidatorMixin, GetResumeObjMixin
+    WorkExpSectionValidatorMixin, GetResumeObjMixin, \
+    remove_parameters_from_url, AddErrorMessagesToFormMixin
 from app_resume.models import Resume, MainEducation, Institution, AdditionalEducation, \
     ElectronicCertificate, Skill, WorkExpSection, Job
 
@@ -214,6 +216,27 @@ class ResumeUpdateView(UserValidatorMixin,
 
         return form_class
 
+    def form_invalid(self, form):
+        for error in form.errors:
+            messages.warning(self.request,
+                             f"{error}: {form.errors[error]}",
+                             extra_tags='resume_update')
+
+        if 'position' in self.request.POST:
+            field_name = 'position'
+        elif 'about_me' in self.request.POST:
+            field_name = 'about_me'
+        elif 'soft_skills' in self.request.POST:
+            field_name = 'soft_skills'
+        else:
+            raise Http404
+
+        return HttpResponseRedirect(
+            remove_parameters_from_url(self.request.META['HTTP_REFERER'], 'modal_id')
+            + f'?modal_id={field_name}-update-'
+            + str(self.object.pk)
+        )
+
 
 class ResumeIsPrimaryUpdateView(UserValidatorMixin, RefreshIfSuccessMixin, UpdateView):
     model = Resume
@@ -264,10 +287,12 @@ class InstitutionCreateView(OpenModalIfSuccessMixin,
 
 class InstitutionUpdateView(ResumeValidatorMixin,
                             RefreshIfSuccessMixin,
+                            AddErrorMessagesToFormMixin,
                             UpdateView):
     model = Institution
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date',
               'is_primary']
+    url_name = 'institution_update'
 
 
 class InstitutionDeleteView(ResumeValidatorMixin,
@@ -296,9 +321,11 @@ class AdditionalEducationDeleteView(ResumeValidatorMixin,
 
 class AdditionalEducationUpdateView(ResumeValidatorMixin,
                                     RefreshIfSuccessMixin,
+                                    AddErrorMessagesToFormMixin,
                                     UpdateView):
     model = AdditionalEducation
     fields = ['title', 'description', 'website_url', 'diploma', 'completion_date']
+    url_name = 'additional_education_update'
 
 
 class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
@@ -313,9 +340,11 @@ class ElectronicCertificateCreateView(OpenModalIfSuccessMixin,
 
 class ElectronicCertificateUpdateView(ResumeValidatorMixin,
                                       RefreshIfSuccessMixin,
+                                      AddErrorMessagesToFormMixin,
                                       UpdateView):
     model = ElectronicCertificate
     fields = ['title', 'certificate_url', 'certificate', 'completion_percentage', 'completion_date']
+    url_name = 'electronic_certificate_update'
 
 
 class ElectronicCertificateDeleteView(ResumeValidatorMixin,
@@ -332,6 +361,14 @@ class SkillCreateView(ResumeBounderMixin,
                       CreateView):
     model = Skill
     fields = ['title']
+
+    def form_invalid(self, form):
+        for error in form.errors:
+            messages.warning(self.request,
+                             f"{error}: {form.errors[error]}",
+                             extra_tags='skill_create')
+
+        return HttpResponseRedirect(self.request.META['HTTP_REFERER'])
 
 
 class SkillDeleteView(ResumeValidatorMixin,
@@ -352,9 +389,11 @@ class WorkExpSectionCreateView(OpenModalIfSuccessMixin,
 
 class WorkExpSectionUpdateView(ResumeValidatorMixin,
                                RefreshIfSuccessMixin,
+                               AddErrorMessagesToFormMixin,
                                UpdateView):
     form_class = WorkExpSectionForm
     model = WorkExpSection
+    url_name = 'work_exp_section_update'
 
 
 class WorkExpSectionDeleteView(ResumeValidatorMixin,
@@ -374,9 +413,11 @@ class JobCreateView(OpenModalIfSuccessMixin,
 
 class JobUpdateView(WorkExpSectionValidatorMixin,
                     RefreshIfSuccessMixin,
+                    AddErrorMessagesToFormMixin,
                     UpdateView):
     form_class = JobForm
     model = Job
+    url_name = 'job_update'
 
 
 class JobDeleteView(WorkExpSectionValidatorMixin,
