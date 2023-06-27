@@ -65,8 +65,11 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         context['title'] = 'Редактирование учетной записи пользователя'
         context['page_description'] = 'Вы можете изменить имя пользователя, адрес электронной почты или личные данные.'
 
+        user = self.model.objects.get(pk=self.request.user.pk)
+        context['user'] = user
+
         breadcrumbs = [
-            (self.request.user.username, reverse_lazy('profile')),
+            (user.username, reverse_lazy('profile')),
             ('Редактирование учетной записи', reverse_lazy('user_update')),
         ]
         context['breadcrumbs'] = breadcrumbs
