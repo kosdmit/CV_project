@@ -4,12 +4,12 @@
 
   {% if object.website_url %}
     <a href="{{ object.website_url }}" class="text-uppercase mb-1" target="_blank">{{ object.title }}</a>
-  {% else %}
+  {% elif object.title %}
     <p class="text-uppercase mb-1">{{ object.title }}</p>
   {% endif %}
   {% if object.description %}
     <p>{{ object.description }}</p>
-  {% else %}
+  {% elif object.message %}
     <p>{{ object.message|markdown }}</p>
   {% endif %}
 

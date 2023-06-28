@@ -1,7 +1,7 @@
 {% block user_card %}
 
   <div class="user-card rounded-3 bg-light bg-gradient pt-5 pb-1 px-3 mb-5 shadow">
-    <div class="hero mb-5">
+    <div class="hero {% if path_name == 'resume' %}mb-4{% else %}mb-5{% endif %}">
       {% if object.profile.image %}
         <div class="avatar-container mx-auto mb-3 d-block" style="height: 250px; width: 250px">
           <img src="{{ object.profile.image.url }}" class="avatar rounded-circle w-100 h-auto shadow" alt="user`s avatar"
@@ -44,7 +44,6 @@
     </div>
     {% if path_name == 'resume' %}
       <div class="about-me item">
-        {% include 'blocks/second_title.html' with icon='fa-circle-user' title='Обо мне' %}
         {% if resume.about_me %}
           <div class="resume-about-me-item mb-4">
             <p class="my-0">{{ resume.about_me }}</p>
@@ -66,14 +65,14 @@
       <ul class="list-unstyled">
         {% if path_name == 'profile' %}
           <li class="list-group-item mb-1">
-            <p class="text-uppercase me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ object.username }}</p>
+            <p class="me-3 d-inline">Имя пользователя:</p><p class="d-inline">{{ object.username }}</p>
           </li>
         {% endif %}
         <li class="list-group-item mb-1">
-          <p class="text-uppercase me-3 d-inline">Email:</p><a href="mailto:{{ object.email }}">{{ object.email }}</a>
+          <p class="me-3 d-inline">Email:</p><a href="mailto:{{ object.email }}">{{ object.email }}</a>
         </li>
         <li class="list-group-item mb-3">
-          <p class="text-uppercase me-3 d-inline">Телефон:</p>
+          <p class="me-3 d-inline">Телефон:</p>
           {% if object.profile.phone_number %}
             <a href="tel:{{ object.profile.phone_number }}">{{ object.profile.phone_number }}</a>
           {% else %}

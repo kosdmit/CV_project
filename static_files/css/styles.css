@@ -18,6 +18,10 @@ h3:not(.popover-header) {
 
 a {
     color: #146bb0; /* Цвет ссылок */
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
 }
 
 .progress-bar {
@@ -92,4 +96,10 @@ a {
 img {
   max-width: 100%;
   height: auto;
+}
+
+span.percentage-badge {
+    color: #146BB0;
+    font-size: 14px;
+    font-weight: 500;
 }
