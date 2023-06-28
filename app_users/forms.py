@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 class SignUpUserForm(UserCreationForm):
     username = forms.CharField(
-        label='Имя пользователя:',
+        label='Логин для входа:',
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'aria-describedby': "usernameHelp",
                                       }))

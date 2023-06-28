@@ -71,7 +71,7 @@
   {% elif path_name == 'signup' %}
 
     {% if field.name == 'username' %}
-      <div id="usernameHelp" class="form-text">Имя пользователя служит для входа на сайт.</div>
+      <div id="usernameHelp" class="form-text">Будет виден другим пользователям. Используйте латинские буквы и цифры</div>
     {% elif field.name == 'email' %}
       <div id="emailHelp" class="form-text">Введите действующий адрес электронной почты.</div>
     {% elif field.name == 'first_name' or field.name == 'last_name'%}
