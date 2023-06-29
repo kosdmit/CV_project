@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'autoslug',
     'djutils',
     'markdown_deux',
+    'htmlmin',
     'app_users',
     'app_resume',
     'app_social',
@@ -58,6 +59,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware',
+    'htmlmin.middleware.MarkRequestMiddleware',
     # X-Frame_Option is configurated in Nginx conf
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
