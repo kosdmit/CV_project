@@ -1,0 +1,109 @@
+@import "variables";
+
+
+a {
+  color: $link-color;
+  text-decoration: none;
+}
+
+.progress-bar {
+  background-image: $text-gradient;
+}
+
+.bg-primary {
+  background-color: $primary-color !important;
+}
+
+span.percentage-badge {
+  color: $primary-color;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+// Titles in resume Page
+h2,
+h3:not(.popover-header) {
+  background-image: $text-gradient;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+.title-icon {
+  vertical-align: middle;
+}
+
+
+// Social links block
+.social-link {
+  .social-plus-sign {
+  display: none;
+  }
+  &:hover {
+    .social-logo {
+      display: none;
+    }
+    .social-plus-sign {
+      display: block;
+    }
+  }
+}
+
+.twitter {
+  background-color: $twitter-color !important;
+}
+.facebook {
+  background-color: $facebook-color !important;
+}
+.instagram {
+  background-color: $instagram-color !important;
+}
+.linkedin {
+  background-color: $link-color !important;
+}
+.vk {
+  background-color: $vk-color !important;
+}
+.github {
+  background-color: $github-color !important;
+}
+
+
+// Items footer (buttons block)
+.item {
+  .hidden-buttons-block {
+  opacity: 0;
+  transition: opacity $transition-timing;
+  }
+  &:hover {
+    .hidden-buttons-block {
+      opacity: 1;
+      transition: opacity $transition-timing;
+    }
+  }
+}
+
+.clickable-item,
+.resume-item {
+  &:hover {
+    box-shadow: $hovered-item-shadow !important;
+    transform: scale(1.01);
+    transition: box-shadow $transition-timing, transform $transition-timing;
+  }
+  transition: box-shadow $transition-timing, transform $transition-timing;
+}
+
+@media (max-width: 767px) {
+  .hidden-buttons-block,
+  .item:hover .hidden-buttons-block {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}
+
+
+// Styles for images added by markdown
+img {
+  max-width: 100%;
+  height: auto;
+}
