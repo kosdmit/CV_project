@@ -111,7 +111,7 @@
   --bs-border-radius-xxl: 2rem;
   --bs-border-radius-2xl: var(--bs-border-radius-xxl);
   --bs-border-radius-pill: 50rem;
-  --bs-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-box-shadow: 0 0.5rem 1rem rgba(11, 63, 104, 0.1);
   --bs-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
   --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.075);
@@ -3342,7 +3342,7 @@ textarea.form-control-lg {
   --bs-dropdown-inner-border-radius: calc(var(--bs-border-radius) - var(--bs-border-width));
   --bs-dropdown-divider-bg: var(--bs-border-color-translucent);
   --bs-dropdown-divider-margin-y: 0.5rem;
-  --bs-dropdown-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-dropdown-box-shadow: 0 0.5rem 1rem rgba(11, 63, 104, 0.1);
   --bs-dropdown-link-color: var(--bs-body-color);
   --bs-dropdown-link-hover-color: var(--bs-body-color);
   --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
@@ -5531,7 +5531,7 @@ textarea.form-control-lg {
 @media (min-width: 576px) {
   .modal {
     --bs-modal-margin: 1.75rem;
-    --bs-modal-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --bs-modal-box-shadow: 0 0.5rem 1rem rgba(11, 63, 104, 0.1);
   }
   .modal-dialog {
     max-width: var(--bs-modal-width);
@@ -5783,7 +5783,7 @@ textarea.form-control-lg {
   --bs-popover-border-color: var(--bs-border-color-translucent);
   --bs-popover-border-radius: var(--bs-border-radius-lg);
   --bs-popover-inner-border-radius: calc(var(--bs-border-radius-lg) - var(--bs-border-width));
-  --bs-popover-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --bs-popover-box-shadow: 0 0.5rem 1rem rgba(11, 63, 104, 0.1);
   --bs-popover-header-padding-x: 1rem;
   --bs-popover-header-padding-y: 0.5rem;
   --bs-popover-header-font-size: 1rem;
@@ -7256,7 +7256,7 @@ textarea.form-control-lg {
 }
 
 .shadow {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 0.5rem 1rem rgba(11, 63, 104, 0.1) !important;
 }
 
 .shadow-sm {
@@ -11866,10 +11866,6 @@ a {
   background-image: linear-gradient(to left, #146bb0, #b393d3);
 }
 
-.bg-primary {
-  background-color: #146bb0 !important;
-}
-
 span.percentage-badge {
   color: #146bb0;
   font-size: 14px;
@@ -11912,7 +11908,7 @@ h3:not(.popover-header),
 }
 
 .linkedin {
-  background-color: #146bb0 !important;
+  background-color: #0082ca !important;
 }
 
 .vk {
@@ -11938,14 +11934,13 @@ h3:not(.popover-header),
 }
 .clickable-item:hover,
 .resume-item:hover {
-  box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.175) !important;
+  box-shadow: 0 1rem 1.5rem rgba(11, 63, 104, 0.1) !important;
   transform: scale(1.01);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-@media (max-width: 767px) {
-  .hidden-buttons-block,
-  .item:hover .hidden-buttons-block {
+@media (max-width: 768px) {
+  .hidden-buttons-block {
     display: none !important;
     pointer-events: none !important;
   }

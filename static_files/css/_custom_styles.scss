@@ -1,3 +1,4 @@
+@import "../../bootstrap-5.3.0/scss/variables";
 @import "variables";
 
 
@@ -7,10 +8,6 @@ a {
 
 .progress-bar {
   background-image: $text-gradient;
-}
-
-.bg-primary {
-  background-color: $primary-color !important;
 }
 
 span.percentage-badge {
@@ -58,7 +55,7 @@ h3:not(.popover-header) {
   background-color: $instagram-color !important;
 }
 .linkedin {
-  background-color: $link-color !important;
+  background-color: $linkedin-color !important;
 }
 .vk {
   background-color: $vk-color !important;
@@ -71,14 +68,12 @@ h3:not(.popover-header) {
 // Items footer (buttons block)
 .item {
   .hidden-buttons-block {
-  opacity: 0;
-  transition: opacity $transition-timing;
+    opacity: 0;
+    transition: opacity $transition-timing;
   }
-  &:hover {
-    .hidden-buttons-block {
-      opacity: 1;
-      transition: opacity $transition-timing;
-    }
+  &:hover .hidden-buttons-block {
+    opacity: 1;
+    transition: opacity $transition-timing;
   }
 }
 
@@ -92,9 +87,8 @@ h3:not(.popover-header) {
   transition: box-shadow $transition-timing, transform $transition-timing;
 }
 
-@media (max-width: 767px) {
-  .hidden-buttons-block,
-  .item:hover .hidden-buttons-block {
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .hidden-buttons-block {
     display: none !important;
     pointer-events: none !important;
   }

@@ -1,10 +1,11 @@
 $primary-color: #146bb0;
 $secondary-color: #b393d3;
-$link-color: $primary-color;
+
 
 $text-gradient: linear-gradient(to left, $primary-color, $secondary-color);
 $transition-timing: 0.3s ease;
-$hovered-item-shadow: 0 1rem 1.5rem rgba(0, 0, 0, .175);
+$shadow-color: #0B3F68;
+$hovered-item-shadow: 0 1rem 1.5rem rgba($shadow-color, .1);
 
 $twitter-color: #55acee;
 $facebook-color: #3b5998;

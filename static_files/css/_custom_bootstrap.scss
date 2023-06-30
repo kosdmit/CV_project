@@ -1,4 +1,6 @@
 @import "variables";
 
 $primary: $primary-color;
-$link-color: $link-color;
+$link-color: $primary-color;
+
+$box-shadow: 0 .5rem 1rem rgba($shadow-color, .1);
