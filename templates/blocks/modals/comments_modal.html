@@ -3,7 +3,7 @@
 {% block comments_modal %}
 
   <div class="modal fade" id="comments-{{ uuid_key }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog {% if content_type == 'post' %}modal-lg{% endif %}">
       <div class="modal-content">
 
           <div class="m-1">
